@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 final kHintTextStyle = TextStyle(
   color: Colors.white54,
@@ -21,6 +22,16 @@ final kBoxDecorationStyle = BoxDecoration(
       offset: Offset(0, 2),
     ),
   ],
+);
+
+final kAlertCardStyle = AlertStyle(
+  animationType: AnimationType.shrink,
+  backgroundColor: Colors.white,
+  animationDuration: Duration(milliseconds: 200),
+  isCloseButton: false,
+  alertBorder: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(50.0),
+  ),
 );
 
 const kBackgroundColor = Color(0xFFF1EFF1);

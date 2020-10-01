@@ -1,16 +1,25 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vendasagrindus/data_helper.dart';
+import 'package:vendasagrindus/model/vendedor.dart';
+import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
+import 'package:vendasagrindus/screens/login/login_widgets.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
 
-class Login extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
+  static const String routeName = 'login_screen';
   @override
-  _LoginState createState() => _LoginState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> {
-  bool _rememberMe = false;
+class _LoginScreenState extends State<LoginScreen> {
+  var _db = DataHelper();
+  TextEditingController loginIdController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  Vendedor vendedor = Vendedor();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,32 +63,82 @@ class _LoginState extends State<Login> {
                         decoration: BoxDecoration(
                           //color: Colors.white24,
                           image: DecorationImage(
-                               image: ExactAssetImage(
-                                'assets/logos/agrindus.png'),
+                            image: ExactAssetImage('assets/logos/agrindus.png'),
                             alignment: Alignment.center,
                             fit: BoxFit.contain,
                           ),
-                          
                         ),
                       ),
+                      SizedBox(height: 20),
                       Text(
-                        'Sign In',
+                        'Entrar',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
                         ),
                       ),
                       SizedBox(height: 30.0),
-                      _buildEmailTF(),
+                      LoginTextBox(
+                        controller: loginIdController,
+                        fieldTitle: 'Codigo do Vendedor',
+                        hintText: 'Entre com seu Codigo',
+                        icon: Icons.people,
+                        inputType: TextInputType.number,
+                      ),
                       SizedBox(
                         height: 30.0,
                       ),
-                      _buildPasswordTF(),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
+                      LoginTextBox(
+                        controller: passwordController,
+                        fieldTitle: 'Senha',
+                        hintText: 'Entre com sua Senha',
+                        obscureText: true,
+                        icon: Icons.lock,
+                      ),
+                      LoginButton(onPressed: () async {
+                        FocusScope.of(context).unfocus();
+                        try {
+                          String id = loginIdController.text;
+                          var dadosVendedor = await _db.getVendedor(id);
+                          setState(() {
+                            vendedor = Vendedor.fromJson(dadosVendedor[0]);
+                          });
+                          if (vendedor.vENDEDOR != null) {
+                            print(vendedor.nOMECONH);
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ListaClientes(vendedor: vendedor)),
+                                (route) => false);
+                          }
+                        } catch (e) {
+                          String message = e.toString();
+                          if (vendedor.vENDEDOR == null) {
+                            message = 'Código de vendedor não encontrado';
+                          }
+                          Alert(
+                            context: context,
+                            title: 'ERRO',
+                            desc: message,
+                            style: kAlertCardStyle,
+                            buttons: [
+                              AlertButton(
+                                  label: 'RETURN',
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  })
+                            ],
+                          ).show();
+                        }
+                      }),
+                      ForgotPassword(
+                        onTap: () => print('Forgot Password Button Pressed'),
+                        alignment: Alignment.center,
+                      ),
                     ],
                   ),
                 ),
@@ -87,117 +146,6 @@ class _LoginState extends State<Login> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildEmailTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Codigo do Vendedor',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.people,
-                color: Colors.white,
-              ),
-              hintText: 'Entre com seu Codigo',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Senha',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            obscureText: true,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.lock,
-                color: Colors.white,
-              ),
-              hintText: 'Entre com sua Senha',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildForgotPasswordBtn() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: FlatButton(
-        onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
-        child: Text(
-          'Forgot Password?',
-          style: kLabelStyle,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRememberMeCheckbox() {
-    return Container(
-      height: 20.0,
-      child: Row(
-        children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value;
-                });
-              },
-            ),
-          ),
-          Text(
-            'Remember me',
-            style: kLabelStyle,
-          ),
-        ],
       ),
     );
   }
@@ -322,3 +270,10 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
+//async {
+//   String id = loginIdController.text;
+//   print('Login Button Pressed');
+//   var result = await _db.getVendedor(id);
+
+// },

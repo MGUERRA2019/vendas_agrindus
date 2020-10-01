@@ -1,36 +1,46 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:vendasagrindus/model/clientes.dart';
+import 'package:vendasagrindus/model/vendedor.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-import '../../api.dart';
+import '../../data_helper.dart';
 
 class ListaClientes extends StatefulWidget {
+  static const String routeName = 'lista_clientes';
+
+  final Vendedor vendedor;
+  ListaClientes({this.vendedor});
+
   @override
   _ListaClientesState createState() => _ListaClientesState();
 }
 
 class _ListaClientesState extends State<ListaClientes> {
   var clientes = List<Clientes>();
+  var _db = DataHelper();
 
   _getClientes() {
-    API.getClientes().then((response) {
+    _db.getClientes(widget.vendedor.vENDEDOR).then((response) {
+      Iterable lista = json.decode(response.body);
       setState(() {
-        Iterable lista = json.decode(response.body);
         clientes = lista.map((model) => Clientes.fromJson(model)).toList();
       });
     });
   }
 
-  _ListaClientesState() {
+  @override
+  void initState() {
+    super.initState();
     _getClientes();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Lista de Clientes'),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Lista de Clientes'),
         ),
+        // bottomNavigationBar: ,
         body: listaClientes());
   }
 
@@ -41,13 +51,20 @@ class _ListaClientesState extends State<ListaClientes> {
         return Card(
           color: Colors.blue[100],
           child: ListTile(
-            leading: Icon(Icons.account_circle),
+            leading: CircleAvatar(
+              child: Icon(Icons.account_circle),
+              backgroundColor: Colors.black26,
+              foregroundColor: Colors.white70,
+            ),
             title: Text(
               clientes[index].nOMFANTASIA,
-              style: TextStyle(fontSize: 16, color: kTextColor,),
+              style: TextStyle(
+                fontSize: 16,
+                color: kTextColor,
+              ),
             ),
             subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, 
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   clientes[index].eNDERECO,
@@ -63,6 +80,10 @@ class _ListaClientesState extends State<ListaClientes> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ]),
+                Text(
+                  'Vendedor: ' + clientes[index].vENDEDOR,
+                  style: TextStyle(fontSize: 10),
+                )
               ],
             ),
             trailing: Icon(Icons.credit_card),
