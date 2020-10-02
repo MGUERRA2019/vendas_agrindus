@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/vendedor.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
 import 'package:vendasagrindus/screens/login/login_widgets.dart';
+import 'package:vendasagrindus/screens/navigation_screen.dart';
+import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
@@ -18,10 +21,10 @@ class _LoginScreenState extends State<LoginScreen> {
   var _db = DataHelper();
   TextEditingController loginIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  Vendedor vendedor = Vendedor();
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -102,22 +105,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         FocusScope.of(context).unfocus();
                         try {
                           String id = loginIdController.text;
-                          var dadosVendedor = await _db.getVendedor(id);
-                          setState(() {
-                            vendedor = Vendedor.fromJson(dadosVendedor[0]);
-                          });
-                          if (vendedor.vENDEDOR != null) {
-                            print(vendedor.nOMECONH);
+                          await userdata.getVendedor(id);
+                          await userdata.getClientes();
+                          if (userdata.vendedor.vENDEDOR != null) {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        ListaClientes(vendedor: vendedor)),
+                                    builder: (context) => NavigationScreen()),
                                 (route) => false);
                           }
                         } catch (e) {
                           String message = e.toString();
-                          if (vendedor.vENDEDOR == null) {
+                          if (userdata.vendedor.vENDEDOR == null) {
                             message = 'Código de vendedor não encontrado';
                           }
                           Alert(
