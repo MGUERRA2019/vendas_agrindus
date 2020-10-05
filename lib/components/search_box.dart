@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
-
-
 class SearchBox extends StatelessWidget {
   const SearchBox({
-    Key key,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   final ValueChanged onChanged;
 
@@ -17,8 +14,7 @@ class SearchBox extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(kDefaultPadding),
       padding: EdgeInsets.symmetric(
-        horizontal: kDefaultPadding,
-        vertical: kDefaultPadding / 4, // 5 top and bottom
+        horizontal: kDefaultPadding, // 5 top and bottom
       ),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.4),
@@ -30,9 +26,13 @@ class SearchBox extends StatelessWidget {
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          icon: SvgPicture.asset("assets/icons/search.svg"),
+          icon: SvgPicture.asset(
+            "assets/icons/search.svg",
+            width: 14.0,
+            height: 14.0,
+          ),
           hintText: 'Search',
-          hintStyle: TextStyle(color: Colors.white),
+          hintStyle: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
       ),
     );

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:vendasagrindus/model/product.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
-
 class ProductCard extends StatelessWidget {
   const ProductCard({
-    Key key,
     this.itemIndex,
     this.product,
     this.press,
-  }) : super(key: key);
+  });
 
   final int itemIndex;
   final Product product;

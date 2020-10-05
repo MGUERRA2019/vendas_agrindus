@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vendasagrindus/screens/produtos/components/body.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -12,24 +13,29 @@ class _ProdutosState extends State<Produtos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        title: Text('Produtos'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.view_module),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.view_stream),
+            onPressed: () {},
+          ),
+          IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.filter,
+                color: Colors.white,
+              ),
+              onPressed: () {})
+        ],
+      ),
       backgroundColor: kPrimaryColor,
       body: Body(),
     );
   }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      centerTitle: false,
-      title: Text('Vendas Agrindus'),
-      actions: <Widget>[
-        IconButton(
-          icon: SvgPicture.asset("assets/icons/notification.svg"),
-          onPressed: () {},
-        ),
-      ],
-    );
-  } 
-
 }

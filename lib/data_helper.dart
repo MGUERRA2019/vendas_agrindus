@@ -36,4 +36,37 @@ class DataHelper {
       print(response.statusCode);
     }
   }
+
+  Future getProdutos() async {
+    var url = baseUrl + 'GetProdutos';
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future getGrupos() async {
+    var url = baseUrl + 'GetGrupos';
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future getGrupoProdutos() async {
+    var url = baseUrl + 'GetGrupoProdutos';
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
 }

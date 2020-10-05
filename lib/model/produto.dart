@@ -1,4 +1,4 @@
-class Produtos {
+class Produto {
   String cPRODPALM;
   String dESCRICAO;
   String uNIDADE;
@@ -20,31 +20,33 @@ class Produtos {
   int rESERVADO7;
   String iNTR;
   String vERSION;
+  String gRUPO;
 
-  Produtos(
+  Produto(
       {this.cPRODPALM,
-        this.dESCRICAO,
-        this.uNIDADE,
-        this.pORCICM,
-        this.pORCIPI,
-        this.pESOBRUTO,
-        this.qDTEPEMBAL,
-        this.pRAZOENTREGA,
-        this.pORCCOMISSAO,
-        this.cODBARRA,
-        this.rESERVADO8,
-        this.pOSICAOESTQ,
-        this.pRECOVENDA,
-        this.rESERVADO3,
-        this.rESERVADO4,
-        this.rESERVADO9,
-        this.rESERVADO10,
-        this.fATORUNI,
-        this.rESERVADO7,
-        this.iNTR,
-        this.vERSION});
+      this.dESCRICAO,
+      this.uNIDADE,
+      this.pORCICM,
+      this.pORCIPI,
+      this.pESOBRUTO,
+      this.qDTEPEMBAL,
+      this.pRAZOENTREGA,
+      this.pORCCOMISSAO,
+      this.cODBARRA,
+      this.rESERVADO8,
+      this.pOSICAOESTQ,
+      this.pRECOVENDA,
+      this.rESERVADO3,
+      this.rESERVADO4,
+      this.rESERVADO9,
+      this.rESERVADO10,
+      this.fATORUNI,
+      this.rESERVADO7,
+      this.iNTR,
+      this.vERSION,
+      this.gRUPO});
 
-  Produtos.fromJson(Map<String, dynamic> json) {
+  Produto.fromJson(Map<String, dynamic> json) {
     cPRODPALM = json['C_PROD_PALM'];
     dESCRICAO = json['DESCRICAO'];
     uNIDADE = json['UNIDADE'];

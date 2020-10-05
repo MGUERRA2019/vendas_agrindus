@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
+import 'package:vendasagrindus/screens/details/details_screen.dart';
+import 'package:vendasagrindus/screens/produtos/produtos.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class NavigationScreen extends StatefulWidget {
@@ -26,10 +28,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Agrindus'),
-        centerTitle: true,
-      ),
       bottomNavigationBar: BubbleBottomBar(
         backgroundColor: kPrimaryColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -93,10 +91,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ),
       body: (currentIndex == 0)
           ? ListaClientes()
-          : Icon(
-              Icons.accessibility_new,
-              size: 140,
-            ),
+          : (currentIndex == 1)
+              ? DetailsScreen()
+              : (currentIndex == 2)
+                  ? Produtos()
+                  : Icon(
+                      Icons.accessibility_new,
+                      size: 140,
+                    ),
     );
   }
 }
