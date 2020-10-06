@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -27,50 +28,72 @@ class _ListaClientesState extends State<ListaClientes> {
             return ListView.builder(
               itemCount: userdata.clientes.length,
               itemBuilder: (context, index) {
-                return Card(
-                  color: Colors.blue[100],
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: Icon(Icons.account_circle),
-                      backgroundColor: Colors.black26,
-                      foregroundColor: Colors.white70,
-                    ),
-                    title: Text(
-                      userdata.clientes[index].nOMFANTASIA,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: kTextColor,
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          userdata.clientes[index].eNDERECO,
-                          style: TextStyle(fontSize: 14),
+                return OpenContainer(
+                    transitionDuration: Duration(milliseconds: 500),
+                    openBuilder: (context, closeWidget) {
+                      return Details();
+                    },
+                    closedBuilder: (context, openWidget) {
+                      return Card(
+                        color: Colors.blue[100],
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            child: Icon(Icons.account_circle),
+                            backgroundColor: Colors.black26,
+                            foregroundColor: Colors.white70,
+                          ),
+                          title: Text(
+                            userdata.clientes[index].nOMFANTASIA,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: kTextColor,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                userdata.clientes[index].eNDERECO,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Row(children: <Widget>[
+                                Text(
+                                  userdata.clientes[index].bAIRRO + ' - ',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                Text(
+                                  userdata.clientes[index].cIDADE,
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ]),
+                              Text(
+                                'Vendedor: ' +
+                                    userdata.clientes[index].vENDEDOR,
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                          trailing: Icon(Icons.credit_card),
                         ),
-                        Row(children: <Widget>[
-                          Text(
-                            userdata.clientes[index].bAIRRO + ' - ',
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          Text(
-                            userdata.clientes[index].cIDADE,
-                            style: TextStyle(fontSize: 10),
-                          ),
-                        ]),
-                        Text(
-                          'Vendedor: ' + userdata.clientes[index].vENDEDOR,
-                          style: TextStyle(fontSize: 10),
-                        )
-                      ],
-                    ),
-                    trailing: Icon(Icons.credit_card),
-                  ),
-                );
+                      );
+                    });
               },
             );
           },
         ));
+  }
+}
+
+class Details extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+          child: Center(
+              child: Icon(
+        Icons.adb,
+        size: 200.0,
+      ))),
+    );
   }
 }

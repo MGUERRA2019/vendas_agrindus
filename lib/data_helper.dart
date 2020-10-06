@@ -69,4 +69,35 @@ class DataHelper {
       print(response.statusCode);
     }
   }
+
+  Future getCondPagto() async {
+    var url = baseUrl + 'GetCondPagto';
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future getTipoPagto() async {
+    var url = baseUrl + 'GetTipoPagto';
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future getListaPreco(String id) async {
+    var url = baseUrl + "GetListaPreco/" + id;
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
 }
