@@ -27,6 +27,7 @@ class _ListaClientesState extends State<ListaClientes> {
         body: Consumer<UserData>(
           builder: (context, userdata, child) {
             return ListView.builder(
+              physics: BouncingScrollPhysics(),
               itemCount: userdata.clientes.length,
               itemBuilder: (context, index) {
                 return Padding(
