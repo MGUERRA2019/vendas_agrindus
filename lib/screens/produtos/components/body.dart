@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vendasagrindus/components/search_box.dart';
 import 'package:vendasagrindus/model/product.dart';
-import 'package:vendasagrindus/screens/details/details_screen.dart';
+import 'package:vendasagrindus/screens/details/product_details_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 import 'category_list.dart';
@@ -41,7 +41,7 @@ class Body extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailsScreen(
+                          builder: (context) => ProductDetailsScreen(
                             product: products[index],
                           ),
                         ),

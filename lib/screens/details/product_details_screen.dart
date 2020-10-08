@@ -5,10 +5,10 @@ import 'package:vendasagrindus/utilities/constants.dart';
 
 import 'components/body.dart';
 
-class DetailsScreen extends StatelessWidget {
+class ProductDetailsScreen extends StatelessWidget {
   final Product product;
 
-  const DetailsScreen({Key key, this.product}) : super(key: key);
+  const ProductDetailsScreen({Key key, this.product}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

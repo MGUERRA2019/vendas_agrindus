@@ -1,9 +1,10 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
-import 'package:vendasagrindus/screens/details/details_screen.dart';
+import 'package:vendasagrindus/screens/details/product_details_screen.dart';
 import 'package:vendasagrindus/screens/produtos/produtos.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -26,6 +27,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
       currentIndex = index;
     });
   }
+
+  static final _tabs = <Widget>[
+    ListaClientes(),
+    Center(
+      child: Icon(
+        Icons.adb,
+        size: 200,
+      ),
+    ),
+    Produtos(),
+    Center(
+      child: Icon(
+        Icons.adb,
+        size: 200,
+      ),
+    ),
+  ];
 
   Future<bool> _exitPressed() {
     return Alert(
@@ -126,16 +144,17 @@ class _NavigationScreenState extends State<NavigationScreen> {
           ],
           onTap: changePage,
         ),
-        body: (currentIndex == 0)
-            ? ListaClientes()
-            : (currentIndex == 2)
-                ? Produtos()
-                : Center(
-                    child: Icon(
-                      Icons.adb,
-                      size: 200,
-                    ),
-                  ),
+        body: PageTransitionSwitcher(
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+            return FadeThroughTransition(
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: _tabs[currentIndex],
+          duration: Duration(milliseconds: 200),
+        ),
       ),
     );
   }
