@@ -79,82 +79,82 @@ class Clientes {
 
   Clientes(
       {this.eMPRESA,
-        this.fILIAL,
-        this.vENDEDOR,
-        this.cLIENTE,
-        this.cLIENTEALFA,
-        this.fILIALALFA,
-        this.lOJA,
-        this.rAZSOCIAL,
-        this.nOMFANTASIA,
-        this.eNDERECO,
-        this.cIDADE,
-        this.eSTADO,
-        this.bAIRRO,
-        this.cEP,
-        this.tELEFONE,
-        this.tELEFAX,
-        this.fISJURID,
-        this.cGCCPF,
-        this.iNSCRESTAD,
-        this.iNSCRMUNIC,
-        this.tIPOCLI,
-        this.tERR1,
-        this.cONDPAGTO,
-        this.dESCONTO,
-        this.pRIORIDADE,
-        this.rISCO,
-        this.lMCREDITO,
-        this.dTVENCTOLM,
-        this.cLASSE,
-        this.vLRMACOM,
-        this.mDATRASO,
-        this.vRMAACUM,
-        this.nROCOMPRAS,
-        this.dTPRCOMP,
-        this.dTULTCOMP,
-        this.dTULTVISITA,
-        this.qTDUPPG,
-        this.sDATUAL,
-        this.sDCARTPDLIB,
-        this.sDCARTPD,
-        this.vLRATRASOS,
-        this.vLRACUMVE,
-        this.qTDPPGCART,
-        this.dTULTDEV,
-        this.qTCHEQDV,
-        this.dTCHDEV,
-        this.mAATR,
-        this.vLRMAFAT,
-        this.nROPGATR,
-        this.rG,
-        this.dTNASC,
-        this.eMAIL,
-        this.tPOCONSULT,
-        this.fLAGCLIENTE,
-        this.fLAGCONDPGTO,
-        this.rESERVADO1,
-        this.rESERVADO2,
-        this.rESERVADO3,
-        this.rESERVADO4,
-        this.rESERVADO5,
-        this.rESERVADO6,
-        this.rESERVADO7,
-        this.rESERVADO8,
-        this.rESERVADO9,
-        this.rESERVADO10,
-        this.rESERVADO11,
-        this.rESERVADO12,
-        this.rESERVADO13,
-        this.rESERVADO14,
-        this.rESERVADO15,
-        this.rESERVADO16,
-        this.iNTR,
-        this.oPERADOR,
-        this.dATAALTER,
-        this.hORAALTER,
-        this.tIMESTAMP,
-        this.vERSION});
+      this.fILIAL,
+      this.vENDEDOR,
+      this.cLIENTE,
+      this.cLIENTEALFA,
+      this.fILIALALFA,
+      this.lOJA,
+      this.rAZSOCIAL,
+      this.nOMFANTASIA,
+      this.eNDERECO,
+      this.cIDADE,
+      this.eSTADO,
+      this.bAIRRO,
+      this.cEP,
+      this.tELEFONE,
+      this.tELEFAX,
+      this.fISJURID,
+      this.cGCCPF,
+      this.iNSCRESTAD,
+      this.iNSCRMUNIC,
+      this.tIPOCLI,
+      this.tERR1,
+      this.cONDPAGTO,
+      this.dESCONTO,
+      this.pRIORIDADE,
+      this.rISCO,
+      this.lMCREDITO,
+      this.dTVENCTOLM,
+      this.cLASSE,
+      this.vLRMACOM,
+      this.mDATRASO,
+      this.vRMAACUM,
+      this.nROCOMPRAS,
+      this.dTPRCOMP,
+      this.dTULTCOMP,
+      this.dTULTVISITA,
+      this.qTDUPPG,
+      this.sDATUAL,
+      this.sDCARTPDLIB,
+      this.sDCARTPD,
+      this.vLRATRASOS,
+      this.vLRACUMVE,
+      this.qTDPPGCART,
+      this.dTULTDEV,
+      this.qTCHEQDV,
+      this.dTCHDEV,
+      this.mAATR,
+      this.vLRMAFAT,
+      this.nROPGATR,
+      this.rG,
+      this.dTNASC,
+      this.eMAIL,
+      this.tPOCONSULT,
+      this.fLAGCLIENTE,
+      this.fLAGCONDPGTO,
+      this.rESERVADO1,
+      this.rESERVADO2,
+      this.rESERVADO3,
+      this.rESERVADO4,
+      this.rESERVADO5,
+      this.rESERVADO6,
+      this.rESERVADO7,
+      this.rESERVADO8,
+      this.rESERVADO9,
+      this.rESERVADO10,
+      this.rESERVADO11,
+      this.rESERVADO12,
+      this.rESERVADO13,
+      this.rESERVADO14,
+      this.rESERVADO15,
+      this.rESERVADO16,
+      this.iNTR,
+      this.oPERADOR,
+      this.dATAALTER,
+      this.hORAALTER,
+      this.tIMESTAMP,
+      this.vERSION});
 
   Clientes.fromJson(Map<String, dynamic> json) {
     eMPRESA = json['EMPRESA'];
@@ -162,8 +162,8 @@ class Clientes {
     vENDEDOR = json['VENDEDOR'];
     cLIENTE = json['CLIENTE'];
     //cLIENTEALFA = json['CLIENTE_ALFA'];
-   // fILIALALFA = json['FILIAL_ALFA'];
-   // lOJA = json['LOJA'];
+    // fILIALALFA = json['FILIAL_ALFA'];
+    // lOJA = json['LOJA'];
     rAZSOCIAL = json['RAZ_SOCIAL'];
     nOMFANTASIA = json['NOM_FANTASIA'];
     eNDERECO = json['ENDERECO'];
@@ -172,68 +172,68 @@ class Clientes {
     bAIRRO = json['BAIRRO'];
     cEP = json['CEP'];
     tELEFONE = json['TELEFONE'];
-   // tELEFAX = json['TELEFAX'];
-   // fISJURID = json['FIS_JURID'];
+    // tELEFAX = json['TELEFAX'];
+    // fISJURID = json['FIS_JURID'];
     cGCCPF = json['CGC_CPF'];
-  //  iNSCRESTAD = json['INSCR_ESTAD'];
-   // iNSCRMUNIC = json['INSCR_MUNIC'];
+    iNSCRESTAD = json['INSCR_ESTAD'];
+    // iNSCRMUNIC = json['INSCR_MUNIC'];
     tIPOCLI = json['TIPO_CLI'];
-   // tERR1 = json['TERR_1'];
-    cONDPAGTO = json['COND_PAGTO'];
-    dESCONTO = json['DESCONTO'];
-    pRIORIDADE = json['PRIORIDADE'];
-    rISCO = json['RISCO'];
-   // lMCREDITO = json['LM_CREDITO'];
-  // dTVENCTOLM = json['DT_VENCTO_LM'];
-  //  cLASSE = json['CLASSE'];
-  //  vLRMACOM = json['VLR_MA_COM'];
-  //  mDATRASO = json['MD_ATRASO'];
-   // vRMAACUM = json['VR_MA_ACUM'];
-   // nROCOMPRAS = json['NRO_COMPRAS'];
-   // dTPRCOMP = json['DT_PR_COMP'];
-   // dTULTCOMP = json['DT_ULT_COMP'];
-   // dTULTVISITA = json['DT_ULT_VISITA'];
-  //  qTDUPPG = json['QT_DUP_PG'];
-  //  sDATUAL = json['SD_ATUAL'];
-   // sDCARTPDLIB = json['SD_CART_PD_LIB'];
-   // sDCARTPD = json['SD_CART_PD'];
-   // vLRATRASOS = json['VLR_ATRASOS'];
-   // vLRACUMVE = json['VLR_ACUM_VE'];
-   // qTDPPGCART = json['QT_DP_PG_CART'];
-   // dTULTDEV = json['DT_ULT_DEV'];
-  //  qTCHEQDV = json['QT_CHEQ_DV'];
-   // dTCHDEV = json['DT_CH_DEV'];
-   // mAATR = json['MA_ATR'];
-   // vLRMAFAT = json['VLR_MA_FAT'];
-   // nROPGATR = json['NRO_PG_ATR'];
-   // rG = json['RG'];
-   // dTNASC = json['DT_NASC'];
-   // eMAIL = json['EMAIL'];
-   // tPOCONSULT = json['TPO_CONSULT'];
-   // fLAGCLIENTE = json['FLAG_CLIENTE'];
-   // fLAGCONDPGTO = json['FLAG_COND_PGTO'];
-   // rESERVADO1 = json['RESERVADO1'];
-   // rESERVADO2 = json['RESERVADO2'];
-   // rESERVADO3 = json['RESERVADO3'];
-   // rESERVADO4 = json['RESERVADO4'];
-   // rESERVADO5 = json['RESERVADO5'];
-   // rESERVADO6 = json['RESERVADO6'];
-   // rESERVADO7 = json['RESERVADO7'];
-   // rESERVADO8 = json['RESERVADO8'];
-   // rESERVADO9 = json['RESERVADO9'];
-   // rESERVADO10 = json['RESERVADO10'];
-   // rESERVADO11 = json['RESERVADO11'];
-   // rESERVADO12 = json['RESERVADO12'];
-   // rESERVADO13 = json['RESERVADO13'];
-   // rESERVADO14 = json['RESERVADO14'];
-   // rESERVADO15 = json['RESERVADO15'];
-   // rESERVADO16 = json['RESERVADO16'];
-   // iNTR = json['INTR'];
-   // oPERADOR = json['OPERADOR'];
-   // dATAALTER = json['DATA_ALTER'];
-   // hORAALTER = json['HORA_ALTER'];
-   // tIMESTAMP = json['TIME_STAMP'];
-   // vERSION = json['VERSION'];
+    // tERR1 = json['TERR_1'];
+    // cONDPAGTO = json['COND_PAGTO'];
+    // dESCONTO = json['DESCONTO'];
+    // pRIORIDADE = json['PRIORIDADE'];
+    // rISCO = json['RISCO'];
+    // // lMCREDITO = json['LM_CREDITO'];
+    // // dTVENCTOLM = json['DT_VENCTO_LM'];
+    // //  cLASSE = json['CLASSE'];
+    // //  vLRMACOM = json['VLR_MA_COM'];
+    // //  mDATRASO = json['MD_ATRASO'];
+    // // vRMAACUM = json['VR_MA_ACUM'];
+    // // nROCOMPRAS = json['NRO_COMPRAS'];
+    dTPRCOMP = json['DT_PR_COMP'];
+    dTULTCOMP = json['DT_ULT_COMP'];
+    dTULTVISITA = json['DT_ULT_VISITA'];
+    qTDUPPG = (json['QT_DUP_PG'] == "null") ? 0 : json['QT_DUP_PG'];
+    sDATUAL = json['SD_ATUAL'];
+    // // sDCARTPDLIB = json['SD_CART_PD_LIB'];
+    // // sDCARTPD = json['SD_CART_PD'];
+    vLRATRASOS = (json['VLR_ATRASOS'] == "null") ? 0 : json['VLR_ATRASOS'];
+    vLRACUMVE = json['VLR_ACUM_VE'];
+    // qTDPPGCART = json['QT_DP_PG_CART'];
+    // dTULTDEV = json['DT_ULT_DEV'];
+    //  qTCHEQDV = json['QT_CHEQ_DV'];
+    // dTCHDEV = json['DT_CH_DEV'];
+    // mAATR = json['MA_ATR'];
+    vLRMAFAT = json['VLR_MA_FAT'];
+    nROPGATR = (json['NRO_PG_ATR'] == "null") ? 0 : json['NRO_PG_ATR'];
+    // // rG = json['RG'];
+    // dTNASC = json['DT_NASC'];
+    eMAIL = json['EMAIL'];
+    // tPOCONSULT = json['TPO_CONSULT'];
+    // fLAGCLIENTE = json['FLAG_CLIENTE'];
+    // fLAGCONDPGTO = json['FLAG_COND_PGTO'];
+    // rESERVADO1 = json['RESERVADO1'];
+    // rESERVADO2 = json['RESERVADO2'];
+    // rESERVADO3 = json['RESERVADO3'];
+    // rESERVADO4 = json['RESERVADO4'];
+    // rESERVADO5 = json['RESERVADO5'];
+    // rESERVADO6 = json['RESERVADO6'];
+    // rESERVADO7 = json['RESERVADO7'];
+    // rESERVADO8 = json['RESERVADO8'];
+    // rESERVADO9 = json['RESERVADO9'];
+    // rESERVADO10 = json['RESERVADO10'];
+    // rESERVADO11 = json['RESERVADO11'];
+    // rESERVADO12 = json['RESERVADO12'];
+    // rESERVADO13 = json['RESERVADO13'];
+    // rESERVADO14 = json['RESERVADO14'];
+    // rESERVADO15 = json['RESERVADO15'];
+    // rESERVADO16 = json['RESERVADO16'];
+    // iNTR = json['INTR'];
+    // oPERADOR = json['OPERADOR'];
+    // dATAALTER = json['DATA_ALTER'];
+    // hORAALTER = json['HORA_ALTER'];
+    // tIMESTAMP = json['TIME_STAMP'];
+    // vERSION = json['VERSION'];
   }
 
   Map<String, dynamic> toJson() {

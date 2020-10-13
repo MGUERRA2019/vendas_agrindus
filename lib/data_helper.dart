@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 //Singleton getClass
 
@@ -99,5 +100,56 @@ class DataHelper {
     } else {
       print(response.statusCode);
     }
+  }
+
+  static DateTime toDateTime(String date) {
+    String month;
+    List<String> splittedDate = date.split(' ');
+    String day;
+    switch (splittedDate[0]) {
+      case "Jan":
+        month = '01';
+        break;
+      case "Feb":
+        month = '02';
+        break;
+      case "Mar":
+        month = '03';
+        break;
+      case "Apr":
+        month = '04';
+        break;
+      case "May":
+        month = '05';
+        break;
+      case "Jun":
+        month = '06';
+        break;
+      case "Jul":
+        month = '07';
+        break;
+      case "Aug":
+        month = '08';
+        break;
+      case "Sep":
+        month = '09';
+        break;
+      case "Oct":
+        month = '10';
+        break;
+      case "Nov":
+        month = '11';
+        break;
+      case "Dez":
+        month = '12';
+        break;
+    }
+    day = splittedDate[2];
+
+    if (splittedDate[2].length == 1) {
+      day = '0${splittedDate[2]}';
+    }
+    String formattedDate = splittedDate[3] + month + day;
+    return DateTime.tryParse(formattedDate);
   }
 }

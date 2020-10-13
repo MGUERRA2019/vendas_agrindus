@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/data_helper.dart';
-import 'package:vendasagrindus/model/vendedor.dart';
-import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
 import 'package:vendasagrindus/screens/login/login_widgets.dart';
 import 'package:vendasagrindus/screens/navigation_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
@@ -115,8 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             String id = loginIdController.text;
                             await userdata.getVendedor(id);
                             await userdata.getClientes();
-                            await userdata.getProdutos();
-                            await userdata.getGrupoProduto();
                             setState(() {
                               showSpinner = false;
                             });
@@ -142,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: kAlertCardStyle,
                               buttons: [
                                 AlertButton(
-                                    label: 'RETURN',
+                                    label: 'VOLTAR',
                                     onTap: () {
                                       setState(() {
                                         loginIdController.clear();

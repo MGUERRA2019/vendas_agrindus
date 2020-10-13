@@ -22,7 +22,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: kBackgroundColor,
+      backgroundColor: kBackgroundColor2,
       elevation: 0,
       leading: IconButton(
         padding: EdgeInsets.only(left: kDefaultPadding),

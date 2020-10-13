@@ -24,7 +24,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'SFA Agrindus',
         theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+          textTheme: TextTheme(
+              bodyText1:
+                  TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w500)),
           primaryColor: kPrimaryColor,
           accentColor: kPrimaryColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,

@@ -1,12 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vendasagrindus/screens/details/client_details_screen.dart';
-import 'package:vendasagrindus/model/clientes.dart';
-import 'package:vendasagrindus/model/vendedor.dart';
+import 'package:vendasagrindus/screens/clientes/client_details_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-import '../../data_helper.dart';
 
 class ListaClientes extends StatefulWidget {
   static const String routeName = 'lista_clientes';
@@ -22,7 +19,7 @@ class _ListaClientesState extends State<ListaClientes> {
         appBar: AppBar(
           title: Text('Lista de Clientes'),
         ),
-        backgroundColor: Color(0xFFF4F5F9), //Color(0xFFEEF0F4),
+        backgroundColor: kBackgroundColor,
         // bottomNavigationBar: ,
         body: Consumer<UserData>(
           builder: (context, userdata, child) {
@@ -40,7 +37,7 @@ class _ListaClientesState extends State<ListaClientes> {
                       closedColor: Colors.white,
                       transitionDuration: Duration(milliseconds: 500),
                       openBuilder: (context, closeWidget) {
-                        return ClientDetailsScreen();
+                        return ClientDetailsScreen(userdata.clientes[index]);
                       },
                       closedBuilder: (context, openWidget) {
                         return Center(
@@ -55,7 +52,7 @@ class _ListaClientesState extends State<ListaClientes> {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             subtitle: Column(
@@ -63,7 +60,9 @@ class _ListaClientesState extends State<ListaClientes> {
                               children: <Widget>[
                                 Text(
                                   userdata.clientes[index].eNDERECO,
-                                  style: TextStyle(fontSize: 14),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300),
                                 ),
                                 Row(children: <Widget>[
                                   Text(
