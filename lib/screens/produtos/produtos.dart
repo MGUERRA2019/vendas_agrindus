@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vendasagrindus/screens/produtos/components/body.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -27,11 +26,12 @@ class _ProdutosState extends State<Produtos> {
             onPressed: () {},
           ),
           IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.filter,
-                color: Colors.white,
-              ),
-              onPressed: () {})
+            icon: SvgPicture.asset(
+              "assets/icons/filter.svg",
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
         ],
       ),
       backgroundColor: kPrimaryColor,

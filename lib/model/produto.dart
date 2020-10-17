@@ -21,6 +21,8 @@ class Produto {
   String iNTR;
   String vERSION;
   String gRUPO;
+  String gRUPODESC;
+  double pRECO;
 
   Produto(
       {this.cPRODPALM,

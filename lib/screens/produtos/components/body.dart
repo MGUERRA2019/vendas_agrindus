@@ -3,8 +3,6 @@ import 'package:vendasagrindus/components/search_box.dart';
 import 'package:vendasagrindus/model/product.dart';
 import 'package:vendasagrindus/screens/details/product_details_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-
-import 'category_list.dart';
 import 'product_card.dart';
 
 class Body extends StatelessWidget {

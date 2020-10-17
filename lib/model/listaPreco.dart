@@ -1,24 +1,26 @@
+import 'package:vendasagrindus/data_helper.dart';
+
 class ListaPreco {
   String vENDEDOR;
   int nROLISTA;
   String cPROD;
   String cPRODPALM;
   String uNIDADE;
-  String pRECO;
+  double pRECO;
   String dTVIGDE;
   String iNTR;
   int vERSION;
 
   ListaPreco(
       {this.vENDEDOR,
-        this.nROLISTA,
-        this.cPROD,
-        this.cPRODPALM,
-        this.uNIDADE,
-        this.pRECO,
-        this.dTVIGDE,
-        this.iNTR,
-        this.vERSION});
+      this.nROLISTA,
+      this.cPROD,
+      this.cPRODPALM,
+      this.uNIDADE,
+      this.pRECO,
+      this.dTVIGDE,
+      this.iNTR,
+      this.vERSION});
 
   ListaPreco.fromJson(Map<String, dynamic> json) {
     vENDEDOR = json['VENDEDOR'];
@@ -26,7 +28,7 @@ class ListaPreco {
     cPROD = json['C_PROD'];
     cPRODPALM = json['C_PROD_PALM'];
     uNIDADE = json['UNIDADE'];
-    pRECO = json['PRECO'];
+    pRECO = DataHelper.brNumber.parse(json['PRECO']);
     dTVIGDE = json['DT_VIG_DE'];
     iNTR = json['INTR'];
     vERSION = json['VERSION'];

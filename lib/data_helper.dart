@@ -10,6 +10,7 @@ const baseUrl =
 
 class DataHelper {
   static final DataHelper _dataHelper = DataHelper._internal();
+  static final brNumber = NumberFormat('####.00', 'pt_BR');
 
   factory DataHelper() {
     return _dataHelper;

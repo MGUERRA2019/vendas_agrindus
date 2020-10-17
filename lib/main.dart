@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
-import 'package:vendasagrindus/screens/navigation_screen.dart';
-import 'package:vendasagrindus/screens/produtos/produtos.dart';
 import 'package:vendasagrindus/screens/login/login_screen.dart';
-import 'package:vendasagrindus/theme/app_theme.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-
-import 'screens/clientes/lista_clientes.dart';
 import 'screens/login/login_screen.dart';
 
 void main() => runApp(MyApp());

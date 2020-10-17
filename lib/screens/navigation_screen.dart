@@ -4,7 +4,7 @@ import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
-import 'package:vendasagrindus/screens/details/product_details_screen.dart';
+import 'package:vendasagrindus/screens/produtos/product_screen.dart';
 import 'package:vendasagrindus/screens/produtos/produtos.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -30,13 +30,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   static final _tabs = <Widget>[
     ListaClientes(),
-    Center(
-      child: Icon(
-        Icons.adb,
-        size: 200,
-      ),
-    ),
     Produtos(),
+    ProductScreen(),
     Center(
       child: Icon(
         Icons.adb,
