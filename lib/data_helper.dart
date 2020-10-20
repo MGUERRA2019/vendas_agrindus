@@ -103,6 +103,17 @@ class DataHelper {
     }
   }
 
+  Future getImagemPreco() async {
+    var url = baseUrl + 'GetProdutosImagem';
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
   static DateTime toDateTime(String date) {
     String month;
     List<String> splittedDate = date.split(' ');

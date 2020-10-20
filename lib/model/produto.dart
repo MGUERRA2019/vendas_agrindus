@@ -23,6 +23,8 @@ class Produto {
   String gRUPO;
   String gRUPODESC;
   double pRECO;
+  String iMAGEMURL;
+  String dESCEXTENSO;
 
   Produto(
       {this.cPRODPALM,

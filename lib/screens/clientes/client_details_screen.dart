@@ -89,16 +89,22 @@ class ClientDetailsScreen extends StatelessWidget {
                 items: [
                   DetailItem(
                       title: 'Data da primeira compra:',
-                      description: cliente.dTPRCOMP
-                          .substring(0, (cliente.dTPRCOMP.length - 8))),
+                      description: (cliente.dTPRCOMP != 'null')
+                          ? cliente.dTPRCOMP
+                              .substring(0, (cliente.dTPRCOMP.length - 8))
+                          : ''),
                   DetailItem(
                       title: 'Data da última compra:',
-                      description: cliente.dTULTCOMP
-                          .substring(0, (cliente.dTULTCOMP.length - 8))),
+                      description: (cliente.dTULTCOMP != 'null')
+                          ? cliente.dTULTCOMP
+                              .substring(0, (cliente.dTULTCOMP.length - 8))
+                          : ''),
                   DetailItem(
                       title: 'Data da última visita:',
-                      description: cliente.dTULTVISITA
-                          .substring(0, (cliente.dTULTVISITA.length - 8))),
+                      description: (cliente.dTULTVISITA != 'null')
+                          ? cliente.dTULTVISITA
+                              .substring(0, (cliente.dTULTVISITA.length - 8))
+                          : ''),
                 ],
               ),
               DetailsCard(
@@ -108,16 +114,21 @@ class ClientDetailsScreen extends StatelessWidget {
                       description: cliente.qTDUPPG.toString()),
                   DetailItem(
                       title: 'Saldo atual a pagar :',
-                      description: cliente.sDATUAL),
+                      description:
+                          (cliente.sDATUAL != 'null') ? cliente.sDATUAL : '0'),
                   DetailItem(
                       title: 'Valor em atraso:',
                       description: cliente.vLRATRASOS.toString()),
                   DetailItem(
                       title: 'Valor acumulado de vendas:',
-                      description: cliente.vLRACUMVE),
+                      description: (cliente.vLRACUMVE != 'null')
+                          ? cliente.vLRACUMVE
+                          : '0'),
                   DetailItem(
                       title: 'Valor da maior fatura: ',
-                      description: cliente.vLRMAFAT),
+                      description: (cliente.vLRMAFAT != 'null')
+                          ? cliente.vLRMAFAT
+                          : '0'),
                   DetailItem(
                       title: 'Número de pagamento em atraso:',
                       description: cliente.nROPGATR.toString()),

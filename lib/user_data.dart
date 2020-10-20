@@ -6,6 +6,7 @@ import 'package:vendasagrindus/model/grupoProdutos.dart';
 import 'package:vendasagrindus/model/grupos.dart';
 import 'package:vendasagrindus/model/listaPreco.dart';
 import 'package:vendasagrindus/model/produto.dart';
+import 'package:vendasagrindus/model/produtosImagem.dart';
 import 'package:vendasagrindus/model/vendedor.dart';
 import 'package:darq/darq.dart';
 import 'package:collection/collection.dart';
@@ -43,7 +44,7 @@ class UserData extends ChangeNotifier {
     produtos = listaProdutos.map((model) => Produto.fromJson(model)).toList();
   }
 
-  getGrupoProduto() async {
+  _getGrupoProduto() async {
     List<GrupoProdutos> grupoProdutos = List<GrupoProdutos>();
     var listaGP = await _db.getGrupoProdutos();
     for (var item in listaGP) {
@@ -61,7 +62,7 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  getGrupos() async {
+  _getGrupos() async {
     Iterable listaGr = await _db.getGrupos();
     for (var item in listaGr) {
       grupos.add(Grupos.fromJson(item));
@@ -86,7 +87,24 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  getListaPreco(String id) async {
+  _atribuirImagens() async {
+    List<ProdutoImagem> imageList = List<ProdutoImagem>();
+    var aux = await _db.getImagemPreco();
+    for (var item in aux) {
+      imageList.add(ProdutoImagem.fromJson(item));
+    }
+
+    for (var item in imageList) {
+      for (var produto in produtos) {
+        if (item.cODIGO == produto.cODBARRA) {
+          produto.iMAGEMURL = item.uRL;
+          produto.dESCEXTENSO = item.dESCRICAO;
+        }
+      }
+    }
+  }
+
+  _getListaPreco(String id) async {
     List<ListaPreco> precos = List<ListaPreco>();
     var listaPreco = await _db.getListaPreco(id);
     for (var item in listaPreco) {
@@ -104,9 +122,10 @@ class UserData extends ChangeNotifier {
 
   getProdutosEGrupos(String id) async {
     await getProdutos();
-    await getGrupoProduto();
-    await getGrupos();
-    await getListaPreco(id);
+    await _getGrupoProduto();
+    await _getGrupos();
+    await _getListaPreco(id);
+    await _atribuirImagens();
     notifyListeners();
   }
 }

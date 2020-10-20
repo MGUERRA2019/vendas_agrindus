@@ -31,6 +31,7 @@ dependencies:
   intl: ^0.16.1
   collection: ^1.14.13
   darq: ^0.4.0+1
+  cached_network_image: ^2.3.3
 
 dev_dependencies:
   flutter_test:
