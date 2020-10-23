@@ -25,30 +25,33 @@ class Produto {
   double pRECO;
   String iMAGEMURL;
   String dESCEXTENSO;
+  int qTDEVENDA = 0;
 
-  Produto(
-      {this.cPRODPALM,
-      this.dESCRICAO,
-      this.uNIDADE,
-      this.pORCICM,
-      this.pORCIPI,
-      this.pESOBRUTO,
-      this.qDTEPEMBAL,
-      this.pRAZOENTREGA,
-      this.pORCCOMISSAO,
-      this.cODBARRA,
-      this.rESERVADO8,
-      this.pOSICAOESTQ,
-      this.pRECOVENDA,
-      this.rESERVADO3,
-      this.rESERVADO4,
-      this.rESERVADO9,
-      this.rESERVADO10,
-      this.fATORUNI,
-      this.rESERVADO7,
-      this.iNTR,
-      this.vERSION,
-      this.gRUPO});
+  Produto({
+    this.cPRODPALM,
+    this.dESCRICAO,
+    this.uNIDADE,
+    this.pORCICM,
+    this.pORCIPI,
+    this.pESOBRUTO,
+    this.qDTEPEMBAL,
+    this.pRAZOENTREGA,
+    this.pORCCOMISSAO,
+    this.cODBARRA,
+    this.rESERVADO8,
+    this.pOSICAOESTQ,
+    this.pRECOVENDA,
+    this.rESERVADO3,
+    this.rESERVADO4,
+    this.rESERVADO9,
+    this.rESERVADO10,
+    this.fATORUNI,
+    this.rESERVADO7,
+    this.iNTR,
+    this.vERSION,
+    this.gRUPO,
+    this.qTDEVENDA,
+  });
 
   Produto.fromJson(Map<String, dynamic> json) {
     cPRODPALM = json['C_PROD_PALM'];

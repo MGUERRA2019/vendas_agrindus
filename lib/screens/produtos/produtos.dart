@@ -16,23 +16,6 @@ class _ProdutosState extends State<Produtos> {
         elevation: 0,
         centerTitle: false,
         title: Text('Produtos'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.view_module),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.view_stream),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: SvgPicture.asset(
-              "assets/icons/filter.svg",
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
-        ],
       ),
       backgroundColor: kPrimaryColor,
       body: Body(),

@@ -67,26 +67,27 @@ class GridItem extends StatelessWidget {
 }
 
 class ListItem extends StatelessWidget {
-  ListItem({@required this.item});
+  const ListItem({@required this.item});
 
   final Produto item;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 4),
-      height: 130,
-      width: double.maxFinite,
+      height: 105,
+      margin: EdgeInsets.all(5.5),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 125,
-            height: 115,
-            margin: EdgeInsets.only(bottom: 10),
+            margin: EdgeInsets.all(1.5),
+            height: 90,
+            width: 90,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -106,24 +107,35 @@ class ListItem extends StatelessWidget {
                     size: 50,
                   ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                item.dESCRICAO,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w500),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.dESCRICAO,
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 4),
+                  Expanded(
+                    child: Text(
+                      (item.dESCEXTENSO != null) ? item.dESCEXTENSO : '',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  item.pRECO != null
+                      ? Text(
+                          'R\$ ${DataHelper.brNumber.format(item.pRECO)}',
+                          textAlign: TextAlign.center,
+                        )
+                      : Container(),
+                ],
               ),
-              Text((item.dESCEXTENSO != null) ? item.dESCEXTENSO : ''),
-              SizedBox(height: 5),
-              item.pRECO != null
-                  ? Text(
-                      'R\$ ${DataHelper.brNumber.format(item.pRECO)}',
-                      textAlign: TextAlign.center,
-                    )
-                  : Container(),
-            ],
-          ),
+            ),
+          )
         ],
       ),
     );

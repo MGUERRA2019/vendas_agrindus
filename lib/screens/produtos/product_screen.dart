@@ -33,10 +33,9 @@ class _ProductScreenState extends State<ProductScreen> {
     return list;
   }
 
-  List<Widget> _productQuery(UserData userdata, int index, String search,
+  Iterable<Produto> _productQuery(UserData userdata, int index, String search,
       int key, ViewType currentView) {
     Iterable<Produto> query = [];
-    List<Widget> queryView = [];
 
     if (index == 0) {
       query = userdata.produtos;
@@ -53,18 +52,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
     userdata.atribuirPreco(key);
 
-    if (currentView == ViewType.grid) {
-      for (var item in query) {
-        queryView.add(
-          GridItem(item: item),
-        );
-      }
-    } else {
-      for (var item in query) {
-        queryView.add(ListItem(item: item));
-      }
-    }
-    return queryView;
+    return query;
   }
 
   @override
@@ -101,7 +89,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         color: Colors.white,
-                        border: Border.all(color: Colors.white)),
+                        border: Border.all(color: Colors.white, width: 1.5)),
                     child: Row(
                       children: [
                         ListViewIcon(
@@ -133,6 +121,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         'Lista de preço:',
                         style: TextStyle(color: Colors.white),
                       ),
+                      SizedBox(width: 3.5),
                       DropdownButton<int>(
                           style: TextStyle(color: Colors.white),
                           dropdownColor: Colors.grey[850],
@@ -217,7 +206,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(15))),
                   child: (currentView == ViewType.grid)
-                      ? GridView(
+                      ? GridView.builder(
                           physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.fromLTRB(15, 40, 15, 10),
                           gridDelegate:
@@ -225,14 +214,28 @@ class _ProductScreenState extends State<ProductScreen> {
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 10),
-                          children: _productQuery(userdata, selectedIndex,
-                              search, currentList, currentView),
+                          itemCount: _productQuery(userdata, selectedIndex,
+                                  search, currentList, currentView)
+                              .length,
+                          itemBuilder: (context, index) {
+                            var item = _productQuery(userdata, selectedIndex,
+                                    search, currentList, currentView)
+                                .elementAt(index);
+                            return GridItem(item: item);
+                          },
                         )
-                      : ListView(
+                      : ListView.builder(
                           physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.fromLTRB(15, 40, 15, 10),
-                          children: _productQuery(userdata, selectedIndex,
-                              search, currentList, currentView),
+                          itemCount: _productQuery(userdata, selectedIndex,
+                                  search, currentList, currentView)
+                              .length,
+                          itemBuilder: (context, index) {
+                            var item = _productQuery(userdata, selectedIndex,
+                                    search, currentList, currentView)
+                                .elementAt(index);
+                            return ListItem(item: item);
+                          },
                         ),
                 ),
               ),

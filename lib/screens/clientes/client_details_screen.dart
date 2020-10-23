@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vendasagrindus/model/clientes.dart';
+import 'package:vendasagrindus/screens/pedidos/new_order_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import 'client_details_widgets.dart';
 
@@ -24,6 +25,16 @@ class ClientDetailsScreen extends StatelessWidget {
             floating: false,
             pinned: true,
             snap: false,
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.add_box_outlined),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewOrderScreen(cliente)));
+                  })
+            ],
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
@@ -37,10 +48,7 @@ class ClientDetailsScreen extends StatelessWidget {
               ),
               background: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Colors.lightBlueAccent[400],
-                    Colors.blueAccent[700]
-                  ], begin: Alignment.bottomCenter, end: Alignment.topRight),
+                  gradient: kGradientStyle,
                 ),
               ),
             ),

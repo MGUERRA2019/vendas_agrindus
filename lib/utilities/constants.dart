@@ -44,6 +44,11 @@ const kBackgroundColor = Color(0xFFF4F5F9);
 const kHeaderTitleColor = Colors.white70;
 const kCardShadow = Color(0x12000000);
 
+final kGradientStyle = LinearGradient(
+    colors: [Colors.lightBlueAccent[400], Colors.blueAccent[700]],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topRight);
+
 const kDefaultPadding = 20.0;
 
 // our default Shadow
@@ -56,3 +61,5 @@ const kDefaultShadow = BoxShadow(
 const TextStyle kBottomNavyTextStyle = TextStyle(
   color: Colors.white,
 );
+
+const kDescriptionTextStyle = TextStyle(color: Color(0xFF757575), fontSize: 12);

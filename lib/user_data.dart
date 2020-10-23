@@ -87,6 +87,18 @@ class UserData extends ChangeNotifier {
     }
   }
 
+  adicionarQtde(Produto produto) {
+    produto.qTDEVENDA++;
+    notifyListeners();
+  }
+
+  removerQtde(Produto produto) {
+    if (produto.qTDEVENDA > 0) {
+      produto.qTDEVENDA--;
+    }
+    notifyListeners();
+  }
+
   _atribuirImagens() async {
     List<ProdutoImagem> imageList = List<ProdutoImagem>();
     var aux = await _db.getImagemPreco();
