@@ -62,4 +62,10 @@ const TextStyle kBottomNavyTextStyle = TextStyle(
   color: Colors.white,
 );
 
+const TextStyle kHeaderText = TextStyle(
+    fontSize: 20,
+    fontFamily: 'RobotoSlab',
+    fontWeight: FontWeight.w600,
+    color: kHeaderTitleColor);
+
 const kDescriptionTextStyle = TextStyle(color: Color(0xFF757575), fontSize: 12);

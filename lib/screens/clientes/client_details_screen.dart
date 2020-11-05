@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:vendasagrindus/model/clientes.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:vendasagrindus/model/cliente.dart';
+import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/pedidos/new_order_screen.dart';
+import 'package:vendasagrindus/screens/pedidos/order_details_screen.dart';
+import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import 'client_details_widgets.dart';
 
 class ClientDetailsScreen extends StatelessWidget {
-  final Clientes cliente;
-  ClientDetailsScreen(this.cliente);
+  final Cliente cliente;
+  final List<PedidoMestre> pedidosMestre;
+  ClientDetailsScreen(this.cliente, this.pedidosMestre);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,11 +46,7 @@ class ClientDetailsScreen extends StatelessWidget {
               title: Text(
                 cliente.nOMFANTASIA,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'RobotoSlab',
-                    fontWeight: FontWeight.w600,
-                    color: kHeaderTitleColor),
+                style: kHeaderText,
               ),
               background: Container(
                 decoration: BoxDecoration(
@@ -144,7 +146,51 @@ class ClientDetailsScreen extends StatelessWidget {
               ),
             ],
           )),
+          DetailsHeader(title: 'Últimos pedidos'),
           SliverPadding(padding: EdgeInsets.only(bottom: 20)),
+          pedidosMestre.isNotEmpty
+              ? SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return DetailsCard(
+                        isInteractive: true,
+                        onPressed: () async {
+                          var pedidosItem = await Provider.of<UserData>(context,
+                                  listen: false)
+                              .getPedidoItem(pedidosMestre[index].nUMEROSFA);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OrderDetailsScreen(
+                                      pedidosMestre[index], pedidosItem)));
+                        },
+                        items: [
+                          DetailItem(
+                              title: 'Código do pedido:',
+                              description: pedidosMestre[index].nUMEROSFA),
+                          DetailItem(
+                              title: 'Emissão:',
+                              description:
+                                  pedidosMestre[index].dTPED.toString()),
+                          DetailItem(
+                              title: 'Status:',
+                              description: pedidosMestre[index].sTATUS),
+                        ],
+                      );
+                    },
+                    childCount: pedidosMestre.length,
+                  ),
+                )
+              : SliverFillRemaining(
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/images/not_found.svg',
+                      height: 270,
+                      width: 270,
+                    ),
+                  ),
+                ),
+          SliverPadding(padding: EdgeInsets.only(bottom: 75)),
         ],
       ),
     );

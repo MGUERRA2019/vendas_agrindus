@@ -4,23 +4,29 @@ import 'package:vendasagrindus/utilities/constants.dart';
 
 class DetailsCard extends StatelessWidget {
   final List<Widget> items;
-  DetailsCard({this.items});
+  final bool isInteractive;
+  final Function onPressed;
+  DetailsCard({this.items, this.isInteractive = false, this.onPressed});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(color: kCardShadow, blurRadius: 15, spreadRadius: 6)
-        ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: items,
+    return InkWell(
+      enableFeedback: isInteractive,
+      onTap: onPressed,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(color: kCardShadow, blurRadius: 15, spreadRadius: 6)
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: items,
+          ),
         ),
       ),
     );
@@ -30,7 +36,8 @@ class DetailsCard extends StatelessWidget {
 class DetailItem extends StatelessWidget {
   final String title;
   final String description;
-  DetailItem({@required this.title, @required this.description});
+  final Color colour;
+  DetailItem({@required this.title, @required this.description, this.colour});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,7 +46,10 @@ class DetailItem extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w500),
+            style: TextStyle(
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                color: colour),
           ),
           SizedBox(width: 8),
           Expanded(

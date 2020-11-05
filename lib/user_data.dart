@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vendasagrindus/data_helper.dart';
-import 'package:vendasagrindus/model/clientes.dart';
+import 'package:vendasagrindus/model/cartItem.dart';
+import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/grupoProdutos.dart';
 import 'package:vendasagrindus/model/grupos.dart';
 import 'package:vendasagrindus/model/listaPreco.dart';
+import 'package:vendasagrindus/model/pedidoItem.dart';
+import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/model/produtosImagem.dart';
 import 'package:vendasagrindus/model/vendedor.dart';
@@ -16,10 +19,12 @@ import 'package:collection/collection.dart';
 class UserData extends ChangeNotifier {
   var _db = DataHelper();
   Vendedor vendedor = Vendedor();
-  List<Clientes> clientes = List<Clientes>();
+  List<Cliente> clientes = List<Cliente>();
   List<Produto> produtos = List<Produto>();
   Map<int, List<ListaPreco>> grupoPreco = Map<int, List<ListaPreco>>();
   List<int> listNumber = List<int>();
+  List<CartItem> cartItems = List<CartItem>();
+  List<PedidoMestre> pedidosMestre = List<PedidoMestre>();
   List<Grupos> grupos = [
     Grupos(
       dESCRICAO: 'TODOS',
@@ -35,7 +40,7 @@ class UserData extends ChangeNotifier {
 
   getClientes() async {
     Iterable listaClientes = await _db.getClientes(vendedor.vENDEDOR);
-    clientes = listaClientes.map((model) => Clientes.fromJson(model)).toList();
+    clientes = listaClientes.map((model) => Cliente.fromJson(model)).toList();
     notifyListeners();
   }
 
@@ -87,16 +92,35 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  adicionarQtde(Produto produto) {
-    produto.qTDEVENDA++;
+  adicionarQtde(CartItem cartItem) {
+    cartItem.amount++;
     notifyListeners();
   }
 
-  removerQtde(Produto produto) {
-    if (produto.qTDEVENDA > 0) {
-      produto.qTDEVENDA--;
+  removerQtde(CartItem cartItem) {
+    if (cartItem.amount > 0) {
+      cartItem.amount--;
     }
     notifyListeners();
+  }
+
+  addItem(Produto produto) {
+    cartItems.add(CartItem(
+      price: produto.pRECO,
+      name: produto.dESCRICAO,
+      barCode: produto.cODBARRA,
+      image: produto.iMAGEMURL,
+      code: produto.cPRODPALM,
+      weight: produto.pESOBRUTO,
+    ));
+  }
+
+  double getTotal() {
+    double sum = 0.0;
+    for (var item in cartItems) {
+      sum += item.total;
+    }
+    return sum;
   }
 
   _atribuirImagens() async {
@@ -130,6 +154,22 @@ class UserData extends ChangeNotifier {
         .distinct((element) => element)
         .orderBy((element) => element)
         .toList();
+  }
+
+  void getPedidoMestre(String codCliente) async {
+    Iterable aux = await _db.getPedidoMestre(codCliente);
+    try {
+      pedidosMestre = aux.map((model) => PedidoMestre.fromJson(model)).toList();
+      notifyListeners();
+    } catch (e) {
+      pedidosMestre.clear();
+      print(e);
+    }
+  }
+
+  Future<List<PedidoItem>> getPedidoItem(String numeroDoPedido) async {
+    Iterable aux = await _db.getPedidoItem(numeroDoPedido);
+    return aux.map((model) => PedidoItem.fromJson(model)).toList();
   }
 
   getProdutosEGrupos(String id) async {

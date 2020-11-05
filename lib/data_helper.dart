@@ -10,7 +10,8 @@ const baseUrl =
 
 class DataHelper {
   static final DataHelper _dataHelper = DataHelper._internal();
-  static final brNumber = NumberFormat('####.00', 'pt_BR');
+  static final brNumber = NumberFormat('###0.00', 'pt_BR');
+  static final format = DateFormat.yMd('pt_BR');
 
   factory DataHelper() {
     return _dataHelper;
@@ -105,6 +106,28 @@ class DataHelper {
 
   Future getImagemPreco() async {
     var url = baseUrl + 'GetProdutosImagem';
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future getPedidoMestre(String codCliente) async {
+    var url = baseUrl + 'GetPedidoMestre/' + codCliente;
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future getPedidoItem(String numPedido) async {
+    var url = baseUrl + 'GetPedidoItens/' + numPedido;
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {

@@ -1,4 +1,4 @@
-class Clientes {
+class Cliente {
   int eMPRESA;
   int fILIAL;
   String vENDEDOR;
@@ -77,7 +77,7 @@ class Clientes {
   String tIMESTAMP;
   int vERSION;
 
-  Clientes(
+  Cliente(
       {this.eMPRESA,
       this.fILIAL,
       this.vENDEDOR,
@@ -156,7 +156,7 @@ class Clientes {
       this.tIMESTAMP,
       this.vERSION});
 
-  Clientes.fromJson(Map<String, dynamic> json) {
+  Cliente.fromJson(Map<String, dynamic> json) {
     eMPRESA = json['EMPRESA'];
     fILIAL = json['FILIAL'];
     vENDEDOR = json['VENDEDOR'];
@@ -181,7 +181,7 @@ class Clientes {
     // tERR1 = json['TERR_1'];
     // cONDPAGTO = json['COND_PAGTO'];
     // dESCONTO = json['DESCONTO'];
-    // pRIORIDADE = json['PRIORIDADE'];
+    pRIORIDADE = json['PRIORIDADE'];
     // rISCO = json['RISCO'];
     // // lMCREDITO = json['LM_CREDITO'];
     // // dTVENCTOLM = json['DT_VENCTO_LM'];
