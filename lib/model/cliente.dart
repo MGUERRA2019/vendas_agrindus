@@ -1,3 +1,6 @@
+import 'package:vendasagrindus/model/condPagto.dart';
+import 'package:vendasagrindus/model/tipoMovimento.dart';
+
 class Cliente {
   int eMPRESA;
   int fILIAL;
@@ -20,8 +23,10 @@ class Cliente {
   String iNSCRESTAD;
   String iNSCRMUNIC;
   String tIPOCLI;
+  TipoMovimento tIPOMOVIMENTO;
   String tERR1;
   String cONDPAGTO;
+  CondPagto cONDPAGTOobj;
   int dESCONTO;
   int pRIORIDADE;
   int rISCO;
@@ -179,7 +184,7 @@ class Cliente {
     // iNSCRMUNIC = json['INSCR_MUNIC'];
     tIPOCLI = json['TIPO_CLI'];
     // tERR1 = json['TERR_1'];
-    // cONDPAGTO = json['COND_PAGTO'];
+    cONDPAGTO = json['COND_PAGTO'];
     // dESCONTO = json['DESCONTO'];
     pRIORIDADE = json['PRIORIDADE'];
     // rISCO = json['RISCO'];

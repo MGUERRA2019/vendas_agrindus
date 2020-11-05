@@ -162,7 +162,9 @@ class ClientDetailsScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => OrderDetailsScreen(
-                                      pedidosMestre[index], pedidosItem)));
+                                      pedidosMestre[index],
+                                      pedidosItem,
+                                      cliente)));
                         },
                         items: [
                           DetailItem(

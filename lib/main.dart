@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/screens/login/login_screen.dart';
@@ -16,6 +17,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SFA Agrindus',
+        localizationsDelegates: [
+          GlobalWidgetsLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+        ],
+        supportedLocales: [Locale("pt", "BR")],
         theme: ThemeData(
           textTheme: TextTheme(
               bodyText1:

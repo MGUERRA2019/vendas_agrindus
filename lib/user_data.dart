@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
+import 'package:vendasagrindus/model/condPagto.dart';
 import 'package:vendasagrindus/model/grupoProdutos.dart';
 import 'package:vendasagrindus/model/grupos.dart';
 import 'package:vendasagrindus/model/listaPreco.dart';
@@ -10,6 +11,7 @@ import 'package:vendasagrindus/model/pedidoItem.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/model/produtosImagem.dart';
+import 'package:vendasagrindus/model/tipoMovimento.dart';
 import 'package:vendasagrindus/model/vendedor.dart';
 import 'package:darq/darq.dart';
 import 'package:collection/collection.dart';
@@ -41,6 +43,8 @@ class UserData extends ChangeNotifier {
   getClientes() async {
     Iterable listaClientes = await _db.getClientes(vendedor.vENDEDOR);
     clientes = listaClientes.map((model) => Cliente.fromJson(model)).toList();
+    await _getTipoMovimento();
+    await _getCondPagto();
     notifyListeners();
   }
 
@@ -154,6 +158,33 @@ class UserData extends ChangeNotifier {
         .distinct((element) => element)
         .orderBy((element) => element)
         .toList();
+  }
+
+  _getTipoMovimento() async {
+    List<TipoMovimento> listaMovimentos = List<TipoMovimento>();
+    Iterable aux = await _db.getTipoMovimento();
+    listaMovimentos =
+        aux.map((model) => TipoMovimento.fromJson(model)).toList();
+    for (var item in listaMovimentos) {
+      for (var cliente in clientes) {
+        if (cliente.tIPOCLI == item.tIPOCLI) {
+          cliente.tIPOMOVIMENTO = item;
+        }
+      }
+    }
+  }
+
+  _getCondPagto() async {
+    List<CondPagto> listaCondPagtos = List<CondPagto>();
+    Iterable aux = await _db.getCondPagto();
+    listaCondPagtos = aux.map((model) => CondPagto.fromJson(model)).toList();
+    for (var item in listaCondPagtos) {
+      for (var cliente in clientes) {
+        if (cliente.cONDPAGTO == item.cONDPAGTO) {
+          cliente.cONDPAGTOobj = item;
+        }
+      }
+    }
   }
 
   void getPedidoMestre(String codCliente) async {

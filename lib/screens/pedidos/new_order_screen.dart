@@ -97,25 +97,8 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                   ),
                 ),
               ),
-              Container(
-                height: 35,
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  'Total: R\$ ${DataHelper.brNumber.format(userdata.getTotal())}',
-                  textAlign: TextAlign.center,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x4B000000),
-                      blurRadius: 1.5,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-              ),
+              TotalSummary(
+                  value: DataHelper.brNumber.format(userdata.getTotal())),
               OrderConfirmButton(
                 label: 'CONTINUAR',
                 onPressed: () {
@@ -124,8 +107,8 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => OrderConfirm(
-                                confirmedItems, userdata.getTotal())));
+                            builder: (context) => OrderConfirm(confirmedItems,
+                                userdata.getTotal(), widget.cliente)));
                   }
                 },
               ),

@@ -7,6 +7,35 @@ import 'package:vendasagrindus/utilities/constants.dart';
 import '../../data_helper.dart';
 import '../../user_data.dart';
 
+class TotalSummary extends StatelessWidget {
+  final String value;
+
+  TotalSummary({this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 35,
+      width: double.infinity,
+      padding: EdgeInsets.all(10),
+      child: Text(
+        'Total: R\$ $value',
+        textAlign: TextAlign.center,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x4B000000),
+            blurRadius: 1.5,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class OrderConfirmButton extends StatelessWidget {
   final String label;
   final Function onPressed;
@@ -104,7 +133,7 @@ class CartView extends StatelessWidget {
                           (item.dESCEXTENSO != null) ? item.dESCEXTENSO : '',
                           style: kDescriptionTextStyle,
                         ),
-                        Text('Peso bruto: ${item.pESOBRUTO}',
+                        Text('Peso bruto: ${item.pESOBRUTO} kg',
                             style: kDescriptionTextStyle),
                         Text('Código do Produto: ${item.cPRODPALM}',
                             style: kDescriptionTextStyle)
@@ -191,7 +220,7 @@ class FinalItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(15),
+      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
