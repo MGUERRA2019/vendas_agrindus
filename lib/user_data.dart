@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
@@ -25,8 +28,9 @@ class UserData extends ChangeNotifier {
   List<Produto> produtos = List<Produto>();
   Map<int, List<ListaPreco>> grupoPreco = Map<int, List<ListaPreco>>();
   List<int> listNumber = List<int>();
-  List<CartItem> cartItems = List<CartItem>();
+  Map<String, CartItem> cart = Map<String, CartItem>();
   List<PedidoMestre> pedidosMestre = List<PedidoMestre>();
+  List<dynamic> pedidosSalvos = [];
   List<Grupos> grupos = [
     Grupos(
       dESCRICAO: 'TODOS',
@@ -96,33 +100,56 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  adicionarQtde(CartItem cartItem) {
-    cartItem.amount++;
-    notifyListeners();
+  removerQtde(Produto produto) {
+    if (cart.containsKey(produto.cPRODPALM)) {
+      if (cart[produto.cPRODPALM].amount > 0) {
+        cart[produto.cPRODPALM].amount--;
+      }
+      if (cart[produto.cPRODPALM].amount == 0) {
+        cart.remove(produto.cPRODPALM);
+      }
+      notifyListeners();
+    }
   }
 
-  removerQtde(CartItem cartItem) {
-    if (cartItem.amount > 0) {
-      cartItem.amount--;
+  deleteItem(CartItem item) {
+    if (cart.containsKey(item.code)) {
+      cart.remove(item.code);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   addItem(Produto produto) {
-    cartItems.add(CartItem(
-      price: produto.pRECO,
-      name: produto.dESCRICAO,
-      barCode: produto.cODBARRA,
-      image: produto.iMAGEMURL,
-      code: produto.cPRODPALM,
-      weight: produto.pESOBRUTO,
-    ));
+    if (cart.containsKey(produto.cPRODPALM)) {
+      cart[produto.cPRODPALM].amount += 1;
+    } else {
+      cart.putIfAbsent(
+          produto.cPRODPALM,
+          () => CartItem(
+                price: produto.pRECO,
+                name: produto.dESCRICAO,
+                barCode: produto.cODBARRA,
+                image: produto.iMAGEMURL,
+                code: produto.cPRODPALM,
+                weight: produto.pESOBRUTO,
+              ));
+    }
+
+    notifyListeners();
   }
 
   double getTotal() {
     double sum = 0.0;
-    for (var item in cartItems) {
+    for (var item in cart.values) {
       sum += item.total;
+    }
+    return sum;
+  }
+
+  double getPesoTotal() {
+    double sum = 0.0;
+    for (var item in cart.values) {
+      sum += item.pesoTotal;
     }
     return sum;
   }
@@ -201,6 +228,31 @@ class UserData extends ChangeNotifier {
   Future<List<PedidoItem>> getPedidoItem(String numeroDoPedido) async {
     Iterable aux = await _db.getPedidoItem(numeroDoPedido);
     return aux.map((model) => PedidoItem.fromJson(model)).toList();
+  }
+
+  Future<File> _getFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return File("${directory.path}/orders.json");
+  }
+
+  saveOrder(PedidoMestre newOrder) async {
+    var file = await _getFile();
+    var item = newOrder.toJson();
+    pedidosSalvos.add(item);
+    String data = json.encode(pedidosSalvos);
+    file.writeAsString(data);
+    notifyListeners();
+  }
+
+  getOrders() async {
+    try {
+      final file = await _getFile();
+      var data = await file.readAsString();
+      pedidosSalvos = json.decode(data);
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
 
   getProdutosEGrupos(String id) async {

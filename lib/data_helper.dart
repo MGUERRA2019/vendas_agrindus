@@ -25,6 +25,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetCliente');
       print(response.statusCode);
     }
   }
@@ -36,6 +37,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetVendedor');
       print(response.statusCode);
     }
   }
@@ -47,6 +49,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetProdutos');
       print(response.statusCode);
     }
   }
@@ -58,6 +61,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetGrupos');
       print(response.statusCode);
     }
   }
@@ -69,6 +73,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetGrupoProdutos');
       print(response.statusCode);
     }
   }
@@ -79,6 +84,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetCondPagto');
       print(response.statusCode);
     }
   }
@@ -89,6 +95,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetTipoPagto');
       print(response.statusCode);
     }
   }
@@ -99,6 +106,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetTipoMovimento');
       print(response.statusCode);
     }
   }
@@ -110,6 +118,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetListaPreco');
       print(response.statusCode);
     }
   }
@@ -121,6 +130,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetProdutosImagem');
       print(response.statusCode);
     }
   }
@@ -132,6 +142,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('GetPedidoMestre');
       print(response.statusCode);
     }
   }
@@ -143,6 +154,7 @@ class DataHelper {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('PedidoItem');
       print(response.statusCode);
     }
   }

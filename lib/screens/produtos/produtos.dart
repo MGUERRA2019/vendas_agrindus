@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:vendasagrindus/screens/produtos/components/body.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 

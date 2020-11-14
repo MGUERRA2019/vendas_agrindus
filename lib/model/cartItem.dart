@@ -1,3 +1,5 @@
+import '../data_helper.dart';
+
 class CartItem {
   String name;
   int amount;
@@ -9,7 +11,7 @@ class CartItem {
 
   CartItem(
       {this.name,
-      this.amount = 0,
+      this.amount = 1,
       this.price,
       this.barCode,
       this.image,
@@ -18,5 +20,10 @@ class CartItem {
 
   double get total {
     return price * amount;
+  }
+
+  double get pesoTotal {
+    double peso = DataHelper.brNumber.parse(weight);
+    return peso * amount;
   }
 }

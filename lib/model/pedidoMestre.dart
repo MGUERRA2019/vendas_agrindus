@@ -1,15 +1,18 @@
+import 'package:vendasagrindus/model/pedidoItem.dart';
+
 class PedidoMestre {
   int eMPRESA;
   int fILIAL;
   int nUMERO;
   String nUMEROSFA;
   String cLIENTE;
+  String nOMECLIENTE;
   String lOJACLI;
   String tIPOPED;
   String cONDPAGTO;
   String vENDEDOR;
   String tEXTOESP;
-  DateTime dTPED;
+  String dTPED;
   String nROLISTA;
   String tIPOCLI;
   String sTATUS;
@@ -49,6 +52,7 @@ class PedidoMestre {
   String hORAALTER;
   String tIMESTAMP;
   String vERSION;
+  List<PedidoItem> iTENSDOPEDIDO;
 
   PedidoMestre(
       {this.eMPRESA,
@@ -56,6 +60,7 @@ class PedidoMestre {
       this.nUMERO,
       this.nUMEROSFA,
       this.cLIENTE,
+      this.nOMECLIENTE,
       this.lOJACLI,
       this.tIPOPED,
       this.cONDPAGTO,
@@ -100,7 +105,8 @@ class PedidoMestre {
       this.dATAALTER,
       this.hORAALTER,
       this.tIMESTAMP,
-      this.vERSION});
+      this.vERSION,
+      this.iTENSDOPEDIDO});
 
   PedidoMestre.fromJson(Map<String, dynamic> json) {
     eMPRESA = json['EMPRESA'];
@@ -113,7 +119,7 @@ class PedidoMestre {
     cONDPAGTO = json['COND_PAGTO'];
     vENDEDOR = json['VENDEDOR'];
     tEXTOESP = json['TEXTO_ESP'];
-    dTPED = (json['DT_PED'] == 'null') ? null : DateTime.parse(json['DT_PED']);
+    dTPED = json['DT_PED'];
     nROLISTA = json['NRO_LISTA'];
     tIPOCLI = json['TIPO_CLI'];
     sTATUS = json['STATUS'];
@@ -162,6 +168,7 @@ class PedidoMestre {
     data['NUMERO'] = this.nUMERO;
     data['NUMERO_SFA'] = this.nUMEROSFA;
     data['CLIENTE'] = this.cLIENTE;
+    data['NOME_CLIENTE'] = this.nOMECLIENTE;
     data['LOJA_CLI'] = this.lOJACLI;
     data['TIPO_PED'] = this.tIPOPED;
     data['COND_PAGTO'] = this.cONDPAGTO;
@@ -207,6 +214,11 @@ class PedidoMestre {
     data['HORA_ALTER'] = this.hORAALTER;
     data['TIME_STAMP'] = this.tIMESTAMP;
     data['VERSION'] = this.vERSION;
+    data['ITENS_DO_PEDIDO'] = this.iTENSDOPEDIDO;
     return data;
+  }
+
+  DateTime get date {
+    return (dTPED == 'null') ? null : DateTime.parse(dTPED);
   }
 }

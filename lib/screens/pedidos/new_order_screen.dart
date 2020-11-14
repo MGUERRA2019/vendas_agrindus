@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/components/search_box.dart';
-import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/pedidos/order_confirm.dart';
@@ -36,14 +37,30 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
     return query;
   }
 
-  List<CartItem> _confirmedItems(List<CartItem> items) {
-    List<CartItem> aux = [];
-    for (var item in items) {
-      if (item.amount > 0) {
-        aux.add(item);
-      }
-    }
-    return aux;
+  Future<bool> _orderCancel() {
+    return Alert(
+      context: context,
+      title: 'AVISO',
+      desc:
+          'Ao sair desta operação, o pedido não será salvo. Deseja continuar?',
+      style: kAlertCardStyle,
+      buttons: [
+        AlertButton(
+            label: 'Não',
+            line: Border.all(color: Colors.grey[600]),
+            labelColor: Colors.grey[600],
+            hasGradient: false,
+            cor: Colors.white,
+            onTap: () {
+              Navigator.pop(context, false);
+            }),
+        AlertButton(
+            label: 'Sim',
+            onTap: () {
+              Navigator.pop(context, true);
+            }),
+      ],
+    ).show();
   }
 
   String search = '';
@@ -51,68 +68,71 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<UserData>(context, listen: false).cartItems.clear();
+    Provider.of<UserData>(context, listen: false).cart.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
-        return Scaffold(
-          backgroundColor: kPrimaryColor,
-          appBar: AppBar(
-            elevation: 0,
-            title: Text('Novo Pedido'),
-          ),
-          body: Column(
-            children: [
-              SearchBox(
-                onChanged: (value) {
-                  setState(() {
-                    search = value.toString().toUpperCase();
-                  });
-                },
-              ),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(top: 15),
-                  decoration: BoxDecoration(
-                      color: kBackgroundColor,
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(15))),
-                  child: ListView.builder(
-                    padding: EdgeInsets.fromLTRB(15, 25, 15, 10),
-                    itemCount: _productQuery(
-                            userdata, search, widget.cliente.pRIORIDADE)
-                        .length,
-                    itemBuilder: (context, index) {
-                      var item = _productQuery(
+        return WillPopScope(
+          onWillPop: _orderCancel,
+          child: Scaffold(
+            backgroundColor: kPrimaryColor,
+            appBar: AppBar(
+              elevation: 0,
+              title: Text('Novo Pedido'),
+            ),
+            body: Column(
+              children: [
+                SearchBox(
+                  onChanged: (value) {
+                    setState(() {
+                      search = value.toString().toUpperCase();
+                    });
+                  },
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 15),
+                    decoration: BoxDecoration(
+                        color: kBackgroundColor,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(15))),
+                    child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(15, 25, 15, 10),
+                      itemCount: _productQuery(
                               userdata, search, widget.cliente.pRIORIDADE)
-                          .elementAt(index);
-                      userdata.addItem(item);
-                      var cartView = CartView(
-                          item: item, cartItem: userdata.cartItems[index]);
-                      return cartView;
-                    },
+                          .length,
+                      itemBuilder: (context, index) {
+                        var item = _productQuery(
+                                userdata, search, widget.cliente.pRIORIDADE)
+                            .elementAt(index);
+                        var cartView = CartView(item: item);
+                        return cartView;
+                      },
+                    ),
                   ),
                 ),
-              ),
-              TotalSummary(
-                  value: DataHelper.brNumber.format(userdata.getTotal())),
-              OrderConfirmButton(
-                label: 'CONTINUAR',
-                onPressed: () {
-                  var confirmedItems = _confirmedItems(userdata.cartItems);
-                  if (confirmedItems.isNotEmpty) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => OrderConfirm(confirmedItems,
-                                userdata.getTotal(), widget.cliente)));
-                  }
-                },
-              ),
-            ],
+                TotalSummary(
+                    value: DataHelper.brNumber.format(userdata.getTotal())),
+                OrderConfirmButton(
+                  label: 'CONTINUAR',
+                  onPressed: () {
+                    if (userdata.cart.isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrderConfirm(
+                                  userdata.cart.values.toList(),
+                                  userdata.getTotal(),
+                                  userdata.getPesoTotal(),
+                                  widget.cliente)));
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },

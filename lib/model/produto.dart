@@ -25,7 +25,6 @@ class Produto {
   double pRECO;
   String iMAGEMURL;
   String dESCEXTENSO;
-  int qTDEVENDA = 0;
 
   Produto({
     this.cPRODPALM,
@@ -50,7 +49,6 @@ class Produto {
     this.iNTR,
     this.vERSION,
     this.gRUPO,
-    this.qTDEVENDA,
   });
 
   Produto.fromJson(Map<String, dynamic> json) {

@@ -4,9 +4,8 @@ import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
-import 'package:vendasagrindus/screens/pedidos/order_history_screen.dart';
+import 'package:vendasagrindus/screens/pedidos/saved_orders_screen.dart';
 import 'package:vendasagrindus/screens/produtos/product_screen.dart';
-import 'package:vendasagrindus/screens/produtos/produtos.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class NavigationScreen extends StatefulWidget {
@@ -31,7 +30,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   static final _tabs = <Widget>[
     ListaClientes(),
-    OrderHistoryScreen(),
+    SavedOrdersScreen(),
     ProductScreen(),
     Center(
       child: Icon(
@@ -104,14 +103,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
             BubbleBottomBarItem(
               backgroundColor: Colors.white,
               icon: Icon(
-                Icons.history,
+                Icons.folder_open_outlined,
                 color: Colors.white,
               ),
               activeIcon: Icon(
-                Icons.history,
+                Icons.folder_open_outlined,
                 color: Colors.white,
               ),
-              title: Text('Histórico'),
+              title: Text('Pedidos'),
             ),
             BubbleBottomBarItem(
               backgroundColor: Colors.white,
