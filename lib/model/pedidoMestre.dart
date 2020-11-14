@@ -4,6 +4,7 @@ class PedidoMestre {
   int eMPRESA;
   int fILIAL;
   int nUMERO;
+  double pESOTOTAL;
   String nUMEROSFA;
   String cLIENTE;
   String nOMECLIENTE;
@@ -58,6 +59,7 @@ class PedidoMestre {
       {this.eMPRESA,
       this.fILIAL,
       this.nUMERO,
+      this.pESOTOTAL,
       this.nUMEROSFA,
       this.cLIENTE,
       this.nOMECLIENTE,
@@ -166,6 +168,7 @@ class PedidoMestre {
     data['EMPRESA'] = this.eMPRESA;
     data['FILIAL'] = this.fILIAL;
     data['NUMERO'] = this.nUMERO;
+    data['PESO_TOTAL'] = this.pESOTOTAL;
     data['NUMERO_SFA'] = this.nUMEROSFA;
     data['CLIENTE'] = this.cLIENTE;
     data['NOME_CLIENTE'] = this.nOMECLIENTE;

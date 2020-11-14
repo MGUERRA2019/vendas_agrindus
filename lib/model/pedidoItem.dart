@@ -4,6 +4,7 @@ class PedidoItem {
   String nUMEROSFA;
   String sEQUENCIA;
   String cPRODPALM;
+  String dESCRICAO;
   String qTDE;
   String lIVRE;
   String vLRUNIT;
@@ -48,6 +49,7 @@ class PedidoItem {
       this.nUMEROSFA,
       this.sEQUENCIA,
       this.cPRODPALM,
+      this.dESCRICAO,
       this.qTDE,
       this.lIVRE,
       this.vLRUNIT,

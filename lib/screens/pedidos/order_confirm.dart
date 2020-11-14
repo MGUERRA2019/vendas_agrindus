@@ -15,7 +15,10 @@ class OrderConfirm extends StatefulWidget {
   final double total;
   final double pesoTotal;
   final Cliente cliente;
-  OrderConfirm(this.items, this.total, this.pesoTotal, this.cliente);
+  final bool isSaved;
+  final String obsText;
+  OrderConfirm(this.items, this.total, this.pesoTotal, this.cliente,
+      {this.isSaved = false, this.obsText});
 
   @override
   _OrderConfirmState createState() => _OrderConfirmState();
@@ -23,6 +26,12 @@ class OrderConfirm extends StatefulWidget {
 
 class _OrderConfirmState extends State<OrderConfirm> {
   DateTime date = DateTime.now();
+  TextEditingController obs = TextEditingController();
+
+  List<Widget> appBarActions = [
+    IconButton(icon: Icon(Icons.edit, color: Colors.white), onPressed: () {}),
+    IconButton(icon: Icon(Icons.delete, color: Colors.white), onPressed: () {}),
+  ];
 
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
     List<PedidoItem> aux = [];
@@ -38,6 +47,7 @@ class _OrderConfirmState extends State<OrderConfirm> {
           vLRTOTAL: DataHelper.brNumber.format(item.total),
           dTENTREGA: date.toString(),
           nROLISTA: widget.cliente.pRIORIDADE.toString(),
+          dESCRICAO: item.name,
         ),
       );
       sequencia++;
@@ -52,14 +62,7 @@ class _OrderConfirmState extends State<OrderConfirm> {
         return Scaffold(
           appBar: AppBar(
             title: Text('Confirmar pedido'),
-            actions: [
-              IconButton(
-                  icon: Icon(Icons.edit, color: Colors.white),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(Icons.delete, color: Colors.white),
-                  onPressed: () {}),
-            ],
+            actions: widget.isSaved ? appBarActions : null,
           ),
           body: Column(
             children: [
@@ -149,6 +152,24 @@ class _OrderConfirmState extends State<OrderConfirm> {
                           ),
                         ],
                       ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15, top: 10),
+                        child: Text(
+                          'Observações finais',
+                          style:
+                              kHeaderText.copyWith(color: Colors.blueGrey[400]),
+                        ),
+                      ),
+                      Container(
+                        width: 100,
+                        height: 100,
+                        child: TextField(
+                          expands: true,
+                          maxLines: null,
+                          minLines: null,
+                          controller: obs,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -167,6 +188,7 @@ class _OrderConfirmState extends State<OrderConfirm> {
                     tIPOCLI: widget.cliente.tIPOCLI,
                     vLRPED: DataHelper.brNumber.format(widget.total),
                     nOMECLIENTE: widget.cliente.nOMFANTASIA,
+                    tEXTOESP: obs.text,
                     iTENSDOPEDIDO:
                         _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                   );

@@ -52,6 +52,11 @@ class UserData extends ChangeNotifier {
     notifyListeners();
   }
 
+  Cliente getClienteFromPedidosSalvos(int index) {
+    String cliente = pedidosSalvos[index]['CLIENTE'];
+    return clientes.singleWhere((element) => element.cLIENTE == cliente);
+  }
+
   getProdutos() async {
     Iterable listaProdutos = await _db.getProdutos();
     produtos = listaProdutos.map((model) => Produto.fromJson(model)).toList();
