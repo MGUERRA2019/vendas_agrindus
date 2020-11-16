@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
-import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
 import 'package:vendasagrindus/screens/pedidos/order_confirm.dart';
 import 'package:vendasagrindus/user_data.dart';
@@ -21,14 +20,21 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
     Provider.of<UserData>(context, listen: false).getOrders();
   }
 
-  List<CartItem> _toCartItem(List<PedidoItem> itensDoPedido) {
+  List<CartItem> _toCartItem(List<dynamic> itensDoPedido) {
     List<CartItem> aux = [];
     for (var item in itensDoPedido) {
-      aux.add(CartItem(
-        name: item.dESCRICAO,
-        amount: int.parse(item.qTDE),
-        price: DataHelper.brNumber.parse(item.vLRUNIT),
-      ));
+      if (item is Map) {
+        print(true);
+        aux.add(CartItem(
+          name: item['DESCRICAO'],
+          amount: int.parse(item['QTDE']),
+          price: DataHelper.brNumber.parse(item['VLR_UNIT']),
+          barCode: item['COD_BARRA'],
+          code: item['C_PROD_PALM'],
+          image: item['IMAGE'],
+          weight: item['PESO'],
+        ));
+      }
     }
 
     return aux;
@@ -64,6 +70,7 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                 ],
                 isInteractive: true,
                 onPressed: () {
+                  print(userdata.pedidosSalvos[index]['ITENS_DO_PEDIDO']);
                   Navigator.push(
                       context,
                       MaterialPageRoute(

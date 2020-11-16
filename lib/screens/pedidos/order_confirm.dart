@@ -48,6 +48,9 @@ class _OrderConfirmState extends State<OrderConfirm> {
           dTENTREGA: date.toString(),
           nROLISTA: widget.cliente.pRIORIDADE.toString(),
           dESCRICAO: item.name,
+          cODBARRA: item.barCode,
+          iMAGE: item.image,
+          pESO: item.weight,
         ),
       );
       sequencia++;

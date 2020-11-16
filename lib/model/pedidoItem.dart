@@ -4,8 +4,11 @@ class PedidoItem {
   String nUMEROSFA;
   String sEQUENCIA;
   String cPRODPALM;
+  String cODBARRA;
   String dESCRICAO;
   String qTDE;
+  String iMAGE;
+  String pESO;
   String lIVRE;
   String vLRUNIT;
   String vLRTOTAL;
@@ -49,6 +52,9 @@ class PedidoItem {
       this.nUMEROSFA,
       this.sEQUENCIA,
       this.cPRODPALM,
+      this.cODBARRA,
+      this.iMAGE,
+      this.pESO,
       this.dESCRICAO,
       this.qTDE,
       this.lIVRE,
@@ -140,6 +146,10 @@ class PedidoItem {
     data['NUMERO_SFA'] = this.nUMEROSFA;
     data['SEQUENCIA'] = this.sEQUENCIA;
     data['C_PROD_PALM'] = this.cPRODPALM;
+    data['COD_BARRA'] = this.cODBARRA;
+    data['IMAGE'] = this.iMAGE;
+    data['PESO'] = this.pESO;
+    data['DESCRICAO'] = this.dESCRICAO;
     data['QTDE'] = this.qTDE;
     data['LIVRE'] = this.lIVRE;
     data['VLR_UNIT'] = this.vLRUNIT;
