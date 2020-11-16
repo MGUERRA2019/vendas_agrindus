@@ -117,14 +117,14 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  deleteItem(CartItem item) {
+  deleteCartItem(CartItem item) {
     if (cart.containsKey(item.code)) {
       cart.remove(item.code);
       notifyListeners();
     }
   }
 
-  addItem(Produto produto) {
+  addCartItem(Produto produto) {
     if (cart.containsKey(produto.cPRODPALM)) {
       cart[produto.cPRODPALM].amount += 1;
     } else {
@@ -141,6 +141,12 @@ class UserData extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  getCart(List<CartItem> items) {
+    for (var item in items) {
+      cart[item.code] = item;
+    }
   }
 
   double getTotal() {
@@ -240,12 +246,16 @@ class UserData extends ChangeNotifier {
     return File("${directory.path}/orders.json");
   }
 
-  saveOrder(PedidoMestre newOrder) async {
+  saveFile() async {
     var file = await _getFile();
-    var item = newOrder.toJson();
-    pedidosSalvos.add(item);
     String data = json.encode(pedidosSalvos);
     file.writeAsString(data);
+  }
+
+  saveOrder(PedidoMestre newOrder) async {
+    var item = newOrder.toJson();
+    pedidosSalvos.add(item);
+    saveFile();
     notifyListeners();
   }
 
@@ -258,6 +268,12 @@ class UserData extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  removeOrder(int index) async {
+    pedidosSalvos.removeAt(index);
+    saveFile();
+    notifyListeners();
   }
 
   getProdutosEGrupos(String id) async {

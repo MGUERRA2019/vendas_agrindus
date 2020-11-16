@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
+import 'package:vendasagrindus/screens/pedidos/edit_order_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import '../../data_helper.dart';
 
-class OrderConfirm extends StatefulWidget {
+class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> items;
   final double total;
   final double pesoTotal;
   final Cliente cliente;
   final bool isSaved;
   final String obsText;
-  OrderConfirm(this.items, this.total, this.pesoTotal, this.cliente,
-      {this.isSaved = false, this.obsText});
+  final int currentOrder;
+  OrderSummaryScreen(this.items, this.total, this.pesoTotal, this.cliente,
+      {this.isSaved = false, this.obsText, this.currentOrder});
 
   @override
-  _OrderConfirmState createState() => _OrderConfirmState();
+  _OrderSummaryScreenState createState() => _OrderSummaryScreenState();
 }
 
-class _OrderConfirmState extends State<OrderConfirm> {
+class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   DateTime date = DateTime.now();
   TextEditingController obs = TextEditingController();
-
-  List<Widget> appBarActions = [
-    IconButton(icon: Icon(Icons.edit, color: Colors.white), onPressed: () {}),
-    IconButton(icon: Icon(Icons.delete, color: Colors.white), onPressed: () {}),
-  ];
 
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
     List<PedidoItem> aux = [];
@@ -64,8 +63,49 @@ class _OrderConfirmState extends State<OrderConfirm> {
       builder: (context, userdata, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Confirmar pedido'),
-            actions: widget.isSaved ? appBarActions : null,
+            title: Text('Resumo do pedido'),
+            actions: widget.isSaved
+                ? [
+                    IconButton(
+                        icon: Icon(Icons.edit, color: Colors.white),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditOrderScreen(
+                                      widget.cliente, widget.items)));
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.delete, color: Colors.white),
+                        onPressed: () {
+                          Alert(
+                            context: context,
+                            title: 'DELETAR PEDIDO',
+                            desc:
+                                'Deseja deletar este pedido? A ação não poderá ser desfeita.',
+                            style: kAlertCardStyle,
+                            buttons: [
+                              AlertButton(
+                                  label: 'Não',
+                                  line: Border.all(color: Colors.grey[600]),
+                                  labelColor: Colors.grey[600],
+                                  hasGradient: false,
+                                  cor: Colors.white,
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  }),
+                              AlertButton(
+                                  label: 'Sim',
+                                  onTap: () {
+                                    userdata.removeOrder(widget.currentOrder);
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                  }),
+                            ],
+                          ).show();
+                        }),
+                  ]
+                : null,
           ),
           body: Column(
             children: [
@@ -163,16 +203,7 @@ class _OrderConfirmState extends State<OrderConfirm> {
                               kHeaderText.copyWith(color: Colors.blueGrey[400]),
                         ),
                       ),
-                      Container(
-                        width: 100,
-                        height: 100,
-                        child: TextField(
-                          expands: true,
-                          maxLines: null,
-                          minLines: null,
-                          controller: obs,
-                        ),
-                      ),
+                      NotesBox(controller: obs),
                     ],
                   ),
                 ),
@@ -181,21 +212,26 @@ class _OrderConfirmState extends State<OrderConfirm> {
               OrderConfirmButton(
                 label: 'SALVAR PEDIDO',
                 onPressed: () {
-                  var newOrder = PedidoMestre(
-                    nUMEROSFA: userdata.vendedor.pROXIMOPED,
-                    cLIENTE: widget.cliente.cLIENTE,
-                    cONDPAGTO: widget.cliente.cONDPAGTO,
-                    vENDEDOR: userdata.vendedor.vENDEDOR,
-                    dTPED: date.toString(),
-                    nROLISTA: widget.cliente.pRIORIDADE.toString(),
-                    tIPOCLI: widget.cliente.tIPOCLI,
-                    vLRPED: DataHelper.brNumber.format(widget.total),
-                    nOMECLIENTE: widget.cliente.nOMFANTASIA,
-                    tEXTOESP: obs.text,
-                    iTENSDOPEDIDO:
-                        _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
-                  );
-                  userdata.saveOrder(newOrder);
+                  if (widget.isSaved) {
+                    userdata.saveFile();
+                  } else {
+                    var newOrder = PedidoMestre(
+                      nUMEROSFA: userdata.vendedor.pROXIMOPED,
+                      cLIENTE: widget.cliente.cLIENTE,
+                      cONDPAGTO: widget.cliente.cONDPAGTO,
+                      vENDEDOR: userdata.vendedor.vENDEDOR,
+                      dTPED: date.toString(),
+                      nROLISTA: widget.cliente.pRIORIDADE.toString(),
+                      tIPOCLI: widget.cliente.tIPOCLI,
+                      vLRPED: DataHelper.brNumber.format(widget.total),
+                      nOMECLIENTE: widget.cliente.nOMFANTASIA,
+                      tEXTOESP: obs.text,
+                      pESOTOTAL: widget.pesoTotal,
+                      iTENSDOPEDIDO:
+                          _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
+                    );
+                    userdata.saveOrder(newOrder);
+                  }
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),

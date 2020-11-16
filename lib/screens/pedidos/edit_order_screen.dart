@@ -3,22 +3,24 @@ import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/components/search_box.dart';
+import 'package:vendasagrindus/data_helper.dart';
+import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/produto.dart';
-import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
+import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-import '../../data_helper.dart';
 import '../../user_data.dart';
-import 'order_widgets.dart';
+import 'order_summary_screen.dart';
 
-class NewOrderScreen extends StatefulWidget {
+class EditOrderScreen extends StatefulWidget {
   final Cliente cliente;
-  NewOrderScreen(this.cliente);
+  final List<CartItem> cartItems;
+  EditOrderScreen(this.cliente, this.cartItems);
   @override
-  _NewOrderScreenState createState() => _NewOrderScreenState();
+  _EditOrderScreenState createState() => _EditOrderScreenState();
 }
 
-class _NewOrderScreenState extends State<NewOrderScreen> {
+class _EditOrderScreenState extends State<EditOrderScreen> {
   Iterable<Produto> _productQuery(UserData userdata, String search, int key) {
     Iterable<Produto> query = [];
 
@@ -68,7 +70,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<UserData>(context, listen: false).cart.clear();
+    Provider.of<UserData>(context, listen: false).getCart(widget.cartItems);
   }
 
   @override
@@ -81,7 +83,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
             backgroundColor: kPrimaryColor,
             appBar: AppBar(
               elevation: 0,
-              title: Text('Novo Pedido'),
+              title: Text('Editar Pedido'),
             ),
             body: Column(
               children: [
@@ -124,10 +126,12 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => OrderSummaryScreen(
-                                  userdata.cart.values.toList(),
-                                  userdata.getTotal(),
-                                  userdata.getPesoTotal(),
-                                  widget.cliente)));
+                                    userdata.cart.values.toList(),
+                                    userdata.getTotal(),
+                                    userdata.getPesoTotal(),
+                                    widget.cliente,
+                                    isSaved: true,
+                                  )));
                     }
                   },
                 ),

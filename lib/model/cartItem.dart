@@ -19,7 +19,6 @@ class CartItem {
       this.weight});
 
   double get total {
-    // double preco = DataHelper.brNumber.parse(price);
     return price * amount;
   }
 

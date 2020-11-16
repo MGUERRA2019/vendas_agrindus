@@ -189,7 +189,7 @@ class CartView extends StatelessWidget {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    userdata.addItem(item);
+                                    userdata.addCartItem(item);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -310,7 +310,7 @@ class FinalItem extends StatelessWidget {
                             onTap: () {
                               Provider.of<UserData>(screenContext,
                                       listen: false)
-                                  .deleteItem(item);
+                                  .deleteCartItem(item);
                               Navigator.pop(screenContext);
                             }),
                       ],
@@ -353,6 +353,37 @@ class FinalItemText extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(color: Colors.grey[700]),
+      ),
+    );
+  }
+}
+
+class NotesBox extends StatelessWidget {
+  const NotesBox({@required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(color: kCardShadow, blurRadius: 15, spreadRadius: 6)
+        ],
+      ),
+      child: TextField(
+        maxLines: null,
+        controller: controller,
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: 'Observações finais do pedido...',
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(width: .05)),
+        ),
       ),
     );
   }
