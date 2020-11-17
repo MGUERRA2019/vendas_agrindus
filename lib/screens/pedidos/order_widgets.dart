@@ -219,10 +219,10 @@ class CartView extends StatelessWidget {
 }
 
 class FinalItem extends StatelessWidget {
-  const FinalItem({@required this.item, this.screenContext});
+  const FinalItem({@required this.item, @required this.deleteFunction});
 
   final CartItem item;
-  final BuildContext screenContext;
+  final Function deleteFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -289,33 +289,7 @@ class FinalItem extends StatelessWidget {
               FinalItemText(label: 'Peso Bruto: ${item.weight} kg'),
               IconButton(
                   icon: Icon(Icons.delete, color: Colors.grey[400]),
-                  onPressed: () {
-                    Alert(
-                      context: screenContext,
-                      title: 'REMOVER ITEM',
-                      desc: 'Deseja remover este item do carrinho?',
-                      style: kAlertCardStyle,
-                      buttons: [
-                        AlertButton(
-                            label: 'Não',
-                            line: Border.all(color: Colors.grey[600]),
-                            labelColor: Colors.grey[600],
-                            hasGradient: false,
-                            cor: Colors.white,
-                            onTap: () {
-                              Navigator.pop(screenContext);
-                            }),
-                        AlertButton(
-                            label: 'Sim',
-                            onTap: () {
-                              Provider.of<UserData>(screenContext,
-                                      listen: false)
-                                  .deleteCartItem(item);
-                              Navigator.pop(screenContext);
-                            }),
-                      ],
-                    ).show();
-                  })
+                  onPressed: deleteFunction),
             ],
           ),
           SizedBox(height: 15),

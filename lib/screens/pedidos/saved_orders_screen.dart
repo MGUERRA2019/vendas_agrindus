@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
 import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
+import 'package:vendasagrindus/utilities/constants.dart';
 
 import '../../data_helper.dart';
 
@@ -45,6 +48,34 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text('Pedidos Salvos'),
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.file_upload),
+                  onPressed: () {
+                    Alert(
+                      context: context,
+                      title: 'ENVIAR PEDIDOS',
+                      desc: 'Deseja enviar todos os pedidos salvos?',
+                      style: kAlertCardStyle,
+                      buttons: [
+                        AlertButton(
+                            label: 'Não',
+                            line: Border.all(color: Colors.grey[600]),
+                            labelColor: Colors.grey[600],
+                            hasGradient: false,
+                            cor: Colors.white,
+                            onTap: () {
+                              Navigator.pop(context);
+                            }),
+                        AlertButton(
+                            label: 'Sim',
+                            onTap: () {
+                              Navigator.pop(context);
+                            }),
+                      ],
+                    ).show();
+                  })
+            ],
           ),
           body: userdata.pedidosSalvos.length > 0
               ? ListView.builder(

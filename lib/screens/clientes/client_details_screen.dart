@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
@@ -172,8 +173,8 @@ class ClientDetailsScreen extends StatelessWidget {
                               description: pedidosMestre[index].nUMEROSFA),
                           DetailItem(
                               title: 'Emissão:',
-                              description:
-                                  pedidosMestre[index].dTPED.toString()),
+                              description: DateFormat('dd/MM/yyyy')
+                                  .format(pedidosMestre[index].date)),
                           DetailItem(
                               title: 'Status:',
                               description: pedidosMestre[index].sTATUS),

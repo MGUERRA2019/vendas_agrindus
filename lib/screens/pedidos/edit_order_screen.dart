@@ -122,16 +122,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   label: 'CONTINUAR',
                   onPressed: () {
                     if (userdata.cart.isNotEmpty) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrderSummaryScreen(
-                                    userdata.cart.values.toList(),
-                                    userdata.getTotal(),
-                                    userdata.getPesoTotal(),
-                                    widget.cliente,
-                                    isSaved: true,
-                                  )));
+                      Navigator.pop(context, userdata.cart.values.toList());
                     }
                   },
                 ),

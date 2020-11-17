@@ -117,13 +117,6 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  deleteCartItem(CartItem item) {
-    if (cart.containsKey(item.code)) {
-      cart.remove(item.code);
-      notifyListeners();
-    }
-  }
-
   addCartItem(Produto produto) {
     if (cart.containsKey(produto.cPRODPALM)) {
       cart[produto.cPRODPALM].amount += 1;

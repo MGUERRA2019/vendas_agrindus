@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
@@ -25,17 +26,19 @@ class OrderSummaryScreen extends StatefulWidget {
       {this.isSaved = false, this.obsText, this.currentOrder});
 
   @override
-  _OrderSummaryScreenState createState() => _OrderSummaryScreenState();
+  _OrderSummaryScreenState createState() => _OrderSummaryScreenState(items);
 }
 
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
-  DateTime date = DateTime.now();
-  TextEditingController obs = TextEditingController();
+  _OrderSummaryScreenState(this.currentItems);
 
+  List<CartItem> currentItems = List<CartItem>();
+  DateTime date = DateTime.now();
+  TextEditingController obs = TextEditingController(text: "");
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
     List<PedidoItem> aux = [];
     int sequencia = 1;
-    for (var item in widget.items) {
+    for (var item in currentItems) {
       aux.add(
         PedidoItem(
           nUMEROSFA: numeroSFA,
@@ -57,6 +60,22 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     return aux;
   }
 
+  double currentTotal() {
+    double sum = 0.0;
+    for (var item in currentItems) {
+      sum += item.total;
+    }
+    return sum;
+  }
+
+  double currentWieght() {
+    double sum = 0.0;
+    for (var item in currentItems) {
+      sum += item.pesoTotal;
+    }
+    return sum;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<UserData>(
@@ -67,14 +86,19 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             actions: widget.isSaved
                 ? [
                     IconButton(
-                        icon: Icon(Icons.edit, color: Colors.white),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditOrderScreen(
-                                      widget.cliente, widget.items)));
-                        }),
+                      icon: Icon(Icons.edit, color: Colors.white),
+                      onPressed: () async {
+                        List newItens = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditOrderScreen(
+                                  widget.cliente, currentItems)),
+                        );
+                        setState(() {
+                          currentItems = newItens;
+                        });
+                      },
+                    ),
                     IconButton(
                         icon: Icon(Icons.delete, color: Colors.white),
                         onPressed: () {
@@ -118,13 +142,76 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     children: [
                       SizedBox(height: 8),
                       ListView.builder(
-                        itemCount: widget.items.length,
+                        itemCount: currentItems.length,
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return FinalItem(
-                              item: widget.items[index],
-                              screenContext: context);
+                            item: currentItems[index],
+                            deleteFunction: () {
+                              if (currentItems.length <= 1) {
+                                Alert(
+                                  context: context,
+                                  title: 'ÚLTIMO ITEM DO PEDIDO',
+                                  desc:
+                                      'Ao remover este item, estará cancelando o pedido. Deseja prosseguir?',
+                                  style: kAlertCardStyle,
+                                  buttons: [
+                                    AlertButton(
+                                        label: 'Não',
+                                        line:
+                                            Border.all(color: Colors.grey[600]),
+                                        labelColor: Colors.grey[600],
+                                        hasGradient: false,
+                                        cor: Colors.white,
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        }),
+                                    AlertButton(
+                                        label: 'Sim',
+                                        onTap: () {
+                                          if (widget.isSaved) {
+                                            userdata.removeOrder(
+                                                widget.currentOrder);
+                                          } else {
+                                            currentItems.removeAt(index);
+                                          }
+
+                                          Navigator.of(context).popUntil(
+                                              (route) => route.isFirst);
+                                        }),
+                                  ],
+                                ).show();
+                              } else {
+                                Alert(
+                                  context: context,
+                                  title: 'REMOVER ITEM',
+                                  desc: 'Deseja remover este item do carrinho?',
+                                  style: kAlertCardStyle,
+                                  buttons: [
+                                    AlertButton(
+                                        label: 'Não',
+                                        line:
+                                            Border.all(color: Colors.grey[600]),
+                                        labelColor: Colors.grey[600],
+                                        hasGradient: false,
+                                        cor: Colors.white,
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        }),
+                                    AlertButton(
+                                        label: 'Sim',
+                                        onTap: () {
+                                          setState(() {
+                                            currentItems.removeAt(index);
+                                          });
+                                          Navigator.pop(context);
+                                        }),
+                                  ],
+                                ).show();
+                              }
+                            },
+                          );
                         },
                       ),
                       Padding(
@@ -150,7 +237,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                               });
                             }
                           },
-                          child: Text(date.toString()),
+                          child: Text(DateFormat('dd/MM/yyyy').format(date)),
                           color: Colors.grey[200],
                         ),
                       ),
@@ -184,13 +271,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           DetailItem(
                             title: 'Peso total:',
                             description:
-                                '${DataHelper.brNumber.format(widget.pesoTotal)} kg',
+                                '${DataHelper.brNumber.format(currentWieght())} kg',
                             colour: Colors.blueGrey[700],
                           ),
                           DetailItem(
                             title: 'Total:',
                             description:
-                                'R\$ ${DataHelper.brNumber.format(widget.total)}',
+                                'R\$ ${DataHelper.brNumber.format(currentTotal())}',
                             colour: Colors.blueGrey[700],
                           ),
                         ],
@@ -208,30 +295,30 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                   ),
                 ),
               ),
-              TotalSummary(value: DataHelper.brNumber.format(widget.total)),
+              TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
               OrderConfirmButton(
                 label: 'SALVAR PEDIDO',
                 onPressed: () {
                   if (widget.isSaved) {
-                    userdata.saveFile();
-                  } else {
-                    var newOrder = PedidoMestre(
-                      nUMEROSFA: userdata.vendedor.pROXIMOPED,
-                      cLIENTE: widget.cliente.cLIENTE,
-                      cONDPAGTO: widget.cliente.cONDPAGTO,
-                      vENDEDOR: userdata.vendedor.vENDEDOR,
-                      dTPED: date.toString(),
-                      nROLISTA: widget.cliente.pRIORIDADE.toString(),
-                      tIPOCLI: widget.cliente.tIPOCLI,
-                      vLRPED: DataHelper.brNumber.format(widget.total),
-                      nOMECLIENTE: widget.cliente.nOMFANTASIA,
-                      tEXTOESP: obs.text,
-                      pESOTOTAL: widget.pesoTotal,
-                      iTENSDOPEDIDO:
-                          _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
-                    );
-                    userdata.saveOrder(newOrder);
+                    userdata.removeOrder(widget.currentOrder);
                   }
+                  var newOrder = PedidoMestre(
+                    nUMEROSFA: userdata.vendedor.pROXIMOPED,
+                    cLIENTE: widget.cliente.cLIENTE,
+                    cONDPAGTO: widget.cliente.cONDPAGTO,
+                    vENDEDOR: userdata.vendedor.vENDEDOR,
+                    dTPED: date.toString(),
+                    nROLISTA: widget.cliente.pRIORIDADE.toString(),
+                    tIPOCLI: widget.cliente.tIPOCLI,
+                    vLRPED: DataHelper.brNumber.format(currentTotal()),
+                    nOMECLIENTE: widget.cliente.nOMFANTASIA,
+                    tEXTOESP: obs.text,
+                    pESOTOTAL: currentWieght(),
+                    iTENSDOPEDIDO:
+                        _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
+                  );
+                  userdata.saveOrder(newOrder);
+
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
