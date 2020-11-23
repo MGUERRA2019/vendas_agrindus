@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
@@ -17,11 +18,7 @@ class SavedOrdersScreen extends StatefulWidget {
 }
 
 class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<UserData>(context, listen: false).getOrders();
-  }
+  bool showSpinner = false;
 
   List<CartItem> _toCartItem(List<dynamic> itensDoPedido) {
     List<CartItem> aux = [];
@@ -42,90 +39,133 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<UserData>(context, listen: false).getOrders();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Pedidos Salvos'),
-            actions: [
-              IconButton(
-                  icon: Icon(Icons.file_upload),
-                  onPressed: () {
-                    Alert(
-                      context: context,
-                      title: 'ENVIAR PEDIDOS',
-                      desc: 'Deseja enviar todos os pedidos salvos?',
-                      style: kAlertCardStyle,
-                      buttons: [
-                        AlertButton(
-                            label: 'Não',
-                            line: Border.all(color: Colors.grey[600]),
-                            labelColor: Colors.grey[600],
-                            hasGradient: false,
-                            cor: Colors.white,
-                            onTap: () {
-                              Navigator.pop(context);
-                            }),
-                        AlertButton(
-                            label: 'Sim',
-                            onTap: () {
-                              Navigator.pop(context);
-                            }),
-                      ],
-                    ).show();
-                  })
-            ],
-          ),
-          body: userdata.pedidosSalvos.length > 0
-              ? ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: userdata.pedidosSalvos.length,
-                  itemBuilder: (context, index) {
-                    return DetailsCard(
-                      items: [
-                        DetailItem(
-                            title: 'Cliente: ',
-                            description: userdata.pedidosSalvos[index]
-                                ['NOME_CLIENTE']),
-                        DetailItem(
-                            title: 'Total:',
-                            description:
-                                'R\$ ${userdata.pedidosSalvos[index]['VLR_PED']}'),
-                        DetailItem(
-                            title: 'Número de itens:',
-                            description: userdata
-                                .pedidosSalvos[index]['ITENS_DO_PEDIDO'].length
-                                .toString())
-                      ],
-                      isInteractive: true,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderSummaryScreen(
-                                      _toCartItem(userdata.pedidosSalvos[index]
-                                          ['ITENS_DO_PEDIDO']),
-                                      DataHelper.brNumber.parse(userdata
-                                          .pedidosSalvos[index]['VLR_PED']),
-                                      userdata.pedidosSalvos[index]
-                                          ['PESO_TOTAL'],
-                                      userdata
-                                          .getClienteFromPedidosSalvos(index),
-                                      isSaved: true,
-                                      currentOrder: index,
-                                    )));
-                      },
-                    );
-                  },
-                )
-              : Center(
-                  child: SvgPicture.asset(
-                    'assets/images/not_found.svg',
-                    height: 270,
-                    width: 270,
+        return ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('Pedidos Salvos'),
+              actions: [
+                IconButton(
+                    icon: Icon(Icons.file_upload),
+                    onPressed: () {
+                      Alert(
+                        context: context,
+                        title: 'ENVIAR PEDIDOS',
+                        desc: 'Deseja enviar todos os pedidos salvos?',
+                        style: kAlertCardStyle,
+                        buttons: [
+                          AlertButton(
+                              label: 'Não',
+                              line: Border.all(color: Colors.grey[600]),
+                              labelColor: Colors.grey[600],
+                              hasGradient: false,
+                              cor: Colors.white,
+                              onTap: () {
+                                Navigator.pop(context);
+                              }),
+                          AlertButton(
+                              label: 'Sim',
+                              onTap: () async {
+                                Navigator.pop(context);
+                                try {
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                  await userdata.sendAllOrders();
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                } catch (e) {
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                  print('Post failed at the process');
+                                  print(e);
+                                  Alert(
+                                    context: context,
+                                    title: 'ERRO',
+                                    desc: e.toString(),
+                                    style: kAlertCardStyle,
+                                    buttons: [
+                                      AlertButton(
+                                          label: 'VOLTAR',
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          })
+                                    ],
+                                  ).show();
+                                }
+                              }),
+                        ],
+                      ).show();
+                    })
+              ],
+            ),
+            body: userdata.pedidosSalvos.length > 0
+                ? ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: userdata.pedidosSalvos.length,
+                    itemBuilder: (context, index) {
+                      return DetailsCard(
+                        items: [
+                          DetailItem(
+                              title: 'Cliente: ',
+                              description: userdata.pedidosSalvos[index]
+                                  ['NOME_CLIENTE']),
+                          DetailItem(
+                              title: 'Total:',
+                              description:
+                                  'R\$ ${userdata.pedidosSalvos[index]['VLR_PED']}'),
+                          DetailItem(
+                              title: 'Número de itens:',
+                              description: userdata
+                                  .pedidosSalvos[index]['ITENS_DO_PEDIDO']
+                                  .length
+                                  .toString())
+                        ],
+                        isInteractive: true,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OrderSummaryScreen(
+                                        _toCartItem(
+                                            userdata.pedidosSalvos[index]
+                                                ['ITENS_DO_PEDIDO']),
+                                        DataHelper.brNumber.parse(userdata
+                                            .pedidosSalvos[index]['VLR_PED']),
+                                        userdata.pedidosSalvos[index]
+                                            ['PESO_TOTAL'],
+                                        userdata
+                                            .getClienteFromPedidosSalvos(index),
+                                        isSaved: true,
+                                        currentOrder: index,
+                                        orderDate: DateTime.parse(userdata
+                                            .pedidosSalvos[index]['DT_PED']),
+                                      ))).then((value) {
+                            userdata.getOrders();
+                          });
+                        },
+                      );
+                    },
+                  )
+                : Center(
+                    child: SvgPicture.asset(
+                      'assets/images/not_found.svg',
+                      height: 270,
+                      width: 270,
+                    ),
                   ),
-                ),
+          ),
         );
       },
     );

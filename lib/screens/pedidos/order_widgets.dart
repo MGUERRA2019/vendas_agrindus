@@ -69,6 +69,63 @@ class OrderConfirmButton extends StatelessWidget {
   }
 }
 
+class SummaryButton extends StatelessWidget {
+  final Function saveFunction;
+  final Function sendFunction;
+
+  SummaryButton({this.saveFunction, this.sendFunction});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 55,
+      width: double.infinity,
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: saveFunction,
+              child: Container(
+                color: Colors.grey,
+                child: Center(
+                  child: Text(
+                    'SALVAR PEDIDO',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        letterSpacing: .7),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: sendFunction,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: kGradientStyle,
+                ),
+                child: Center(
+                  child: Text(
+                    'ENVIAR PEDIDO',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        letterSpacing: .7),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class CartView extends StatelessWidget {
   const CartView({@required this.item});
 
@@ -333,9 +390,16 @@ class FinalItemText extends StatelessWidget {
 }
 
 class NotesBox extends StatelessWidget {
-  const NotesBox({@required this.controller});
+  const NotesBox(
+      {@required this.controller,
+      this.maxLines,
+      this.inputType,
+      this.hintText});
 
   final TextEditingController controller;
+  final int maxLines;
+  final TextInputType inputType;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -349,15 +413,33 @@ class NotesBox extends StatelessWidget {
         ],
       ),
       child: TextField(
-        maxLines: null,
+        maxLines: maxLines,
         controller: controller,
         autofocus: false,
+        keyboardType: inputType,
         decoration: InputDecoration(
-          hintText: 'Observações finais do pedido...',
+          hintText: hintText,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide(width: .05)),
         ),
+      ),
+    );
+  }
+}
+
+class SummaryHeader extends StatelessWidget {
+  final String headerText;
+  final EdgeInsetsGeometry padding;
+  SummaryHeader({@required this.headerText, this.padding});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding,
+      child: Text(
+        headerText,
+        style: kHeaderText.copyWith(color: Colors.blueGrey[400]),
       ),
     );
   }

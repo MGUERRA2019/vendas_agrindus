@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import '../../data_helper.dart';
+import 'package:http/http.dart' as http;
 
 class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> items;
@@ -22,19 +25,30 @@ class OrderSummaryScreen extends StatefulWidget {
   final bool isSaved;
   final String obsText;
   final int currentOrder;
-  OrderSummaryScreen(this.items, this.total, this.pesoTotal, this.cliente,
-      {this.isSaved = false, this.obsText, this.currentOrder});
+  final DateTime orderDate;
+  OrderSummaryScreen(
+    this.items,
+    this.total,
+    this.pesoTotal,
+    this.cliente, {
+    this.isSaved = false,
+    this.obsText,
+    this.currentOrder,
+    this.orderDate,
+  });
 
   @override
-  _OrderSummaryScreenState createState() => _OrderSummaryScreenState(items);
+  _OrderSummaryScreenState createState() =>
+      _OrderSummaryScreenState(items, date: orderDate);
 }
 
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
-  _OrderSummaryScreenState(this.currentItems);
+  _OrderSummaryScreenState(this.currentItems, {this.date});
 
   List<CartItem> currentItems = List<CartItem>();
-  DateTime date = DateTime.now();
-  TextEditingController obs = TextEditingController(text: "");
+  DateTime date;
+  TextEditingController obsController = TextEditingController();
+  TextEditingController clientNumberController = TextEditingController();
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
     List<PedidoItem> aux = [];
     int sequencia = 1;
@@ -74,6 +88,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
       sum += item.pesoTotal;
     }
     return sum;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (date == null) {
+      date = DateTime.now();
+    }
   }
 
   @override
@@ -214,14 +236,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           );
                         },
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Text(
-                          'Data da entrega',
-                          style:
-                              kHeaderText.copyWith(color: Colors.blueGrey[400]),
-                        ),
-                      ),
+                      SummaryHeader(
+                          headerText: 'Data da entrega',
+                          padding: EdgeInsets.all(15)),
                       Padding(
                         padding: EdgeInsets.only(left: 10),
                         child: FlatButton(
@@ -229,8 +246,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             final aux = await showDatePicker(
                                 context: context,
                                 initialDate: date,
-                                firstDate: date,
-                                lastDate: DateTime(date.year + 4));
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(date.year + 3));
                             if (aux != null) {
                               setState(() {
                                 date = aux;
@@ -241,25 +258,15 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           color: Colors.grey[200],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 15, top: 10),
-                        child: Text(
-                          'Resumo do pedido',
-                          style:
-                              kHeaderText.copyWith(color: Colors.blueGrey[400]),
-                        ),
-                      ),
+                      SummaryHeader(
+                          headerText: 'Resumo do pedido',
+                          padding: EdgeInsets.only(left: 15, top: 10)),
                       DetailsCard(
                         items: [
                           DetailItem(
                             title: 'Condição do pagamento:',
                             description:
                                 '${widget.cliente.cONDPAGTO} - ${widget.cliente.cONDPAGTOobj.dESCRICAO}',
-                            colour: Colors.blueGrey[700],
-                          ),
-                          DetailItem(
-                            title: 'Tipo de pagamento:',
-                            description: '',
                             colour: Colors.blueGrey[700],
                           ),
                           DetailItem(
@@ -282,23 +289,28 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 15, top: 10),
-                        child: Text(
-                          'Observações finais',
-                          style:
-                              kHeaderText.copyWith(color: Colors.blueGrey[400]),
-                        ),
+                      SummaryHeader(
+                          headerText: 'Observações finais',
+                          padding: EdgeInsets.only(left: 15, top: 10)),
+                      NotesBox(
+                          controller: obsController,
+                          hintText: 'Observações finais do pedido...'),
+                      SummaryHeader(
+                          headerText: 'Número do pedido do cliente',
+                          padding: EdgeInsets.only(left: 15, top: 10)),
+                      NotesBox(
+                        controller: clientNumberController,
+                        maxLines: 1,
+                        inputType: TextInputType.number,
+                        hintText: '(Opcional)',
                       ),
-                      NotesBox(controller: obs),
                     ],
                   ),
                 ),
               ),
               TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
-              OrderConfirmButton(
-                label: 'SALVAR PEDIDO',
-                onPressed: () {
+              SummaryButton(
+                saveFunction: () {
                   if (widget.isSaved) {
                     userdata.removeOrder(widget.currentOrder);
                   }
@@ -307,19 +319,87 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     cLIENTE: widget.cliente.cLIENTE,
                     cONDPAGTO: widget.cliente.cONDPAGTO,
                     vENDEDOR: userdata.vendedor.vENDEDOR,
-                    dTPED: date.toString(),
+                    dTPED: DateFormat('yyyyMMdd').format(date),
                     nROLISTA: widget.cliente.pRIORIDADE.toString(),
                     tIPOCLI: widget.cliente.tIPOCLI,
                     vLRPED: DataHelper.brNumber.format(currentTotal()),
                     nOMECLIENTE: widget.cliente.nOMFANTASIA,
-                    tEXTOESP: obs.text,
+                    tEXTOESP: obsController.text,
                     pESOTOTAL: currentWieght(),
                     iTENSDOPEDIDO:
                         _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                   );
                   userdata.saveOrder(newOrder);
-
                   Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+                sendFunction: () async {
+                  final String url = baseUrl + 'PedidoMestre';
+                  try {
+                    var body = jsonEncode(
+                      [
+                        {
+                          'MBPM': [
+                            {
+                              'NUMERO_SFA': userdata.vendedor.pROXIMOPED,
+                              'CLIENTE': widget.cliente.cLIENTE,
+                              'COND_PAGTO': widget.cliente.cONDPAGTO,
+                              'VENDEDOR': userdata.vendedor.vENDEDOR,
+                              'TEXTO_ESP':
+                                  obsController.text, //não pode ser vazio
+                              'DT_PED': DateFormat('yyyyMMdd').format(date),
+                              'NRO_LISTA': widget.cliente.pRIORIDADE.toString(),
+                              'TIPO_CLI': widget.cliente.tIPOCLI,
+                              'RESERVADO2': 0,
+                              'RESERVADO8': 0,
+                            }
+                          ],
+                        },
+                      ],
+                    );
+                    print(body);
+                    final response = await http.post(
+                      url,
+                      headers: {'Content-Type': 'application/json'},
+                      body: body,
+                    );
+                    if (response.statusCode == 201) {
+                      print('Post sucessful!');
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    } else {
+                      Alert(
+                        context: context,
+                        title: 'ERRO',
+                        desc:
+                            'Houve um problema ao enviar seu pedido. (Erro ${response.statusCode})',
+                        style: kAlertCardStyle,
+                        buttons: [
+                          AlertButton(
+                              label: 'VOLTAR',
+                              onTap: () {
+                                Navigator.pop(context);
+                              })
+                        ],
+                      ).show();
+                      print(response.statusCode);
+                      print('Post failed...');
+                    }
+                  } catch (e) {
+                    Alert(
+                      context: context,
+                      title: 'ERRO',
+                      desc: e.toString(),
+                      style: kAlertCardStyle,
+                      buttons: [
+                        AlertButton(
+                            label: 'VOLTAR',
+                            onTap: () {
+                              Navigator.pop(context);
+                            })
+                      ],
+                    ).show();
+                    print(e);
+                    print('Post failed...');
+                  }
                 },
               ),
             ],

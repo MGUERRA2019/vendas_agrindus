@@ -18,6 +18,7 @@ import 'package:vendasagrindus/model/tipoMovimento.dart';
 import 'package:vendasagrindus/model/vendedor.dart';
 import 'package:darq/darq.dart';
 import 'package:collection/collection.dart';
+import 'package:http/http.dart' as http;
 
 //Provider class
 
@@ -267,6 +268,48 @@ class UserData extends ChangeNotifier {
     pedidosSalvos.removeAt(index);
     saveFile();
     notifyListeners();
+  }
+
+  sendAllOrders() async {
+    final String url = baseUrl + 'UpdatePedidoMestre/';
+    Map<int, int> orderStatus = Map<int, int>();
+    int order = 1;
+    for (var pedido in pedidosSalvos) {
+      final response = await http.post(
+        url,
+        body: {
+          'MBPM': {
+            'NUMERO_SFA': vendedor.pROXIMOPED,
+            'CLIENTE': pedido['CLIENTE'],
+            'COND_PAGTO': pedido['COND_PAGTO'],
+            'VENDEDOR': pedido['VENDEDOR'],
+            'TEXTO_ESP': pedido['TEXTO_ESP'],
+            'DT_PED': pedido['DT_PED'],
+            'NRO_LISTA': pedido['NRO_LISTA'],
+            'TIPO_CLI': pedido['TIPO_CLI'],
+            'RESERVADO2': '0',
+            'RESERVADO8': '0',
+          }
+        },
+      );
+      orderStatus[order] = response.statusCode;
+      order++;
+    }
+    if (orderStatus.values.all((status) => status == 201)) {
+      print('Update completed');
+      pedidosSalvos.clear();
+      saveFile();
+    } else {
+      List<String> aux = [];
+      print('Post failed');
+      orderStatus.removeWhere((key, value) => value == 201);
+      orderStatus.forEach((key, value) {
+        aux.add('$key (erro $value)');
+        print('Order #$key: Problem $value');
+      });
+      String errors = aux.join(', ');
+      throw new Exception('Erro nos seguintes pedidos: $errors');
+    }
   }
 
   getProdutosEGrupos(String id) async {
