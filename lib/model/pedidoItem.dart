@@ -1,3 +1,5 @@
+import 'package:vendasagrindus/data_helper.dart';
+
 class PedidoItem {
   int eMPRESA;
   int fILIAL;
@@ -6,12 +8,12 @@ class PedidoItem {
   String cPRODPALM;
   String cODBARRA;
   String dESCRICAO;
-  String qTDE;
+  int qTDE;
   String iMAGE;
   String pESO;
   String lIVRE;
-  String vLRUNIT;
-  String vLRTOTAL;
+  double vLRUNIT;
+  double vLRTOTAL;
   String dTENTREGA;
   String uNIDADE;
   String tES;
@@ -24,9 +26,9 @@ class PedidoItem {
   String uNIDALT;
   String qTDEALT;
   int rESERVADO1;
-  String rESERVADO2;
-  String rESERVADO3;
-  String rESERVADO4;
+  int rESERVADO2;
+  int rESERVADO3;
+  int rESERVADO4;
   String rESERVADO5;
   String rESERVADO6;
   String rESERVADO7;
@@ -42,9 +44,9 @@ class PedidoItem {
   String iNTR;
   String oPERADOR;
   String dATAALTER;
-  String hORAALTER;
-  String tIMESTAMP;
-  String vERSION;
+  int hORAALTER;
+  int tIMESTAMP;
+  int vERSION;
 
   PedidoItem(
       {this.eMPRESA,
@@ -100,10 +102,10 @@ class PedidoItem {
     nUMEROSFA = json['NUMERO_SFA'];
     sEQUENCIA = json['SEQUENCIA'];
     cPRODPALM = json['C_PROD_PALM'];
-    qTDE = json['QTDE'];
+    qTDE = (json['QTDE'] is String) ? int.parse(json['QTDE']) : json['QTDE'];
     lIVRE = json['LIVRE'];
-    vLRUNIT = json['VLR_UNIT'];
-    vLRTOTAL = json['VLR_TOTAL'];
+    vLRUNIT = DataHelper.brNumber.parse(json['VLR_UNIT']);
+    vLRTOTAL = DataHelper.brNumber.parse(json['VLR_TOTAL']);
     dTENTREGA = json['DT_ENTREGA'];
     uNIDADE = json['UNIDADE'];
     tES = json['TES'];
@@ -116,9 +118,9 @@ class PedidoItem {
     uNIDALT = json['UNID_ALT'];
     qTDEALT = json['QTDE_ALT'];
     rESERVADO1 = json['RESERVADO1'];
-    rESERVADO2 = json['RESERVADO2'];
-    rESERVADO3 = json['RESERVADO3'];
-    rESERVADO4 = json['RESERVADO4'];
+    rESERVADO2 = (json['RESERVADO2'] is String) ? 0 : json['RESERVADO2'];
+    rESERVADO3 = (json['RESERVADO3'] is String) ? 0 : json['RESERVADO3'];
+    rESERVADO4 = (json['RESERVADO4'] is String) ? 0 : json['RESERVADO4'];
     rESERVADO5 = json['RESERVADO5'];
     rESERVADO6 = json['RESERVADO6'];
     rESERVADO7 = json['RESERVADO7'];
@@ -134,9 +136,9 @@ class PedidoItem {
     iNTR = json['INTR'];
     oPERADOR = json['OPERADOR'];
     dATAALTER = json['DATA_ALTER'];
-    hORAALTER = json['HORA_ALTER'];
-    tIMESTAMP = json['TIME_STAMP'];
-    vERSION = json['VERSION'];
+    hORAALTER = (json['HORA_ALTER'] is String) ? 0 : json['HORA_ALTER'];
+    tIMESTAMP = (json['TIME_STAMP'] is String) ? 0 : json['TIME_STAMP'];
+    vERSION = (json['VERSION'] is String) ? 0 : json['VERSION'];
   }
 
   Map<String, dynamic> toJson() {

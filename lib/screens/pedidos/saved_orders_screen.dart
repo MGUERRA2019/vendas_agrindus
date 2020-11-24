@@ -32,6 +32,8 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
           code: item['C_PROD_PALM'],
           image: item['IMAGE'],
           weight: item['PESO'],
+          unity: item['UNIDADE'],
+          group: item['GRUPO'],
         ));
       }
     }

@@ -37,10 +37,7 @@ class _ListaClientesState extends State<ListaClientes> {
                       closedColor: Colors.white,
                       transitionDuration: Duration(milliseconds: 500),
                       openBuilder: (context, closeWidget) {
-                        userdata
-                            .getPedidoMestre(userdata.clientes[index].cLIENTE);
-                        return ClientDetailsScreen(
-                            userdata.clientes[index], userdata.pedidosMestre);
+                        return ClientDetailsScreen(userdata.clientes[index]);
                       },
                       closedBuilder: (context, openWidget) {
                         return Center(

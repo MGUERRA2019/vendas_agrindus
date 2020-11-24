@@ -94,7 +94,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         description: pedidosItem[index].cPRODPALM),
                     DetailItem(
                         title: 'Quantidade:',
-                        description: pedidosItem[index].qTDE),
+                        description: pedidosItem[index].qTDE.toString()),
                   ],
                 );
               },

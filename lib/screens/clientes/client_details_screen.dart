@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/pedidos/new_order_screen.dart';
@@ -12,8 +14,7 @@ import 'client_details_widgets.dart';
 
 class ClientDetailsScreen extends StatelessWidget {
   final Cliente cliente;
-  final List<PedidoMestre> pedidosMestre;
-  ClientDetailsScreen(this.cliente, this.pedidosMestre);
+  ClientDetailsScreen(this.cliente);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +37,26 @@ class ClientDetailsScreen extends StatelessWidget {
               IconButton(
                   icon: Icon(Icons.add_box_outlined),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NewOrderScreen(cliente)));
+                    if (cliente.pRIORIDADE != 0 && cliente.pRIORIDADE != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewOrderScreen(cliente)));
+                    } else {
+                      Alert(
+                        context: context,
+                        title: 'ERRO',
+                        desc: 'Cliente não possui lista de preço registrada.',
+                        style: kAlertCardStyle,
+                        buttons: [
+                          AlertButton(
+                              label: 'VOLTAR',
+                              onTap: () {
+                                Navigator.pop(context);
+                              })
+                        ],
+                      ).show();
+                    }
                   })
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -149,8 +166,15 @@ class ClientDetailsScreen extends StatelessWidget {
           )),
           DetailsHeader(title: 'Últimos pedidos'),
           SliverPadding(padding: EdgeInsets.only(bottom: 20)),
-          pedidosMestre.isNotEmpty
-              ? SliverList(
+          FutureBuilder(
+            future: Provider.of<UserData>(context, listen: false)
+                .getPedidoMestre(cliente.cLIENTE),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<PedidoMestre>> snapshot) {
+              if (snapshot.hasData) {
+                List<PedidoMestre> pedidosMestre = snapshot.data;
+
+                return SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       return DetailsCard(
@@ -159,13 +183,30 @@ class ClientDetailsScreen extends StatelessWidget {
                           var pedidosItem = await Provider.of<UserData>(context,
                                   listen: false)
                               .getPedidoItem(pedidosMestre[index].nUMEROSFA);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OrderDetailsScreen(
-                                      pedidosMestre[index],
-                                      pedidosItem,
-                                      cliente)));
+                          if (pedidosItem == null) {
+                            Alert(
+                              context: context,
+                              title: 'ERRO',
+                              desc:
+                                  'Não foi possível localizar os itens do pedido.',
+                              style: kAlertCardStyle,
+                              buttons: [
+                                AlertButton(
+                                    label: 'VOLTAR',
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    })
+                              ],
+                            ).show();
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderDetailsScreen(
+                                        pedidosMestre[index],
+                                        pedidosItem,
+                                        cliente)));
+                          }
                         },
                         items: [
                           DetailItem(
@@ -183,16 +224,19 @@ class ClientDetailsScreen extends StatelessWidget {
                     },
                     childCount: pedidosMestre.length,
                   ),
-                )
-              : SliverFillRemaining(
-                  child: Center(
-                    child: SvgPicture.asset(
-                      'assets/images/not_found.svg',
-                      height: 270,
-                      width: 270,
-                    ),
+                );
+              }
+              return SliverFillRemaining(
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/not_found.svg',
+                    height: 270,
+                    width: 270,
                   ),
                 ),
+              );
+            },
+          ),
           SliverPadding(padding: EdgeInsets.only(bottom: 75)),
         ],
       ),

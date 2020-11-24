@@ -30,7 +30,6 @@ class UserData extends ChangeNotifier {
   Map<int, List<ListaPreco>> grupoPreco = Map<int, List<ListaPreco>>();
   List<int> listNumber = List<int>();
   Map<String, CartItem> cart = Map<String, CartItem>();
-  List<PedidoMestre> pedidosMestre = List<PedidoMestre>();
   List<dynamic> pedidosSalvos = [];
   List<Grupos> grupos = [
     Grupos(
@@ -41,6 +40,12 @@ class UserData extends ChangeNotifier {
 
   getVendedor(String id) async {
     var dadosVendedor = await _db.getVendedor(id);
+    vendedor = Vendedor.fromJson(dadosVendedor[0]);
+    notifyListeners();
+  }
+
+  updateVendedor() async {
+    var dadosVendedor = await _db.getVendedor(vendedor.vENDEDOR);
     vendedor = Vendedor.fromJson(dadosVendedor[0]);
     notifyListeners();
   }
@@ -131,6 +136,8 @@ class UserData extends ChangeNotifier {
                 image: produto.iMAGEMURL,
                 code: produto.cPRODPALM,
                 weight: produto.pESOBRUTO,
+                group: produto.gRUPO,
+                unity: produto.uNIDADE,
               ));
     }
 
@@ -219,20 +226,26 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  void getPedidoMestre(String codCliente) async {
+  Future<List<PedidoMestre>> getPedidoMestre(String codCliente) async {
     Iterable aux = await _db.getPedidoMestre(codCliente);
     try {
-      pedidosMestre = aux.map((model) => PedidoMestre.fromJson(model)).toList();
-      notifyListeners();
+      List<PedidoMestre> pedidosMestre =
+          aux.map((model) => PedidoMestre.fromJson(model)).toList();
+      return pedidosMestre;
     } catch (e) {
-      pedidosMestre.clear();
       print(e);
+      return null;
     }
   }
 
   Future<List<PedidoItem>> getPedidoItem(String numeroDoPedido) async {
-    Iterable aux = await _db.getPedidoItem(numeroDoPedido);
-    return aux.map((model) => PedidoItem.fromJson(model)).toList();
+    try {
+      Iterable aux = await _db.getPedidoItem(numeroDoPedido);
+      return aux.map((model) => PedidoItem.fromJson(model)).toList();
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   Future<File> _getFile() async {
@@ -275,25 +288,35 @@ class UserData extends ChangeNotifier {
     Map<int, int> orderStatus = Map<int, int>();
     int order = 1;
     for (var pedido in pedidosSalvos) {
+      var body = jsonEncode(
+        [
+          {
+            'MBPM': [
+              {
+                'NUMERO_SFA': vendedor.pROXIMOPED,
+                'CLIENTE': pedido['CLIENTE'],
+                'COND_PAGTO': pedido['COND_PAGTO'],
+                'VENDEDOR': pedido['VENDEDOR'],
+                'TEXTO_ESP': pedido['TEXTO_ESP'],
+                'DT_PED': pedido['DT_PED'],
+                'NRO_LISTA': pedido['NRO_LISTA'],
+                'TIPO_CLI': pedido['TIPO_CLI'],
+                'RESERVADO2': 0,
+                'RESERVADO8': 0,
+              }
+            ],
+          },
+        ],
+      );
+
       final response = await http.post(
         url,
-        body: {
-          'MBPM': {
-            'NUMERO_SFA': vendedor.pROXIMOPED,
-            'CLIENTE': pedido['CLIENTE'],
-            'COND_PAGTO': pedido['COND_PAGTO'],
-            'VENDEDOR': pedido['VENDEDOR'],
-            'TEXTO_ESP': pedido['TEXTO_ESP'],
-            'DT_PED': pedido['DT_PED'],
-            'NRO_LISTA': pedido['NRO_LISTA'],
-            'TIPO_CLI': pedido['TIPO_CLI'],
-            'RESERVADO2': '0',
-            'RESERVADO8': '0',
-          }
-        },
+        body: body,
+        headers: {'Content-Type': 'application/json'},
       );
       orderStatus[order] = response.statusCode;
       order++;
+      updateVendedor();
     }
     if (orderStatus.values.all((status) => status == 201)) {
       print('Update completed');

@@ -17,8 +17,8 @@ class PedidoMestre {
   String nROLISTA;
   String tIPOCLI;
   String sTATUS;
-  String aSSINA;
-  String eMITENF;
+  int aSSINA;
+  int eMITENF;
   String eMISSAO;
   String nFISCAL;
   String sERIE;
@@ -50,9 +50,9 @@ class PedidoMestre {
   String iNTR;
   String oPERADOR;
   String dATAALTER;
-  String hORAALTER;
-  String tIMESTAMP;
-  String vERSION;
+  int hORAALTER;
+  int tIMESTAMP;
+  int vERSION;
   List<PedidoItem> iTENSDOPEDIDO;
 
   PedidoMestre(
@@ -125,8 +125,8 @@ class PedidoMestre {
     nROLISTA = json['NRO_LISTA'];
     tIPOCLI = json['TIPO_CLI'];
     sTATUS = json['STATUS'];
-    aSSINA = json['ASSINA'];
-    eMITENF = json['EMITE_NF'];
+    aSSINA = (json['ASSINA'] is String) ? 0 : json['ASSINA'];
+    eMITENF = (json['EMITE_NF'] is String) ? 0 : json['EMITE_NF'];
     eMISSAO = json['EMISSAO'];
     nFISCAL = json['N_FISCAL'];
     sERIE = json['SERIE'];
@@ -158,9 +158,9 @@ class PedidoMestre {
     iNTR = json['INTR'];
     oPERADOR = json['OPERADOR'];
     dATAALTER = json['DATA_ALTER'];
-    hORAALTER = json['HORA_ALTER'];
-    tIMESTAMP = json['TIME_STAMP'];
-    vERSION = json['VERSION'];
+    hORAALTER = (json['HORA_ALTER'] is String) ? 0 : json['HORA_ALTER'];
+    tIMESTAMP = (json['TIME_STAMP'] is String) ? 0 : json['TIME_STAMP'];
+    vERSION = (json['VERSION'] is String) ? 0 : json['VERSION'];
   }
 
   Map<String, dynamic> toJson() {

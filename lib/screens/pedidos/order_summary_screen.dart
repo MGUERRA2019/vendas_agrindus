@@ -58,15 +58,17 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           nUMEROSFA: numeroSFA,
           sEQUENCIA: sequencia.toString(),
           cPRODPALM: item.code,
-          qTDE: item.amount.toString(),
-          vLRUNIT: DataHelper.brNumber.format(item.price),
-          vLRTOTAL: DataHelper.brNumber.format(item.total),
-          dTENTREGA: date.toString(),
+          qTDE: item.amount,
+          vLRUNIT: item.price,
+          vLRTOTAL: item.total,
+          dTENTREGA: DateFormat('yyyyMMdd').format(date),
           nROLISTA: widget.cliente.pRIORIDADE.toString(),
           dESCRICAO: item.name,
           cODBARRA: item.barCode,
           iMAGE: item.image,
           pESO: item.weight,
+          gRUPO: item.group,
+          uNIDADE: item.unity,
         ),
       );
       sequencia++;
@@ -333,9 +335,10 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 sendFunction: () async {
-                  final String url = baseUrl + 'PedidoMestre';
+                  final String urlMestre = baseUrl + 'PedidoMestre';
+                  final String urlItens = baseUrl + 'PedidoItens';
                   try {
-                    var body = jsonEncode(
+                    var bodyMestre = jsonEncode(
                       [
                         {
                           'MBPM': [
@@ -356,21 +359,61 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         },
                       ],
                     );
-                    print(body);
-                    final response = await http.post(
-                      url,
-                      headers: {'Content-Type': 'application/json'},
-                      body: body,
+                    List<dynamic> formattedItens = [];
+
+                    for (var item
+                        in _toPedidoItem(userdata.vendedor.pROXIMOPED, date)) {
+                      formattedItens.add({
+                        'NUMERO_SFA': userdata.vendedor.pROXIMOPED,
+                        'SEQUENCIA': item.sEQUENCIA,
+                        'C_PROD_PALM': item.cPRODPALM,
+                        'QTDE': item.qTDE,
+                        'VLR_UNIT': item.vLRUNIT,
+                        'VLR_TOTAL': item.vLRTOTAL,
+                        'DT_ENTREGA': item.dTENTREGA,
+                        'UNIDADE': item.uNIDADE,
+                        'TES': widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
+                        'GRUPO': '',
+                        'NRO_LISTA': item.nROLISTA,
+                        'RESERVADO2': 0,
+                        'RESERVADO5': 0,
+                        'RESERVADO8': 0,
+                        'RESERVADO13': '',
+                        'RESERVADO14': '',
+                        'RESERVADO15': '',
+                        'RESERVADO16': '',
+                      });
+                    }
+                    var bodyItens = jsonEncode(
+                      [
+                        {
+                          'MBPD': formattedItens,
+                        },
+                      ],
                     );
-                    if (response.statusCode == 201) {
+                    final responseMestre = await http.post(
+                      urlMestre,
+                      headers: {'Content-Type': 'application/json'},
+                      body: bodyMestre,
+                    );
+                    print(bodyItens);
+                    final responseItens = await http.post(
+                      urlItens,
+                      headers: {'Content-Type': 'application/json'},
+                      body: bodyItens,
+                    );
+                    if (responseItens.statusCode == 201 &&
+                        responseItens.statusCode == 201) {
+                      print(responseItens.statusCode);
                       print('Post sucessful!');
+                      await userdata.updateVendedor();
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     } else {
                       Alert(
                         context: context,
                         title: 'ERRO',
                         desc:
-                            'Houve um problema ao enviar seu pedido. (Erro ${response.statusCode})',
+                            'Houve um problema ao enviar seu pedido. (Erro ${responseItens.statusCode})',
                         style: kAlertCardStyle,
                         buttons: [
                           AlertButton(
@@ -380,7 +423,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                               })
                         ],
                       ).show();
-                      print(response.statusCode);
+                      print(responseMestre.statusCode);
+                      print(responseItens.statusCode);
                       print('Post failed...');
                     }
                   } catch (e) {

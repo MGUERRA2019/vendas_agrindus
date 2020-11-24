@@ -8,6 +8,8 @@ class CartItem {
   String image;
   String code;
   String weight;
+  String group;
+  String unity;
 
   CartItem(
       {this.name,
@@ -16,7 +18,9 @@ class CartItem {
       this.barCode,
       this.image,
       this.code,
-      this.weight});
+      this.weight,
+      this.group,
+      this.unity});
 
   double get total {
     return price * amount;
