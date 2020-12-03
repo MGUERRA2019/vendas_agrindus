@@ -284,11 +284,13 @@ class UserData extends ChangeNotifier {
   }
 
   sendAllOrders() async {
-    final String url = baseUrl + 'UpdatePedidoMestre/';
+    final String urlMestre = baseUrl + 'PedidoMestre';
+    final String urlItens = baseUrl + 'PedidoItens';
     Map<int, int> orderStatus = Map<int, int>();
     int order = 1;
     for (var pedido in pedidosSalvos) {
-      var body = jsonEncode(
+      print(vendedor.pROXIMOPED);
+      var bodyMestre = jsonEncode(
         [
           {
             'MBPM': [
@@ -301,22 +303,68 @@ class UserData extends ChangeNotifier {
                 'DT_PED': pedido['DT_PED'],
                 'NRO_LISTA': pedido['NRO_LISTA'],
                 'TIPO_CLI': pedido['TIPO_CLI'],
-                'RESERVADO2': 0,
-                'RESERVADO8': 0,
+                'RESERVADO2': pedido['RESERVADO2'],
+                'RESERVADO8': pedido['RESERVADO8'],
               }
             ],
           },
         ],
       );
 
-      final response = await http.post(
-        url,
-        body: body,
+      List<dynamic> formattedItens = [];
+
+      for (var item in pedido['ITENS_DO_PEDIDO']) {
+        formattedItens.add({
+          'NUMERO_SFA': vendedor.pROXIMOPED,
+          'SEQUENCIA': item['SEQUENCIA'],
+          'C_PROD_PALM': item['C_PROD_PALM'],
+          'QTDE': item['QTDE'],
+          'VLR_UNIT': item['VLR_UNIT'],
+          'VLR_TOTAL': item['VLR_TOTAL'],
+          'DT_ENTREGA': item['DT_ENTREGA'],
+          'UNIDADE': item['UNIDADE'],
+          'TES': item['TES'],
+          'GRUPO': item['GRUPO'],
+          'NRO_LISTA': item['NRO_LISTA'],
+          'RESERVADO2': item['RESERVADO2'],
+          'RESERVADO5': item['RESERVADO5'],
+          'RESERVADO8': item['RESERVADO8'],
+          'RESERVADO13': item['RESERVADO13'],
+          'RESERVADO14': item['RESERVADO14'],
+          'RESERVADO15': item['RESERVADO15'],
+          'RESERVADO16': item['RESERVADO16'],
+        });
+      }
+      var bodyItens = jsonEncode(
+        [
+          {
+            'MBPD': formattedItens,
+          },
+        ],
+      );
+
+      final responseItens = await http.post(
+        urlItens,
+        headers: {'Content-Type': 'application/json'},
+        body: bodyItens,
+      );
+
+      final responseMestre = await http.post(
+        urlMestre,
+        body: bodyMestre,
         headers: {'Content-Type': 'application/json'},
       );
-      orderStatus[order] = response.statusCode;
+
+      if (responseItens.statusCode != 201) {
+        print(
+            'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}');
+      }
+
+      orderStatus[order] = responseMestre.statusCode;
       order++;
-      updateVendedor();
+      if (responseMestre.statusCode == 201) {
+        await updateVendedor();
+      }
     }
     if (orderStatus.values.all((status) => status == 201)) {
       print('Update completed');

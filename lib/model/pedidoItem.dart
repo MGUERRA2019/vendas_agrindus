@@ -29,10 +29,10 @@ class PedidoItem {
   int rESERVADO2;
   int rESERVADO3;
   int rESERVADO4;
-  String rESERVADO5;
+  int rESERVADO5;
   String rESERVADO6;
   String rESERVADO7;
-  String rESERVADO8;
+  int rESERVADO8;
   String rESERVADO9;
   String rESERVADO10;
   String rESERVADO11;
@@ -121,10 +121,10 @@ class PedidoItem {
     rESERVADO2 = (json['RESERVADO2'] is String) ? 0 : json['RESERVADO2'];
     rESERVADO3 = (json['RESERVADO3'] is String) ? 0 : json['RESERVADO3'];
     rESERVADO4 = (json['RESERVADO4'] is String) ? 0 : json['RESERVADO4'];
-    rESERVADO5 = json['RESERVADO5'];
+    rESERVADO5 = (json['RESERVADO5'] is String) ? 0 : json['RESERVADO5'];
     rESERVADO6 = json['RESERVADO6'];
     rESERVADO7 = json['RESERVADO7'];
-    rESERVADO8 = json['RESERVADO8'];
+    rESERVADO8 = (json['RESERVADO8'] is String) ? 0 : json['RESERVADO8'];
     rESERVADO9 = json['RESERVADO9'];
     rESERVADO10 = json['RESERVADO10'];
     rESERVADO11 = json['RESERVADO11'];

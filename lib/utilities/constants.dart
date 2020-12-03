@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/screens/order_completed_screen.dart';
 
 final kHintTextStyle = TextStyle(
   color: Colors.white54,
@@ -69,3 +70,16 @@ const TextStyle kHeaderText = TextStyle(
     color: kHeaderTitleColor);
 
 const kDescriptionTextStyle = TextStyle(color: Color(0xFF757575), fontSize: 12);
+
+final PageRouteBuilder kOrderConfirmScreenAnimation = PageRouteBuilder(
+  pageBuilder: (BuildContext context, Animation<double> primaryAnimation,
+          Animation<double> secondAnimation) =>
+      OrderCompletedScreen(),
+  transitionDuration: Duration(seconds: 1),
+  transitionsBuilder: (BuildContext context, Animation<double> primaryAnimation,
+          Animation<double> secondAnimation, Widget child) =>
+      FadeTransition(
+    opacity: primaryAnimation,
+    child: child,
+  ),
+);

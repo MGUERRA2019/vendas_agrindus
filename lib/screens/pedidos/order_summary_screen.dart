@@ -55,7 +55,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     for (var item in currentItems) {
       aux.add(
         PedidoItem(
-          nUMEROSFA: numeroSFA,
           sEQUENCIA: sequencia.toString(),
           cPRODPALM: item.code,
           qTDE: item.amount,
@@ -67,8 +66,16 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           cODBARRA: item.barCode,
           iMAGE: item.image,
           pESO: item.weight,
-          gRUPO: item.group,
+          gRUPO: '',
+          tES: widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
           uNIDADE: item.unity,
+          rESERVADO2: 0,
+          rESERVADO5: 0,
+          rESERVADO8: 0,
+          rESERVADO13: '',
+          rESERVADO14: '',
+          rESERVADO15: '',
+          rESERVADO16: '',
         ),
       );
       sequencia++;
@@ -104,6 +111,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
+        if (widget.obsText != null) {
+          obsController.text = widget.obsText;
+        }
         return Scaffold(
           appBar: AppBar(
             title: Text('Resumo do pedido'),
@@ -328,6 +338,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     nOMECLIENTE: widget.cliente.nOMFANTASIA,
                     tEXTOESP: obsController.text,
                     pESOTOTAL: currentWieght(),
+                    rESERVADO2: 0,
+                    rESERVADO8: 0,
                     iTENSDOPEDIDO:
                         _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                   );
@@ -396,7 +408,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       headers: {'Content-Type': 'application/json'},
                       body: bodyMestre,
                     );
-                    print(bodyItens);
                     final responseItens = await http.post(
                       urlItens,
                       headers: {'Content-Type': 'application/json'},
@@ -407,7 +418,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       print(responseItens.statusCode);
                       print('Post sucessful!');
                       await userdata.updateVendedor();
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      Navigator.push(context, kOrderConfirmScreenAnimation);
                     } else {
                       Alert(
                         context: context,

@@ -6,6 +6,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
+import 'package:vendasagrindus/screens/order_completed_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
@@ -26,8 +27,8 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
       if (item is Map) {
         aux.add(CartItem(
           name: item['DESCRICAO'],
-          amount: int.parse(item['QTDE']),
-          price: DataHelper.brNumber.parse(item['VLR_UNIT']),
+          amount: item['QTDE'],
+          price: item['VLR_UNIT'],
           barCode: item['COD_BARRA'],
           code: item['C_PROD_PALM'],
           image: item['IMAGE'],
@@ -86,6 +87,8 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                                   setState(() {
                                     showSpinner = false;
                                   });
+                                  Navigator.push(
+                                      context, kOrderConfirmScreenAnimation);
                                 } catch (e) {
                                   setState(() {
                                     showSpinner = false;
@@ -153,6 +156,8 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                                         currentOrder: index,
                                         orderDate: DateTime.parse(userdata
                                             .pedidosSalvos[index]['DT_PED']),
+                                        obsText: userdata.pedidosSalvos[index]
+                                            ['TEXTO_ESP'],
                                       ))).then((value) {
                             userdata.getOrders();
                           });
