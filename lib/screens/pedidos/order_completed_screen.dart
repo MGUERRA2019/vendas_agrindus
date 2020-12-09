@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lottie/lottie.dart';
@@ -8,12 +10,13 @@ class OrderCompletedScreen extends HookWidget {
     final animationController = useAnimationController();
     return Scaffold(
       body: Center(
-        child: Lottie.asset('assets/animations/longCheck.json',
-            width: 70,
-            height: 70,
+        child: Lottie.asset('assets/animations/done.json',
+            width: 200,
+            height: 200,
             controller: animationController, onLoaded: (composition) {
           animationController.addStatusListener((status) {
             if (status == AnimationStatus.completed) {
+              sleep(Duration(milliseconds: 900));
               Navigator.popUntil(context, (route) => route.isFirst);
             }
           });

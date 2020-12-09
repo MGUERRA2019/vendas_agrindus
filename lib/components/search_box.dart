@@ -32,7 +32,7 @@ class SearchBox extends StatelessWidget {
             width: 14.0,
             height: 14.0,
           ),
-          hintText: 'Search',
+          hintText: 'Pesquisar',
           hintStyle: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
       ),

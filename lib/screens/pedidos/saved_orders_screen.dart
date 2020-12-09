@@ -6,7 +6,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
-import 'package:vendasagrindus/screens/order_completed_screen.dart';
+import 'package:vendasagrindus/screens/pedidos/order_completed_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
@@ -88,7 +88,10 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                                     showSpinner = false;
                                   });
                                   Navigator.push(
-                                      context, kOrderConfirmScreenAnimation);
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              OrderCompletedScreen()));
                                 } catch (e) {
                                   setState(() {
                                     showSpinner = false;

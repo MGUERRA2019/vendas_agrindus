@@ -159,8 +159,8 @@ class ListViewIcon extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: (viewStyle == ViewType.grid)
-              ? BorderRadius.horizontal(left: Radius.circular(31))
-              : BorderRadius.horizontal(right: Radius.circular(31)),
+              ? BorderRadius.horizontal(right: Radius.circular(31))
+              : BorderRadius.horizontal(left: Radius.circular(31)),
           color: (currentView == viewStyle) ? kPrimaryColor : Colors.white,
         ),
         padding: EdgeInsets.all(9),

@@ -15,7 +15,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  ViewType currentView = ViewType.grid;
+  ViewType currentView = ViewType.list;
   List<Widget> groupList = [];
   int selectedIndex = 0;
   String search = '';
@@ -93,22 +93,22 @@ class _ProductScreenState extends State<ProductScreen> {
                     child: Row(
                       children: [
                         ListViewIcon(
-                          icon: Icons.view_module_rounded,
-                          viewStyle: ViewType.grid,
-                          currentView: currentView,
-                          onPressed: () {
-                            setState(() {
-                              currentView = ViewType.grid;
-                            });
-                          },
-                        ),
-                        ListViewIcon(
                           icon: Icons.view_stream_rounded,
                           viewStyle: ViewType.list,
                           currentView: currentView,
                           onPressed: () {
                             setState(() {
                               currentView = ViewType.list;
+                            });
+                          },
+                        ),
+                        ListViewIcon(
+                          icon: Icons.view_module_rounded,
+                          viewStyle: ViewType.grid,
+                          currentView: currentView,
+                          onPressed: () {
+                            setState(() {
+                              currentView = ViewType.grid;
                             });
                           },
                         ),

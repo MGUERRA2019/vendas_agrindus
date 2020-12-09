@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:vendasagrindus/screens/order_completed_screen.dart';
+import 'package:vendasagrindus/screens/pedidos/order_completed_screen.dart';
 
 final kHintTextStyle = TextStyle(
   color: Colors.white54,
