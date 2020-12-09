@@ -227,7 +227,7 @@ class UserData extends ChangeNotifier {
   }
 
   Future<List<PedidoMestre>> getPedidoMestre(String codCliente) async {
-    Iterable aux = await _db.getPedidoMestre(codCliente);
+    Iterable aux = await _db.getPedidoMestre(vendedor.vENDEDOR, codCliente);
     try {
       List<PedidoMestre> pedidosMestre =
           aux.map((model) => PedidoMestre.fromJson(model)).toList();

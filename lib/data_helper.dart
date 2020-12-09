@@ -135,8 +135,8 @@ class DataHelper {
     }
   }
 
-  Future getPedidoMestre(String codCliente) async {
-    var url = baseUrl + 'GetPedidoMestre/' + codCliente;
+  Future getPedidoMestre(String vendedor, String codCliente) async {
+    var url = baseUrl + 'GetPedidoMestre/$vendedor/$codCliente';
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
