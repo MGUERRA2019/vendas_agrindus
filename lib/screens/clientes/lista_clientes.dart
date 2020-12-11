@@ -5,6 +5,7 @@ import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
+import 'clients_search.dart';
 
 class ListaClientes extends StatefulWidget {
   static const String routeName = 'lista_clientes';
@@ -42,14 +43,15 @@ class _ListaClientesState extends State<ListaClientes> {
                       delegate: ClientsSearch(
                           Provider.of<UserData>(context, listen: false)
                               .clientes));
-                  setState(() {
-                    query = result;
-                  });
+                  if (result != null) {
+                    setState(() {
+                      query = result;
+                    });
+                  }
                 })
           ],
         ),
         backgroundColor: kBackgroundColor,
-        // bottomNavigationBar: ,
         body: Consumer<UserData>(
           builder: (context, userdata, child) {
             return ListView.builder(
@@ -115,64 +117,5 @@ class _ListaClientesState extends State<ListaClientes> {
             );
           },
         ));
-  }
-}
-
-class ClientsSearch extends SearchDelegate<String> {
-  final List<Cliente> clientes;
-
-  ClientsSearch(this.clientes);
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          close(context, '');
-        });
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    final results = clientes.where((element) =>
-        element.nOMFANTASIA.toLowerCase().contains(query.toLowerCase()));
-    return ListView(
-      children: results
-          .map<ListTile>((e) => ListTile(
-                title: Text(e.nOMFANTASIA),
-                onTap: () {
-                  close(context, e.nOMFANTASIA);
-                },
-              ))
-          .toList(),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final results = clientes.where((element) =>
-        element.nOMFANTASIA.toLowerCase().contains(query.toLowerCase()));
-    return ListView(
-      children: results
-          .map<ListTile>((e) => ListTile(
-                title: Text(e.nOMFANTASIA),
-                onTap: () {
-                  close(context, e.nOMFANTASIA);
-                },
-              ))
-          .toList(),
-    );
   }
 }

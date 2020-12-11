@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1016821897599",
+    "project_id": "agrindus-54029",
+    "storage_bucket": "agrindus-54029.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016821897599:android:593c4d47e33b500a7a224a",
+        "android_client_info": {
+          "package_name": "com.mobilefast.vendasagrindus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016821897599-ah1agi62k3ecp8k7l5vfqvpnsu2k9q15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDukHYFYmUqRct9mFmPMK8C_fc2vbQDP2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016821897599-ah1agi62k3ecp8k7l5vfqvpnsu2k9q15.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -171,70 +171,80 @@ class ClientDetailsScreen extends StatelessWidget {
                 .getPedidoMestre(cliente.cLIENTE),
             builder: (BuildContext context,
                 AsyncSnapshot<List<PedidoMestre>> snapshot) {
-              if (snapshot.hasData) {
-                List<PedidoMestre> pedidosMestre = snapshot.data;
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  List<PedidoMestre> pedidosMestre = snapshot.data;
 
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return DetailsCard(
-                        isInteractive: true,
-                        onPressed: () async {
-                          var pedidosItem = await Provider.of<UserData>(context,
-                                  listen: false)
-                              .getPedidoItem(pedidosMestre[index].nUMEROSFA);
-                          if (pedidosItem == null) {
-                            Alert(
-                              context: context,
-                              title: 'ERRO',
-                              desc:
-                                  'Não foi possível localizar os itens do pedido.',
-                              style: kAlertCardStyle,
-                              buttons: [
-                                AlertButton(
-                                    label: 'VOLTAR',
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    })
-                              ],
-                            ).show();
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrderDetailsScreen(
-                                        pedidosMestre[index],
-                                        pedidosItem,
-                                        cliente)));
-                          }
-                        },
-                        items: [
-                          DetailItem(
-                              title: 'Código do pedido:',
-                              description: pedidosMestre[index].nUMEROSFA),
-                          DetailItem(
-                              title: 'Emissão:',
-                              description: DateFormat('dd/MM/yyyy')
-                                  .format(pedidosMestre[index].date)),
-                          DetailItem(
-                              title: 'Status:',
-                              description: pedidosMestre[index].sTATUS),
-                        ],
-                      );
-                    },
-                    childCount: pedidosMestre.length,
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return DetailsCard(
+                          isInteractive: true,
+                          onPressed: () async {
+                            var pedidosItem = await Provider.of<UserData>(
+                                    context,
+                                    listen: false)
+                                .getPedidoItem(pedidosMestre[index].nUMEROSFA);
+                            if (pedidosItem == null) {
+                              Alert(
+                                context: context,
+                                title: 'ERRO',
+                                desc:
+                                    'Não foi possível localizar os itens do pedido.',
+                                style: kAlertCardStyle,
+                                buttons: [
+                                  AlertButton(
+                                      label: 'VOLTAR',
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      })
+                                ],
+                              ).show();
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OrderDetailsScreen(
+                                          pedidosMestre[index],
+                                          pedidosItem,
+                                          cliente)));
+                            }
+                          },
+                          items: [
+                            DetailItem(
+                                title: 'Código do pedido:',
+                                description: pedidosMestre[index].nUMEROSFA),
+                            DetailItem(
+                                title: 'Emissão:',
+                                description: DateFormat('dd/MM/yyyy')
+                                    .format(pedidosMestre[index].date)),
+                            DetailItem(
+                                title: 'Status:',
+                                description: pedidosMestre[index].sTATUS),
+                          ],
+                        );
+                      },
+                      childCount: pedidosMestre.length,
+                    ),
+                  );
+                } else {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/images/not_found.svg',
+                        height: 270,
+                        width: 270,
+                      ),
+                    ),
+                  );
+                }
+              } else {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 );
               }
-              return SliverFillRemaining(
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/images/not_found.svg',
-                    height: 270,
-                    width: 270,
-                  ),
-                ),
-              );
             },
           ),
           SliverPadding(padding: EdgeInsets.only(bottom: 75)),
