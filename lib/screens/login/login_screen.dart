@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/screens/login/login_widgets.dart';
+import 'package:vendasagrindus/screens/login/new_login_screen.dart';
+import 'package:vendasagrindus/screens/login/signup_screen.dart';
 import 'package:vendasagrindus/screens/navigation_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
@@ -102,57 +104,92 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: true,
                           icon: Icons.lock,
                         ),
-                        LoginButton(onPressed: () async {
-                          FocusScope.of(context).unfocus();
-                          setState(() {
-                            showSpinner = true;
-                          });
-                          try {
-                            String id = loginIdController.text;
-                            await userdata.getVendedor(id);
-                            await userdata.getClientes();
-                            await userdata.getProdutosEGrupos(id);
-                            setState(() {
-                              showSpinner = false;
-                            });
-                            if (userdata.vendedor.vENDEDOR != null) {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NavigationScreen()),
-                                  (route) => false);
-                            }
-                          } catch (e) {
-                            setState(() {
-                              showSpinner = false;
-                            });
-                            String message = e.toString();
-                            if (userdata.vendedor.vENDEDOR == null) {
-                              message = 'Código de vendedor não encontrado';
-                            }
-                            Alert(
-                              context: context,
-                              title: 'ERRO',
-                              desc: message,
-                              style: kAlertCardStyle,
-                              buttons: [
-                                AlertButton(
-                                    label: 'VOLTAR',
-                                    onTap: () {
-                                      setState(() {
-                                        loginIdController.clear();
-                                        passwordController.clear();
-                                      });
-                                      Navigator.pop(context);
-                                    })
-                              ],
-                            ).show();
-                          }
-                        }),
+                        SizedBox(height: 15),
                         ForgotPassword(
                           onTap: () => print('Forgot Password Button Pressed'),
                           alignment: Alignment.center,
                         ),
+                        LoginButton(
+                            buttonText: 'ACESSAR',
+                            onPressed: () async {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                showSpinner = true;
+                              });
+                              try {
+                                String id = loginIdController.text;
+                                await userdata.getVendedor(id);
+                                await userdata.getClientes();
+                                await userdata.getProdutosEGrupos(id);
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                if (userdata.vendedor.vENDEDOR != null) {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              NavigationScreen()),
+                                      (route) => false);
+                                }
+                              } catch (e) {
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                String message = e.toString();
+                                if (userdata.vendedor.vENDEDOR == null) {
+                                  message = 'Código de vendedor não encontrado';
+                                }
+                                Alert(
+                                  context: context,
+                                  title: 'ERRO',
+                                  desc: message,
+                                  style: kAlertCardStyle,
+                                  buttons: [
+                                    AlertButton(
+                                        label: 'VOLTAR',
+                                        onTap: () {
+                                          setState(() {
+                                            loginIdController.clear();
+                                            passwordController.clear();
+                                          });
+                                          Navigator.pop(context);
+                                        })
+                                  ],
+                                ).show();
+                              }
+                            }),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                thickness: 1.5,
+                                color: Colors.white60,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                'ou',
+                                style: TextStyle(color: Colors.white60),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                thickness: 1.5,
+                                color: Colors.white60,
+                              ),
+                            ),
+                          ],
+                        ),
+                        LoginButton(
+                            buttonText: 'REGISTRAR',
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NewLoginScreen()));
+                            })
                       ],
                     ),
                   ),
@@ -160,100 +197,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSignInWithText() {
-    return Column(
-      children: <Widget>[
-        Text(
-          '- OR -',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(height: 20.0),
-        Text(
-          'Sign in with',
-          style: kLabelStyle,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialBtn(Function onTap, AssetImage logo) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 60.0,
-        width: 60.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 2),
-              blurRadius: 6.0,
-            ),
-          ],
-          image: DecorationImage(
-            image: logo,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialBtnRow() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _buildSocialBtn(
-            () => print('Login with Facebook'),
-            AssetImage(
-              'assets/logos/facebook.jpg',
-            ),
-          ),
-          _buildSocialBtn(
-            () => print('Login with Google'),
-            AssetImage(
-              'assets/logos/google.jpg',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSignupBtn() {
-    return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Don\'t have an Account? ',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            TextSpan(
-              text: 'Sign Up',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
         ),
       ),
     );

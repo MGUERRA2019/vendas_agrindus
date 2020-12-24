@@ -37,6 +37,7 @@ dependencies:
   path_provider: ^1.6.24
   lottie: ^0.7.0+1
   flutter_hooks: ^0.15.0
+  email_validator: ^1.0.6
   firebase_core: ^0.5.3
   firebase_auth: ^0.18.4+1
   cloud_firestore: ^0.14.4

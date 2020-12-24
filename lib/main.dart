@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:vendasagrindus/screens/login/new_login_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/screens/login/login_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
           accentColor: kPrimaryColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: LoginScreen(),
+        home: NewLoginScreen(),
       ),
     );
   }

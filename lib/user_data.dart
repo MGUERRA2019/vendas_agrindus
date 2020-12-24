@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -37,6 +38,24 @@ class UserData extends ChangeNotifier {
       gRUPO: '',
     ),
   ];
+
+  loginSetup(String uid) async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        var data = documentSnapshot.data();
+        String id = data['vendedor'];
+        await getVendedor(id);
+        await getClientes();
+        await getProdutosEGrupos(id);
+      } else {
+        throw new Exception('Usuário não cadastrado');
+      }
+    });
+  }
 
   getVendedor(String id) async {
     var dadosVendedor = await _db.getVendedor(id);

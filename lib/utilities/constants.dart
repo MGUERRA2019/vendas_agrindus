@@ -44,6 +44,7 @@ const kBlueColor = Color(0xFF40BAD5);
 const kBackgroundColor = Color(0xFFF4F5F9);
 const kHeaderTitleColor = Colors.white70;
 const kCardShadow = Color(0x12000000);
+const kLogoColor = Color(0xFF00194D);
 
 final kGradientStyle = LinearGradient(
     colors: [Colors.lightBlueAccent[400], Colors.blueAccent[700]],

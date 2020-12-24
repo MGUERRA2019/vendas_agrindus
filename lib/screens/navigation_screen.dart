@@ -5,6 +5,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
 import 'package:vendasagrindus/screens/pedidos/saved_orders_screen.dart';
+import 'package:vendasagrindus/screens/perfil/profile_screen.dart';
 import 'package:vendasagrindus/screens/produtos/product_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -32,12 +33,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     ListaClientes(),
     SavedOrdersScreen(),
     ProductScreen(),
-    Center(
-      child: Icon(
-        Icons.adb,
-        size: 200,
-      ),
-    ),
+    ProfileScreen(),
   ];
 
   Future<bool> _exitPressed() {
