@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -22,11 +25,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController sellerCodeController = TextEditingController();
 
-  void _validate() async {
+  void _validateAccount() async {
     if (formKey.currentState.validate()) {
       print('All ok');
-      print(emailController.text);
-      print(passwordController.text);
       try {
         setState(() {
           showSpinner = true;
@@ -43,20 +44,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
           showSpinner = false;
         });
         print('Register completed');
-      } on FirebaseAuthException catch (e) {
-        setState(() {
-          showSpinner = false;
-        });
-        if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
-        } else if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email.');
-        }
       } catch (e) {
         setState(() {
           showSpinner = false;
         });
-        print(e);
+        String message = e.toString();
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+          message = 'Senha fornecida muito fraca.';
+        } else if (e.code == 'email-already-in-use') {
+          message = 'Endereço de email já cadastrado.';
+          print('The account already exists for that email.');
+        }
+        Alert(
+          context: context,
+          title: 'ERRO',
+          desc: message,
+          style: kAlertCardStyle,
+          buttons: [
+            AlertButton(
+              label: 'VOLTAR',
+              onTap: () {
+                setState(() {
+                  emailController.clear();
+                  passwordController.clear();
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ).show();
       }
     } else {
       setState(() {
@@ -180,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding:
                             EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                         onPressed: () {
-                          _validate();
+                          _validateAccount();
                         },
                         child: Text(
                           'Cadastrar',

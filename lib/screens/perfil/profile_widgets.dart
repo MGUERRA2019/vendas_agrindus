@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -45,7 +46,7 @@ class ProfileBanner extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Rodrigo Guerra',
+                FirebaseAuth.instance.currentUser.displayName,
                 style: kHeaderText.copyWith(color: Colors.grey[800]),
               ),
             ],

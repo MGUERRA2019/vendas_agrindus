@@ -40,7 +40,7 @@ class UserData extends ChangeNotifier {
   ];
 
   loginSetup(String uid) async {
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()

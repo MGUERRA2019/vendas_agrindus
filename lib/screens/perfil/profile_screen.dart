@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vendasagrindus/components/alert_button.dart';
+import 'package:vendasagrindus/screens/login/login_screen.dart';
 import 'package:vendasagrindus/screens/perfil/profile_widgets.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -38,6 +42,47 @@ class ProfileScreen extends StatelessWidget {
               title: Text('Configurações'),
               leading: Icon(Icons.settings),
               onTap: () {},
+            ),
+            ListTile(
+              title: Text('Desconectar'),
+              leading: Icon(Icons.logout),
+              onTap: () {
+                Alert(
+                  context: context,
+                  title: 'DESCONECTAR',
+                  image: Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Icon(
+                      Icons.logout,
+                      color: Colors.blue[800],
+                      size: 50.0,
+                    ),
+                  ),
+                  desc: 'Você deseja mesmo desconectar desta conta?',
+                  style: kAlertCardStyle,
+                  buttons: [
+                    AlertButton(
+                        label: 'Não',
+                        line: Border.all(color: Colors.grey[600]),
+                        labelColor: Colors.grey[600],
+                        hasGradient: false,
+                        cor: Colors.white,
+                        onTap: () {
+                          Navigator.pop(context, false);
+                        }),
+                    AlertButton(
+                        label: 'Sim',
+                        onTap: () async {
+                          await FirebaseAuth.instance.signOut().whenComplete(
+                              () => Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                  (route) => false));
+                        }),
+                  ],
+                ).show();
+              },
             ),
           ],
         ),
