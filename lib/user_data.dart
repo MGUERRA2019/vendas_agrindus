@@ -387,8 +387,7 @@ class UserData extends ChangeNotifier {
     }
     if (orderStatus.values.all((status) => status == 201)) {
       print('Update completed');
-      pedidosSalvos.clear();
-      saveFile();
+      clearSavedOrders();
     } else {
       List<String> aux = [];
       print('Post failed');
@@ -400,6 +399,11 @@ class UserData extends ChangeNotifier {
       String errors = aux.join(', ');
       throw new Exception('Erro nos seguintes pedidos: $errors');
     }
+  }
+
+  clearSavedOrders() {
+    pedidosSalvos.clear();
+    saveFile();
   }
 
   getProdutosEGrupos(String id) async {

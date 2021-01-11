@@ -10,7 +10,6 @@ import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import '../../user_data.dart';
-import 'order_summary_screen.dart';
 
 class EditOrderScreen extends StatefulWidget {
   final Cliente cliente;

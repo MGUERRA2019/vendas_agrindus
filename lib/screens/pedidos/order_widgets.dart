@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/utilities/constants.dart';

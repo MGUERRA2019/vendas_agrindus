@@ -42,7 +42,7 @@ class ProfileBanner extends StatelessWidget {
           height: 100,
           width: double.infinity,
           alignment: Alignment.topLeft,
-          padding: EdgeInsets.fromLTRB(20, 45, 0, 0),
+          padding: EdgeInsets.fromLTRB(25, 55, 0, 0),
           child: Column(
             children: [
               Text(

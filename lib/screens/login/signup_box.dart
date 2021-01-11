@@ -4,18 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
-class SignUpScreen extends StatefulWidget {
+import '../../user_data.dart';
+import '../navigation_screen.dart';
+
+class SignUpBox extends StatefulWidget {
   final Function popScreen;
-  SignUpScreen({@required this.popScreen});
+  SignUpBox({@required this.popScreen});
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _SignUpBoxState createState() => _SignUpBoxState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpBoxState extends State<SignUpBox> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool showSpinner = false;
@@ -40,10 +44,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
             .collection('users')
             .doc(userCredential.user.uid)
             .set({'vendedor': sellerCodeController.text});
+        await Provider.of<UserData>(context, listen: false)
+            .loginSetup(sellerCodeController.text);
         setState(() {
           showSpinner = false;
         });
-        print('Register completed');
+        if (Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR !=
+            null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => NavigationScreen()),
+              (route) => false);
+        }
       } catch (e) {
         setState(() {
           showSpinner = false;
@@ -113,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  RegisterInputBox(
+                  SignUpInputBox(
                     label: 'Endereço de email',
                     inputHint: 'exemplo@agrindus.com.br',
                     keyboard: TextInputType.emailAddress,
@@ -129,7 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     },
                   ),
-                  RegisterInputBox(
+                  SignUpInputBox(
                     label: 'Senha',
                     inputHint: 'Insira uma senha',
                     isPassword: hidePassword,
@@ -159,7 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     },
                   ),
-                  RegisterInputBox(
+                  SignUpInputBox(
                     label: 'Nome',
                     inputHint: 'Insira seu nome e sobrenome',
                     controller: nameController,
@@ -171,7 +183,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     },
                   ),
-                  RegisterInputBox(
+                  SignUpInputBox(
                     label: 'Código de vendedor',
                     inputHint: 'Insira seu código de vendedor',
                     keyboard: TextInputType.number,
@@ -197,6 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding:
                             EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                         onPressed: () {
+                          FocusScope.of(context).unfocus();
                           _validateAccount();
                         },
                         child: Text(
@@ -214,7 +227,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-class RegisterInputBox extends StatelessWidget {
+class SignUpInputBox extends StatelessWidget {
   final String label;
   final String inputHint;
   final bool isPassword;
@@ -223,7 +236,7 @@ class RegisterInputBox extends StatelessWidget {
   final TextEditingController controller;
   final Widget trailingAction;
 
-  RegisterInputBox(
+  SignUpInputBox(
       {this.label,
       this.inputHint,
       this.isPassword = false,

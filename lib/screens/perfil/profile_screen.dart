@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/login/login_screen.dart';
 import 'package:vendasagrindus/screens/perfil/profile_widgets.dart';
+import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -58,7 +60,8 @@ class ProfileScreen extends StatelessWidget {
                       size: 50.0,
                     ),
                   ),
-                  desc: 'Você deseja mesmo desconectar desta conta?',
+                  desc:
+                      'Ao desconectar, todos pedidos salvos serão excluídos. Deseja prosseguir?',
                   style: kAlertCardStyle,
                   buttons: [
                     AlertButton(
@@ -73,6 +76,8 @@ class ProfileScreen extends StatelessWidget {
                     AlertButton(
                         label: 'Sim',
                         onTap: () async {
+                          await Provider.of<UserData>(context, listen: false)
+                              .clearSavedOrders();
                           await FirebaseAuth.instance.signOut().whenComplete(
                               () => Navigator.pushAndRemoveUntil(
                                   context,
