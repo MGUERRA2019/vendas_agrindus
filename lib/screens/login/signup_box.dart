@@ -45,7 +45,7 @@ class _SignUpBoxState extends State<SignUpBox> {
             .doc(userCredential.user.uid)
             .set({'vendedor': sellerCodeController.text});
         await Provider.of<UserData>(context, listen: false)
-            .loginSetup(sellerCodeController.text);
+            .loginSetup(userCredential.user.uid);
         setState(() {
           showSpinner = false;
         });

@@ -230,10 +230,17 @@ class ClientDetailsScreen extends StatelessWidget {
                 } else {
                   return SliverFillRemaining(
                     child: Center(
-                      child: SvgPicture.asset(
-                        'assets/images/not_found.svg',
-                        height: 270,
+                      child: Container(
                         width: 270,
+                        height: 270,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image:
+                                ExactAssetImage('assets/images/not_found.png'),
+                            alignment: Alignment.center,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       ),
                     ),
                   );

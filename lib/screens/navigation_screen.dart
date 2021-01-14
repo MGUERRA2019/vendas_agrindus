@@ -10,6 +10,8 @@ import 'package:vendasagrindus/screens/produtos/product_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class NavigationScreen extends StatefulWidget {
+  final int initialIndex;
+  NavigationScreen({this.initialIndex = 0});
   @override
   _NavigationScreenState createState() => _NavigationScreenState();
 }
@@ -20,7 +22,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void initState() {
     super.initState();
-    currentIndex = 0;
+    currentIndex = widget.initialIndex;
   }
 
   changePage(int index) {
