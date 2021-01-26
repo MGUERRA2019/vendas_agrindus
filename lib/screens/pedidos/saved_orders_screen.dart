@@ -8,6 +8,7 @@ import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
 import 'package:vendasagrindus/screens/pedidos/order_completed_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
+import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -118,6 +119,7 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                     })
               ],
             ),
+            drawer: ProfileDrawer(),
             body: userdata.pedidosSalvos.length > 0
                 ? ListView.builder(
                     physics: BouncingScrollPhysics(),
@@ -151,8 +153,9 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                                                 ['ITENS_DO_PEDIDO']),
                                         DataHelper.brNumber.parse(userdata
                                             .pedidosSalvos[index]['VLR_PED']),
-                                        userdata.pedidosSalvos[index]
-                                            ['PESO_TOTAL'],
+                                        DataHelper.brNumber.parse(
+                                            userdata.pedidosSalvos[index]
+                                                ['CARGA_TOTAL']),
                                         userdata
                                             .getClienteFromPedidosSalvos(index),
                                         isSaved: true,
@@ -161,6 +164,9 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                                             .pedidosSalvos[index]['DT_PED']),
                                         obsText: userdata.pedidosSalvos[index]
                                             ['TEXTO_ESP'],
+                                        clientOrderNumber:
+                                            userdata.pedidosSalvos[index]
+                                                ['RESERVADO13'],
                                       ))).then((value) {
                             userdata.getOrders();
                           });

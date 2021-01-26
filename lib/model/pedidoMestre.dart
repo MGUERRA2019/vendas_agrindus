@@ -25,12 +25,12 @@ class PedidoMestre {
   String nUMEROINTEG;
   String dTLIVRE;
   String nRDUP;
-  String vLRPED;
+  double vLRPED;
   String vLRFAT;
   String pORCDESC1;
   String pORCDESC2;
   String pORCDESC3;
-  String cARGATOTAL;
+  double cARGATOTAL;
   int rESERVADO1;
   int rESERVADO2;
   int rESERVADO3;
@@ -125,28 +125,36 @@ class PedidoMestre {
     nROLISTA = json['NRO_LISTA'];
     tIPOCLI = json['TIPO_CLI'];
     sTATUS = json['STATUS'];
-    aSSINA = (json['ASSINA'] is String) ? 0 : json['ASSINA'];
-    eMITENF = (json['EMITE_NF'] is String) ? 0 : json['EMITE_NF'];
+    aSSINA = (json['ASSINA'] is String)
+        ? 0
+        : json['ASSINA']; //pode receber como nulo
+    eMITENF = (json['EMITE_NF'] is String)
+        ? 0
+        : json['EMITE_NF']; //pode receber como nulo
     eMISSAO = json['EMISSAO'];
     nFISCAL = json['N_FISCAL'];
     sERIE = json['SERIE'];
     nUMEROINTEG = json['NUMERO_INTEG'];
     dTLIVRE = json['DT_LIVRE'];
     nRDUP = json['NR_DUP'];
-    vLRPED = json['VLR_PED'];
+    vLRPED = (json['VLR_PED'] is String) ? 0 : json['VLR_PED'];
     vLRFAT = json['VLR_FAT'];
     pORCDESC1 = json['PORC_DESC1'];
     pORCDESC2 = json['PORC_DESC2'];
     pORCDESC3 = json['PORC_DESC3'];
-    cARGATOTAL = json['CARGA_TOTAL'];
+    cARGATOTAL = (json['CARGA_TOTAL'] is String) ? 0 : json['CARGA_TOTAL'];
     rESERVADO1 = json['RESERVADO1'];
-    rESERVADO2 = (json['RESERVADO2'] is String) ? 0 : json['RESERVADO2'];
+    rESERVADO2 = (json['RESERVADO2'] is String)
+        ? 0
+        : json['RESERVADO2']; //pode receber como nulo
     rESERVADO3 = json['RESERVADO3'];
     rESERVADO4 = json['RESERVADO4'];
     rESERVADO5 = json['RESERVADO5'];
     rESERVADO6 = json['RESERVADO6'];
     rESERVADO7 = json['RESERVADO7'];
-    rESERVADO8 = (json['RESERVADO8'] is String) ? 0 : json['RESERVADO8'];
+    rESERVADO8 = (json['RESERVADO8'] is String)
+        ? 0
+        : json['RESERVADO8']; //pode receber como nulo
     rESERVADO9 = json['RESERVADO9'];
     rESERVADO10 = json['RESERVADO10'];
     rESERVADO11 = json['RESERVADO11'];

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_screen.dart';
+import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import 'clients_search.dart';
@@ -51,6 +52,7 @@ class _ListaClientesState extends State<ListaClientes> {
                 })
           ],
         ),
+        drawer: ProfileDrawer(),
         backgroundColor: kBackgroundColor,
         body: Consumer<UserData>(
           builder: (context, userdata, child) {

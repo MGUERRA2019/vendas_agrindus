@@ -77,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                         label: 'Sim',
                         onTap: () async {
                           await Provider.of<UserData>(context, listen: false)
-                              .clearSavedOrders();
+                              .signOut();
                           await FirebaseAuth.instance.signOut().whenComplete(
                               () => Navigator.pushAndRemoveUntil(
                                   context,

@@ -26,6 +26,7 @@ class OrderSummaryScreen extends StatefulWidget {
   final Cliente cliente;
   final bool isSaved;
   final String obsText;
+  final String clientOrderNumber;
   final int currentOrder;
   final DateTime orderDate;
   OrderSummaryScreen(
@@ -35,6 +36,7 @@ class OrderSummaryScreen extends StatefulWidget {
     this.cliente, {
     this.isSaved = false,
     this.obsText,
+    this.clientOrderNumber,
     this.currentOrder,
     this.orderDate,
   });
@@ -69,16 +71,18 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           cODBARRA: item.barCode,
           iMAGE: item.image,
           pESO: item.weight,
-          gRUPO: '',
+          gRUPO: '', //não utilizável
           tES: widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
           uNIDADE: item.unity,
-          rESERVADO2: 0,
-          rESERVADO5: 0,
-          rESERVADO8: 0,
-          rESERVADO13: '',
-          rESERVADO14: '',
-          rESERVADO15: '',
-          rESERVADO16: '',
+          rESERVADO2: 0, //não incube ao app
+          rESERVADO5: 0, //não incube ao app
+          rESERVADO8: 0, //NULO
+          rESERVADO13:
+              clientNumberController.text, //Número de pedido do cliente
+          rESERVADO14: DateFormat('yyyyMMdd')
+              .format(DateTime.now()), //data do dia do pedido
+          rESERVADO15: '', //não incube ao app
+          rESERVADO16: widget.cliente.cLIENTE, //Código do cliente
         ),
       );
       sequencia++;
@@ -94,7 +98,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     return sum;
   }
 
-  double currentWieght() {
+  double currentWeight() {
     double sum = 0.0;
     for (var item in currentItems) {
       sum += item.pesoTotal;
@@ -116,6 +120,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
       builder: (context, userdata, child) {
         if (widget.obsText != null) {
           obsController.text = widget.obsText;
+        }
+        if (widget.clientOrderNumber != null) {
+          clientNumberController.text = widget.clientOrderNumber;
         }
         return ModalProgressHUD(
           inAsyncCall: showSpinner,
@@ -296,7 +303,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             DetailItem(
                               title: 'Peso total:',
                               description:
-                                  '${DataHelper.brNumber.format(currentWieght())} kg',
+                                  '${DataHelper.brNumber.format(currentWeight())} kg',
                               colour: Colors.blueGrey[700],
                             ),
                             DetailItem(
@@ -329,20 +336,24 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
                 SummaryButton(
                   saveFunction: () {
+                    FocusScope.of(context).unfocus();
                     var newOrder = PedidoMestre(
                       nUMEROSFA: userdata.vendedor.pROXIMOPED,
                       cLIENTE: widget.cliente.cLIENTE,
                       cONDPAGTO: widget.cliente.cONDPAGTO,
                       vENDEDOR: userdata.vendedor.vENDEDOR,
-                      dTPED: DateFormat('yyyyMMdd').format(DateTime.now()),
+                      dTPED: DateFormat('yyyyMMdd')
+                          .format(DateTime.now()), //data do dia do pedido
                       nROLISTA: widget.cliente.pRIORIDADE.toString(),
                       tIPOCLI: widget.cliente.tIPOCLI,
-                      vLRPED: DataHelper.brNumber.format(currentTotal()),
+                      vLRPED: currentTotal(),
+                      cARGATOTAL: currentWeight(),
                       nOMECLIENTE: widget.cliente.nOMFANTASIA,
                       tEXTOESP: obsController.text,
-                      pESOTOTAL: currentWieght(),
-                      rESERVADO2: 0,
-                      rESERVADO8: 0,
+                      rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
+                          .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
+                      // rESERVADO8: 0, //NULO
+                      rESERVADO13: clientNumberController.text,
                       iTENSDOPEDIDO:
                           _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                     );
@@ -350,6 +361,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   sendFunction: () async {
+                    FocusScope.of(context).unfocus();
                     setState(() {
                       showSpinner = true;
                     });
@@ -367,13 +379,18 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                 'VENDEDOR': userdata.vendedor.vENDEDOR,
                                 'TEXTO_ESP':
                                     obsController.text, //não pode ser vazio
-                                'DT_PED': DateFormat('yyyyMMdd')
-                                    .format(DateTime.now()),
+                                'DT_PED': DateFormat('yyyyMMdd').format(
+                                    DateTime.now()), //data do dia do pedido
+                                'VLR_PED': currentTotal(),
+                                'CARGA_TOTAL': currentWeight(),
                                 'NRO_LISTA':
                                     widget.cliente.pRIORIDADE.toString(),
                                 'TIPO_CLI': widget.cliente.tIPOCLI,
-                                'RESERVADO2': 0,
-                                'RESERVADO8': 0,
+                                'RESERVADO2': int.parse(widget
+                                    .cliente
+                                    .tIPOMOVIMENTO
+                                    .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
+                                // 'RESERVADO8': 0, //NULO
                               }
                             ],
                           },
@@ -390,18 +407,22 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           'QTDE': item.qTDE,
                           'VLR_UNIT': item.vLRUNIT,
                           'VLR_TOTAL': item.vLRTOTAL,
-                          'DT_ENTREGA': item.dTENTREGA,
+                          'DT_ENTREGA': item
+                              .dTENTREGA, //data de entrega prevista do pedido
                           'UNIDADE': item.uNIDADE,
                           'TES': widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
-                          'GRUPO': '',
+                          'GRUPO': '', //não utilizável
                           'NRO_LISTA': item.nROLISTA,
-                          'RESERVADO2': 0,
-                          'RESERVADO5': 0,
-                          'RESERVADO8': 0,
-                          'RESERVADO13': '',
-                          'RESERVADO14': '',
-                          'RESERVADO15': '',
-                          'RESERVADO16': '',
+                          'RESERVADO2': 0, //não incube ao app
+                          'RESERVADO5': 0, //não incube ao app
+                          // 'RESERVADO8': 0, //NULO
+                          'RESERVADO13': clientNumberController
+                              .text, //Número de pedido do cliente
+                          'RESERVADO14': DateFormat('yyyyMMdd')
+                              .format(DateTime.now()), //data do dia do pedido
+                          'RESERVADO15': '', //não incube ao app
+                          'RESERVADO16':
+                              widget.cliente.cLIENTE, //Código do cliente
                         });
                       }
                       var bodyItens = jsonEncode(
@@ -411,6 +432,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           },
                         ],
                       );
+                      print(bodyMestre);
+                      print(bodyItens);
                       final responseMestre = await http.post(
                         urlMestre,
                         headers: {'Content-Type': 'application/json'},

@@ -192,8 +192,10 @@ class CartView extends StatelessWidget {
                             ),
                             Text('Peso bruto: ${item.pESOBRUTO} kg',
                                 style: kDescriptionTextStyle),
+                            Text('Qtde por embalagem: ${item.qDTEPEMBAL}',
+                                style: kDescriptionTextStyle),
                             Text('Código do Produto: ${item.cPRODPALM}',
-                                style: kDescriptionTextStyle)
+                                style: kDescriptionTextStyle),
                           ],
                         ),
                       ),

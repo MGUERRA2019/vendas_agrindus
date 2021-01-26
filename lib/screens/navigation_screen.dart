@@ -4,6 +4,7 @@ import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
+import 'package:vendasagrindus/screens/pedidos/order_list/order_list_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/saved_orders_screen.dart';
 import 'package:vendasagrindus/screens/perfil/profile_screen.dart';
 import 'package:vendasagrindus/screens/produtos/product_screen.dart';
@@ -35,7 +36,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     ListaClientes(),
     SavedOrdersScreen(),
     ProductScreen(),
-    ProfileScreen(),
+    OrderListScreen(),
   ];
 
   Future<bool> _exitPressed() {
@@ -108,16 +109,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 Icons.folder_open_outlined,
                 color: Colors.white,
               ),
-              title: Text('Pedidos'),
+              title: Text('Salvos'),
             ),
             BubbleBottomBarItem(
               backgroundColor: Colors.white,
               icon: Icon(
-                Icons.shopping_basket,
+                Icons.shopping_basket_outlined,
                 color: Colors.white,
               ),
               activeIcon: Icon(
-                Icons.shopping_basket,
+                Icons.shopping_basket_outlined,
                 color: Colors.white,
               ),
               title: Text('Produtos'),
@@ -125,14 +126,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
             BubbleBottomBarItem(
               backgroundColor: Colors.white,
               icon: Icon(
-                Icons.person_outline,
+                Icons.receipt_long_outlined,
                 color: Colors.white,
               ),
               activeIcon: Icon(
-                Icons.person_outline,
+                Icons.receipt_long_outlined,
                 color: Colors.white,
               ),
-              title: Text('Perfil'),
+              title: Text('Pedidos'),
             ),
           ],
           onTap: changePage,

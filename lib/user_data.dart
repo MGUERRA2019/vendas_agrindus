@@ -13,6 +13,7 @@ import 'package:vendasagrindus/model/grupos.dart';
 import 'package:vendasagrindus/model/listaPreco.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
+import 'package:vendasagrindus/model/pedidoMestreFull.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/model/produtosImagem.dart';
 import 'package:vendasagrindus/model/tipoMovimento.dart';
@@ -32,6 +33,7 @@ class UserData extends ChangeNotifier {
   List<int> listNumber = List<int>();
   Map<String, CartItem> cart = Map<String, CartItem>();
   List<dynamic> pedidosSalvos = [];
+  List<PedidoMestreFull> allData = List<PedidoMestreFull>();
   List<Grupos> grupos = [
     Grupos(
       dESCRICAO: 'TODOS',
@@ -57,6 +59,11 @@ class UserData extends ChangeNotifier {
     });
   }
 
+  signOut() async {
+    await clearSavedOrders();
+    _resetData();
+  }
+
   getVendedor(String id) async {
     var dadosVendedor = await _db.getVendedor(id);
     vendedor = Vendedor.fromJson(dadosVendedor[0]);
@@ -75,6 +82,10 @@ class UserData extends ChangeNotifier {
     await _getTipoMovimento();
     await _getCondPagto();
     notifyListeners();
+  }
+
+  Cliente getClienteFromCod(String codCliente) {
+    return clientes.singleWhere((element) => element.cLIENTE == codCliente);
   }
 
   Cliente getClienteFromPedidosSalvos(int index) {
@@ -267,6 +278,18 @@ class UserData extends ChangeNotifier {
     }
   }
 
+  void getPedidoMestreFull() async {
+    Iterable aux = await _db.getPedidoMestreFull(vendedor.vENDEDOR);
+    try {
+      List<PedidoMestreFull> pedidosMestreFull =
+          aux.map((model) => PedidoMestreFull.fromJson(model)).toList();
+      allData = pedidosMestreFull;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
     return File("${directory.path}/orders.json");
@@ -319,11 +342,13 @@ class UserData extends ChangeNotifier {
                 'COND_PAGTO': pedido['COND_PAGTO'],
                 'VENDEDOR': pedido['VENDEDOR'],
                 'TEXTO_ESP': pedido['TEXTO_ESP'],
-                'DT_PED': pedido['DT_PED'],
+                'DT_PED': pedido['DT_PED'], //data do dia do pedido
+                'VLR_PED': pedido['VLR_PED'], //valor total do pedido
+                'CARGA_TOTAL': pedido['CARGA_TOTAL'], //peso total do pedido
                 'NRO_LISTA': pedido['NRO_LISTA'],
                 'TIPO_CLI': pedido['TIPO_CLI'],
                 'RESERVADO2': pedido['RESERVADO2'],
-                'RESERVADO8': pedido['RESERVADO8'],
+                // 'RESERVADO8': pedido['RESERVADO8'],
               }
             ],
           },
@@ -347,7 +372,7 @@ class UserData extends ChangeNotifier {
           'NRO_LISTA': item['NRO_LISTA'],
           'RESERVADO2': item['RESERVADO2'],
           'RESERVADO5': item['RESERVADO5'],
-          'RESERVADO8': item['RESERVADO8'],
+          // 'RESERVADO8': item['RESERVADO8'],
           'RESERVADO13': item['RESERVADO13'],
           'RESERVADO14': item['RESERVADO14'],
           'RESERVADO15': item['RESERVADO15'],
@@ -401,9 +426,25 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  clearSavedOrders() {
+  clearSavedOrders() async {
     pedidosSalvos.clear();
-    saveFile();
+    await saveFile();
+  }
+
+  _resetData() {
+    vendedor = Vendedor();
+    clientes = List<Cliente>();
+    produtos = List<Produto>();
+    grupoPreco = Map<int, List<ListaPreco>>();
+    listNumber = List<int>();
+    cart = Map<String, CartItem>();
+    pedidosSalvos = [];
+    grupos = [
+      Grupos(
+        dESCRICAO: 'TODOS',
+        gRUPO: '',
+      ),
+    ];
   }
 
   getProdutosEGrupos(String id) async {

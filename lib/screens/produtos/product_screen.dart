@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/components/search_box.dart';
 import 'package:vendasagrindus/model/produto.dart';
+import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import 'product_screen_components.dart';
@@ -72,6 +73,7 @@ class _ProductScreenState extends State<ProductScreen> {
             elevation: 0,
             title: Text('Produtos'),
           ),
+          drawer: ProfileDrawer(),
           body: Column(
             children: [
               SearchBox(

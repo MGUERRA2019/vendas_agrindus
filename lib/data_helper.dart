@@ -147,6 +147,18 @@ class DataHelper {
     }
   }
 
+  Future getPedidoMestreFull(String vendedor) async {
+    var url = baseUrl + 'GetPedidoMestreFull/$vendedor';
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print('GetPedidoMestreFull');
+      print(response.statusCode);
+    }
+  }
+
   Future getPedidoItem(String numPedido) async {
     var url = baseUrl + 'GetPedidoItens/' + numPedido;
     http.Response response = await http.get(url);
