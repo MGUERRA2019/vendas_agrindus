@@ -8,6 +8,7 @@ class OrderListBloc {
   List<PedidoMestreFull> shownData = List<PedidoMestreFull>();
   StreamController<List<PedidoMestreFull>> _streamController =
       StreamController();
+  bool hasMore = true;
   Sink get input => _streamController.sink;
   Stream get output => _streamController.stream;
 
@@ -32,9 +33,29 @@ class OrderListBloc {
     }
   }
 
+  cancelQuery() {
+    _currentMax = 9;
+    hasMore = true;
+    shownData = List<PedidoMestreFull>();
+    shownData.addAll(_allData.getRange(0, 9).toList());
+    input.add(shownData);
+  }
+
+  queryDatabyDate(DateTime date) {
+    shownData = List<PedidoMestreFull>();
+    for (var item in _allData) {
+      if (item.dTPED == date) {
+        shownData.add(item);
+      }
+    }
+    hasMore = false;
+    input.add(shownData);
+  }
+
   addMoreData() {
     _currentMax += 5;
     if (_currentMax + 5 > _allData.length) {
+      hasMore = false;
       for (var item
           in _allData.getRange(_currentMax + 1, _allData.length - 1)) {
         shownData.add(item);

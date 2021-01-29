@@ -125,8 +125,6 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                           MaterialPageRoute(
                               builder: (context) => OrderSummaryScreen(
                                   userdata.cart.values.toList(),
-                                  userdata.getTotal(),
-                                  userdata.getPesoTotal(),
                                   widget.cliente)));
                     }
                   },

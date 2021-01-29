@@ -134,7 +134,7 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                           DetailItem(
                               title: 'Total:',
                               description:
-                                  'R\$ ${userdata.pedidosSalvos[index]['VLR_PED']}'),
+                                  'R\$ ${DataHelper.brNumber.format(userdata.pedidosSalvos[index]['VLR_PED'])}'),
                           DetailItem(
                               title: 'Número de itens:',
                               description: userdata
@@ -144,6 +144,8 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                         ],
                         isInteractive: true,
                         onPressed: () {
+                          print(
+                              userdata.pedidosSalvos[index]['ITENS_DO_PEDIDO']);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -151,17 +153,14 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                                         _toCartItem(
                                             userdata.pedidosSalvos[index]
                                                 ['ITENS_DO_PEDIDO']),
-                                        DataHelper.brNumber.parse(userdata
-                                            .pedidosSalvos[index]['VLR_PED']),
-                                        DataHelper.brNumber.parse(
-                                            userdata.pedidosSalvos[index]
-                                                ['CARGA_TOTAL']),
                                         userdata
                                             .getClienteFromPedidosSalvos(index),
                                         isSaved: true,
                                         currentOrder: index,
-                                        orderDate: DateTime.parse(userdata
-                                            .pedidosSalvos[index]['DT_PED']),
+                                        orderDate: DateTime.parse(
+                                            userdata.pedidosSalvos[index]
+                                                    ['ITENS_DO_PEDIDO'][0]
+                                                ['DT_ENTREGA']),
                                         obsText: userdata.pedidosSalvos[index]
                                             ['TEXTO_ESP'],
                                         clientOrderNumber:

@@ -33,6 +33,7 @@ class UserData extends ChangeNotifier {
   List<int> listNumber = List<int>();
   Map<String, CartItem> cart = Map<String, CartItem>();
   List<dynamic> pedidosSalvos = [];
+  Map<String, int> backupAmount;
   List<PedidoMestreFull> allData = List<PedidoMestreFull>();
   List<Grupos> grupos = [
     Grupos(
@@ -85,7 +86,8 @@ class UserData extends ChangeNotifier {
   }
 
   Cliente getClienteFromCod(String codCliente) {
-    return clientes.singleWhere((element) => element.cLIENTE == codCliente);
+    return clientes.singleWhere((element) => element.cLIENTE == codCliente,
+        orElse: () => null);
   }
 
   Cliente getClienteFromPedidosSalvos(int index) {
@@ -174,9 +176,25 @@ class UserData extends ChangeNotifier {
     notifyListeners();
   }
 
-  getCart(List<CartItem> items) {
+  getCart(List<CartItem> items, {bool backup = false}) {
+    if (!backup) {
+      backupAmount = Map<String, int>();
+    }
     for (var item in items) {
       cart[item.code] = item;
+      if (backup) {
+        cart[item.code].amount = backupAmount[item.code];
+      } else {
+        backupAmount[item.code] = item.amount;
+      }
+    }
+    if (backup) {
+      notifyListeners();
+      cart.forEach((key, value) {
+        if (value.amount < 1) {
+          cart.remove(key);
+        }
+      });
     }
   }
 
@@ -348,7 +366,6 @@ class UserData extends ChangeNotifier {
                 'NRO_LISTA': pedido['NRO_LISTA'],
                 'TIPO_CLI': pedido['TIPO_CLI'],
                 'RESERVADO2': pedido['RESERVADO2'],
-                // 'RESERVADO8': pedido['RESERVADO8'],
               }
             ],
           },
@@ -372,7 +389,6 @@ class UserData extends ChangeNotifier {
           'NRO_LISTA': item['NRO_LISTA'],
           'RESERVADO2': item['RESERVADO2'],
           'RESERVADO5': item['RESERVADO5'],
-          // 'RESERVADO8': item['RESERVADO8'],
           'RESERVADO13': item['RESERVADO13'],
           'RESERVADO14': item['RESERVADO14'],
           'RESERVADO15': item['RESERVADO15'],

@@ -43,7 +43,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       context: context,
       title: 'AVISO',
       desc:
-          'Ao sair desta operação, o pedido não será salvo. Deseja continuar?',
+          'Ao sair desta operação, o pedido não será alterado. Deseja continuar?',
       style: kAlertCardStyle,
       buttons: [
         AlertButton(
@@ -58,6 +58,8 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
         AlertButton(
             label: 'Sim',
             onTap: () {
+              Provider.of<UserData>(context, listen: false)
+                  .getCart(widget.cartItems, backup: true);
               Navigator.pop(context, true);
             }),
       ],
@@ -121,7 +123,11 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   label: 'CONTINUAR',
                   onPressed: () {
                     if (userdata.cart.isNotEmpty) {
-                      Navigator.pop(context, userdata.cart.values.toList());
+                      List<CartItem> cartItens = userdata.cart.values.toList();
+                      Provider.of<UserData>(context, listen: false)
+                          .cart
+                          .clear();
+                      Navigator.pop(context, cartItens);
                     }
                   },
                 ),

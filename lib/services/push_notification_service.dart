@@ -12,7 +12,7 @@ class PushNotificationService {
 
   Future initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('ic_launcher');
+        AndroidInitializationSettings('agrindusnotification');
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
             onDidReceiveLocalNotification: onDidReceiveLocalNotification);

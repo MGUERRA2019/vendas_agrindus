@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -21,8 +20,7 @@ import 'package:http/http.dart' as http;
 
 class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> items;
-  final double total;
-  final double pesoTotal;
+
   final Cliente cliente;
   final bool isSaved;
   final String obsText;
@@ -31,8 +29,6 @@ class OrderSummaryScreen extends StatefulWidget {
   final DateTime orderDate;
   OrderSummaryScreen(
     this.items,
-    this.total,
-    this.pesoTotal,
     this.cliente, {
     this.isSaved = false,
     this.obsText,
@@ -51,8 +47,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
 
   List<CartItem> currentItems = List<CartItem>();
   DateTime date;
-  TextEditingController obsController = TextEditingController();
-  TextEditingController clientNumberController = TextEditingController();
+  TextEditingController obsController;
+  TextEditingController clientNumberController;
   bool showSpinner = false;
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
     List<PedidoItem> aux = [];
@@ -76,7 +72,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           uNIDADE: item.unity,
           rESERVADO2: 0, //não incube ao app
           rESERVADO5: 0, //não incube ao app
-          rESERVADO8: 0, //NULO
           rESERVADO13:
               clientNumberController.text, //Número de pedido do cliente
           rESERVADO14: DateFormat('yyyyMMdd')
@@ -112,6 +107,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     if (date == null) {
       date = DateTime.now();
     }
+    obsController = TextEditingController();
+    clientNumberController = TextEditingController();
   }
 
   @override
@@ -140,9 +137,11 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                 builder: (context) => EditOrderScreen(
                                     widget.cliente, currentItems)),
                           );
-                          setState(() {
-                            currentItems = newItens;
-                          });
+                          if (newItens != null) {
+                            setState(() {
+                              currentItems = newItens;
+                            });
+                          }
                         },
                       ),
                       IconButton(
@@ -352,11 +351,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       tEXTOESP: obsController.text,
                       rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
                           .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
-                      // rESERVADO8: 0, //NULO
                       rESERVADO13: clientNumberController.text,
                       iTENSDOPEDIDO:
                           _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                     );
+                    if (widget.isSaved) {
+                      userdata.removeOrder(widget.currentOrder);
+                    }
                     userdata.saveOrder(newOrder);
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   },
@@ -390,7 +391,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                     .cliente
                                     .tIPOMOVIMENTO
                                     .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
-                                // 'RESERVADO8': 0, //NULO
                               }
                             ],
                           },
@@ -415,7 +415,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           'NRO_LISTA': item.nROLISTA,
                           'RESERVADO2': 0, //não incube ao app
                           'RESERVADO5': 0, //não incube ao app
-                          // 'RESERVADO8': 0, //NULO
                           'RESERVADO13': clientNumberController
                               .text, //Número de pedido do cliente
                           'RESERVADO14': DateFormat('yyyyMMdd')

@@ -43,7 +43,7 @@ class _SignUpBoxState extends State<SignUpBox> {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user.uid)
-            .set({'vendedor': sellerCodeController.text});
+            .set({'vendedor': sellerCodeController.text}); //set here the IP
         await Provider.of<UserData>(context, listen: false)
             .loginSetup(userCredential.user.uid);
         setState(() {
