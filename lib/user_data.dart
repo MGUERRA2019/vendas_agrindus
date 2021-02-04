@@ -22,10 +22,12 @@ import 'package:darq/darq.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 
-//Provider class
+//Single Provider class
+//Funções get usadas para recuperar os dados do banco de dados via http (ver data_helper.dart)
 
 class UserData extends ChangeNotifier {
   var _db = DataHelper();
+  String baseUrl;
   Vendedor vendedor = Vendedor();
   List<Cliente> clientes = List<Cliente>();
   List<Produto> produtos = List<Produto>();
@@ -43,6 +45,7 @@ class UserData extends ChangeNotifier {
   ];
 
   loginSetup(String uid) async {
+    //O login recupera o número do vendedor e o base url que será usado
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -51,6 +54,7 @@ class UserData extends ChangeNotifier {
       if (documentSnapshot.exists) {
         var data = documentSnapshot.data();
         String id = data['vendedor'];
+        baseUrl = data['url'];
         await getVendedor(id);
         await getClientes();
         await getProdutosEGrupos(id);
@@ -61,24 +65,29 @@ class UserData extends ChangeNotifier {
   }
 
   signOut() async {
+    //Função de desconexão
     await clearSavedOrders();
     _resetData();
   }
 
   getVendedor(String id) async {
-    var dadosVendedor = await _db.getVendedor(id);
+    var dadosVendedor =
+        await _db.getData(_db.getVendedor, baseUrl, additionalData1: id);
     vendedor = Vendedor.fromJson(dadosVendedor[0]);
     notifyListeners();
   }
 
   updateVendedor() async {
-    var dadosVendedor = await _db.getVendedor(vendedor.vENDEDOR);
+    //Função para atualizar o vendedor (atualizar o número SFA, ou seja: número do pedido)
+    var dadosVendedor = await _db.getData(_db.getVendedor, baseUrl,
+        additionalData1: vendedor.vENDEDOR);
     vendedor = Vendedor.fromJson(dadosVendedor[0]);
     notifyListeners();
   }
 
   getClientes() async {
-    Iterable listaClientes = await _db.getClientes(vendedor.vENDEDOR);
+    Iterable listaClientes = await _db.getData(_db.getClientes, baseUrl,
+        additionalData1: vendedor.vENDEDOR);
     clientes = listaClientes.map((model) => Cliente.fromJson(model)).toList();
     await _getTipoMovimento();
     await _getCondPagto();
@@ -86,6 +95,7 @@ class UserData extends ChangeNotifier {
   }
 
   Cliente getClienteFromCod(String codCliente) {
+    //Função para recuperar o cliente dado seu código
     return clientes.singleWhere((element) => element.cLIENTE == codCliente,
         orElse: () => null);
   }
@@ -96,13 +106,14 @@ class UserData extends ChangeNotifier {
   }
 
   getProdutos() async {
-    Iterable listaProdutos = await _db.getProdutos();
+    Iterable listaProdutos = await _db.getData(_db.getProdutos, baseUrl);
     produtos = listaProdutos.map((model) => Produto.fromJson(model)).toList();
   }
 
   _getGrupoProduto() async {
+    //Ao recuperar os grupos, são associados aos produtos na mesma função
     List<GrupoProdutos> grupoProdutos = List<GrupoProdutos>();
-    var listaGP = await _db.getGrupoProdutos();
+    var listaGP = await _db.getData(_db.getGrupoProdutos, baseUrl);
     for (var item in listaGP) {
       grupoProdutos.add(GrupoProdutos.fromJson(item));
     }
@@ -119,7 +130,8 @@ class UserData extends ChangeNotifier {
   }
 
   _getGrupos() async {
-    Iterable listaGr = await _db.getGrupos();
+    //Ao recuperar os grupos, são associados aos produtos na mesma função
+    Iterable listaGr = await _db.getData(_db.getGrupos, baseUrl);
     for (var item in listaGr) {
       grupos.add(Grupos.fromJson(item));
     }
@@ -134,6 +146,7 @@ class UserData extends ChangeNotifier {
   }
 
   atribuirPreco(int key) {
+    //Função para atribuir o preço do produto a partir da lista de preço de número int key
     for (var item in grupoPreco[key]) {
       for (var produto in produtos) {
         if (produto.cPRODPALM == item.cPRODPALM) {
@@ -144,6 +157,8 @@ class UserData extends ChangeNotifier {
   }
 
   removerQtde(Produto produto) {
+    //Função para diminuir quantidade de determinado Produto produto no carrinho
+    //Se a quantidade chegar a zero o item será removido do carrinho
     if (cart.containsKey(produto.cPRODPALM)) {
       if (cart[produto.cPRODPALM].amount > 0) {
         cart[produto.cPRODPALM].amount--;
@@ -156,6 +171,7 @@ class UserData extends ChangeNotifier {
   }
 
   addCartItem(Produto produto) {
+    //Função para aumentar quantidade de determinado Produto produto no carrinho
     if (cart.containsKey(produto.cPRODPALM)) {
       cart[produto.cPRODPALM].amount += 1;
     } else {
@@ -177,6 +193,8 @@ class UserData extends ChangeNotifier {
   }
 
   getCart(List<CartItem> items, {bool backup = false}) {
+    //Função para recuperar o carrinho no provider com determinado carrinho salvo (items)
+    //Backup utilizado para salvar o carrinho antes do edit_order_screen.dart
     if (!backup) {
       backupAmount = Map<String, int>();
     }
@@ -215,8 +233,11 @@ class UserData extends ChangeNotifier {
   }
 
   _atribuirImagens() async {
+    //Função para atribuir imagens e descrição dos produtos
+    //São recuperadas por função get e associados a classe Produto
+    //imagem = String url
     List<ProdutoImagem> imageList = List<ProdutoImagem>();
-    var aux = await _db.getImagemPreco();
+    var aux = await _db.getData(_db.getProdutosImagem, baseUrl);
     for (var item in aux) {
       imageList.add(ProdutoImagem.fromJson(item));
     }
@@ -232,8 +253,10 @@ class UserData extends ChangeNotifier {
   }
 
   _getListaPreco(String id) async {
+    //Função get para recuperar a lista de preços e ordernar em ordem númerica
     List<ListaPreco> precos = List<ListaPreco>();
-    var listaPreco = await _db.getListaPreco(id);
+    var listaPreco =
+        await _db.getData(_db.getListaPreco, baseUrl, additionalData1: id);
     for (var item in listaPreco) {
       precos.add(ListaPreco.fromJson(item));
     }
@@ -248,8 +271,9 @@ class UserData extends ChangeNotifier {
   }
 
   _getTipoMovimento() async {
+    //Ao recuperar o tipo movimento, é associado ao cliente na mesma função
     List<TipoMovimento> listaMovimentos = List<TipoMovimento>();
-    Iterable aux = await _db.getTipoMovimento();
+    Iterable aux = await _db.getData(_db.getTipoMovimento, baseUrl);
     listaMovimentos =
         aux.map((model) => TipoMovimento.fromJson(model)).toList();
     for (var item in listaMovimentos) {
@@ -262,8 +286,9 @@ class UserData extends ChangeNotifier {
   }
 
   _getCondPagto() async {
+    //Ao recuperar a condição de pagamento, é associada ao cliente na mesma função
     List<CondPagto> listaCondPagtos = List<CondPagto>();
-    Iterable aux = await _db.getCondPagto();
+    Iterable aux = await _db.getData(_db.getCondPagto, baseUrl);
     listaCondPagtos = aux.map((model) => CondPagto.fromJson(model)).toList();
     for (var item in listaCondPagtos) {
       for (var cliente in clientes) {
@@ -275,7 +300,8 @@ class UserData extends ChangeNotifier {
   }
 
   Future<List<PedidoMestre>> getPedidoMestre(String codCliente) async {
-    Iterable aux = await _db.getPedidoMestre(vendedor.vENDEDOR, codCliente);
+    Iterable aux = await _db.getData(_db.getPedidoMestre, baseUrl,
+        additionalData1: vendedor.vENDEDOR, additionalData2: codCliente);
     try {
       List<PedidoMestre> pedidosMestre =
           aux.map((model) => PedidoMestre.fromJson(model)).toList();
@@ -288,7 +314,8 @@ class UserData extends ChangeNotifier {
 
   Future<List<PedidoItem>> getPedidoItem(String numeroDoPedido) async {
     try {
-      Iterable aux = await _db.getPedidoItem(numeroDoPedido);
+      Iterable aux = await _db.getData(_db.getPedidoItem, baseUrl,
+          additionalData1: numeroDoPedido);
       return aux.map((model) => PedidoItem.fromJson(model)).toList();
     } catch (e) {
       print(e);
@@ -297,7 +324,8 @@ class UserData extends ChangeNotifier {
   }
 
   void getPedidoMestreFull() async {
-    Iterable aux = await _db.getPedidoMestreFull(vendedor.vENDEDOR);
+    Iterable aux = await _db.getData(_db.getPedidoMestreFull, baseUrl,
+        additionalData1: vendedor.vENDEDOR);
     try {
       List<PedidoMestreFull> pedidosMestreFull =
           aux.map((model) => PedidoMestreFull.fromJson(model)).toList();
@@ -309,17 +337,20 @@ class UserData extends ChangeNotifier {
   }
 
   Future<File> _getFile() async {
+    //Função para para recuperar os pedidos salvos, se não houver arquivo, o mesmo será criado
     final directory = await getApplicationDocumentsDirectory();
     return File("${directory.path}/orders.json");
   }
 
   saveFile() async {
+    //Função genérica para salvar o arquivo independente da mudança
     var file = await _getFile();
     String data = json.encode(pedidosSalvos);
     file.writeAsString(data);
   }
 
   saveOrder(PedidoMestre newOrder) async {
+    //Função para salvar o pedido no arquivo
     var item = newOrder.toJson();
     pedidosSalvos.add(item);
     saveFile();
@@ -327,6 +358,7 @@ class UserData extends ChangeNotifier {
   }
 
   getOrders() async {
+    //Função para recuperar os pedidos do arquivo
     try {
       final file = await _getFile();
       var data = await file.readAsString();
@@ -338,12 +370,16 @@ class UserData extends ChangeNotifier {
   }
 
   removeOrder(int index) async {
+    //Função para remover o pedido no arquivo
     pedidosSalvos.removeAt(index);
     saveFile();
     notifyListeners();
   }
 
   sendAllOrders() async {
+    //Função para enviar todos pedidos salvos no arquivo
+    //Se a operação for completa, serão removidos todos pedidos salvos
+
     final String urlMestre = baseUrl + 'PedidoMestre';
     final String urlItens = baseUrl + 'PedidoItens';
     Map<int, int> orderStatus = Map<int, int>();
@@ -443,11 +479,13 @@ class UserData extends ChangeNotifier {
   }
 
   clearSavedOrders() async {
+    //Função para remover todos pedidos salvos
     pedidosSalvos.clear();
     await saveFile();
   }
 
   _resetData() {
+    //Função para zerar todos os dados do provedor
     vendedor = Vendedor();
     clientes = List<Cliente>();
     produtos = List<Produto>();
@@ -464,6 +502,7 @@ class UserData extends ChangeNotifier {
   }
 
   getProdutosEGrupos(String id) async {
+    //Função para associar todos os dados concernentes aos produtos
     await getProdutos();
     await _getGrupoProduto();
     await _getGrupos();

@@ -6,6 +6,7 @@ import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class GridItem extends StatelessWidget {
+  //Widget com visualização dos produtos em forma de grade
   GridItem({@required this.item});
 
   final Produto item;
@@ -67,6 +68,7 @@ class GridItem extends StatelessWidget {
 }
 
 class ListItem extends StatelessWidget {
+  //Widget com visualização dos produtos em forma de lista
   const ListItem({@required this.item});
 
   final Produto item;
@@ -143,6 +145,7 @@ class ListItem extends StatelessWidget {
 }
 
 class ListViewIcon extends StatelessWidget {
+  //Widget que determina o tipo de visualização dos produtos (Grade ou Lista)
   final ViewType viewStyle;
   final ViewType currentView;
   final Function onPressed;

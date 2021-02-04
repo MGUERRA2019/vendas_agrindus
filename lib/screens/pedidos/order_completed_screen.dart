@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lottie/lottie.dart';
 
+//Tela para mostrar ao usuário que o pedido foi efetuado com sucesso com animação Lottie
+
 class OrderCompletedScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {

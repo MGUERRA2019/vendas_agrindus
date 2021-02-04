@@ -13,6 +13,7 @@ import '../../user_data.dart';
 import '../navigation_screen.dart';
 
 class SignUpBox extends StatefulWidget {
+  //Caixa de cadastro de usuário
   final Function popScreen;
   SignUpBox({@required this.popScreen});
   @override
@@ -30,6 +31,8 @@ class _SignUpBoxState extends State<SignUpBox> {
   TextEditingController sellerCodeController = TextEditingController();
 
   void _validateAccount() async {
+    //Validação da conta e registro no Firebase Auth com email, senha. 
+    //Registro no Cloud Firestore do código do vendedor, tipo de uso e url (configurado como padrão o ip de homologação)
     if (formKey.currentState.validate()) {
       print('All ok');
       try {
@@ -43,7 +46,12 @@ class _SignUpBoxState extends State<SignUpBox> {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user.uid)
-            .set({'vendedor': sellerCodeController.text}); //set here the IP
+            .set({
+          'vendedor': sellerCodeController.text,
+          'tipo': 'usuário',
+          'url':
+              'http://189.57.124.26:8082/isapsfa/ISAPServerSFA.dll/datasnap/rest/TSM/'
+        }); //set here the IP
         await Provider.of<UserData>(context, listen: false)
             .loginSetup(userCredential.user.uid);
         setState(() {

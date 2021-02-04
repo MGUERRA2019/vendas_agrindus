@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -11,8 +10,9 @@ import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
 import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-
 import '../../data_helper.dart';
+
+//Tela que mostra todos pedidos salvos pelo vendedor
 
 class SavedOrdersScreen extends StatefulWidget {
   @override
@@ -23,6 +23,7 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
   bool showSpinner = false;
 
   List<CartItem> _toCartItem(List<dynamic> itensDoPedido) {
+    //Conversão de Pedido Item para itens do carrinho
     List<CartItem> aux = [];
     for (var item in itensDoPedido) {
       if (item is Map) {

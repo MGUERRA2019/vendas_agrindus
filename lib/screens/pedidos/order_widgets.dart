@@ -8,6 +8,7 @@ import '../../data_helper.dart';
 import '../../user_data.dart';
 
 class TotalSummary extends StatelessWidget {
+  //Widget que mostra o valor do pedido
   final String value;
 
   TotalSummary({this.value});
@@ -37,6 +38,7 @@ class TotalSummary extends StatelessWidget {
 }
 
 class OrderConfirmButton extends StatelessWidget {
+  //Widget que direciona o pedido para a tela de resumo do pedido (order_summary_screen.dart)
   final String label;
   final Function onPressed;
 
@@ -68,6 +70,7 @@ class OrderConfirmButton extends StatelessWidget {
 }
 
 class SummaryButton extends StatelessWidget {
+  //Widget que definde se o pedido será salvo (saveFunction) ou enviado (sendFunction)
   final Function saveFunction;
   final Function sendFunction;
 
@@ -125,6 +128,7 @@ class SummaryButton extends StatelessWidget {
 }
 
 class CartView extends StatelessWidget {
+  //Widget que mostra todos produtos na tela para a formação do carrinho
   const CartView({@required this.item});
 
   final Produto item;
@@ -276,6 +280,7 @@ class CartView extends StatelessWidget {
 }
 
 class FinalItem extends StatelessWidget {
+  //Widget que mostra os itens do pedido no resumo (orders_summary_screen.dart)
   const FinalItem({@required this.item, @required this.deleteFunction});
 
   final CartItem item;
@@ -390,6 +395,7 @@ class FinalItemText extends StatelessWidget {
 }
 
 class NotesBox extends StatelessWidget {
+  //Caixa de notação para as observações do pedido e número do pedido do cliente
   const NotesBox(
       {@required this.controller,
       this.maxLines,
@@ -429,6 +435,7 @@ class NotesBox extends StatelessWidget {
 }
 
 class SummaryHeader extends StatelessWidget {
+  //Cabeçalho para cada widget no resumo do pedido (order_summary_screen.dart)
   final String headerText;
   final EdgeInsetsGeometry padding;
   SummaryHeader({@required this.headerText, this.padding});

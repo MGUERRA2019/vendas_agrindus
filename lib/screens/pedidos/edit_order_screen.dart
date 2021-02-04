@@ -11,6 +11,9 @@ import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import '../../user_data.dart';
 
+//Tela que controla edição de pedido que já foi salvo (saved_order)
+//Praticamente uma réplica do new_order_screen.dart com tratamentos específicos para controle do arquivo salvo
+
 class EditOrderScreen extends StatefulWidget {
   final Cliente cliente;
   final List<CartItem> cartItems;
@@ -21,6 +24,8 @@ class EditOrderScreen extends StatefulWidget {
 
 class _EditOrderScreenState extends State<EditOrderScreen> {
   Iterable<Produto> _productQuery(UserData userdata, String search, int key) {
+    //Função para mostrar os elementos desejados na pesquisa
+    //Como padrão mostra todos elementos
     Iterable<Produto> query = [];
 
     query = userdata.produtos;
@@ -39,6 +44,10 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   }
 
   Future<bool> _orderCancel() {
+  //Função do WillPopScope
+  //Confirmação do usuário de cancelamento da edição
+  //Ao cancelar, o pedido será revertido para como estava anteriormente
+
     return Alert(
       context: context,
       title: 'AVISO',
@@ -70,6 +79,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
 
   @override
   void initState() {
+    //A tela precisa recuperar para o carrinho os itens do pedido
     super.initState();
     Provider.of<UserData>(context, listen: false).getCart(widget.cartItems);
   }

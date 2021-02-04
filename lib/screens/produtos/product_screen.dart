@@ -8,7 +8,12 @@ import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import 'product_screen_components.dart';
 
-enum ViewType { grid, list }
+enum ViewType {
+  grid,
+  list
+} //enum para determinar o tipo de visualização dos produtos
+
+//Tela de consulta dos produtos com lista de preços concernente ao vendedor
 
 class ProductScreen extends StatefulWidget {
   @override
@@ -16,13 +21,16 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  ViewType currentView = ViewType.list;
+  ViewType currentView = ViewType
+      .list; //Visualização dos produtos inicialmente estabelecida como lista
   List<Widget> groupList = [];
   int selectedIndex = 0;
   String search = '';
   int currentList;
 
   List<DropdownMenuItem> _getDropdownItems(List<int> listNumber) {
+    //Função para recuperar os itens do DropDown Widget
+    //Associa as listas de preços disponíveis ao vendedor
     List<DropdownMenuItem<int>> list = [];
     for (var item in listNumber) {
       var newItem = DropdownMenuItem(
@@ -36,6 +44,9 @@ class _ProductScreenState extends State<ProductScreen> {
 
   Iterable<Produto> _productQuery(UserData userdata, int index, String search,
       int key, ViewType currentView) {
+    //Função para mostrar os elementos desejados na pesquisa
+    //Como padrão mostra todos elementos
+    //A função também atribui preços aos itens
     Iterable<Produto> query = [];
 
     if (index == 0) {
@@ -59,6 +70,7 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     super.initState();
+    //inicialmente os produtos serão associados com a primeira lista de preços disponível ao vendedor
     currentList =
         Provider.of<UserData>(context, listen: false).listNumber.first;
   }

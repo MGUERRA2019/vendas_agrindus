@@ -7,6 +7,7 @@ import 'package:vendasagrindus/screens/navigation_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 
 class LoginManagerScreen extends StatefulWidget {
+  //Splash Screen que determina se o usuário está logado ou não, redirecionando para o aplicativo ou tela de acesso/cadastro
   @override
   _LoginManagerScreenState createState() => _LoginManagerScreenState();
 }

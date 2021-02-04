@@ -3,6 +3,8 @@ import 'package:vendasagrindus/screens/login/signin_box.dart';
 import 'package:vendasagrindus/screens/login/signup_box.dart';
 
 class LoginScreen extends StatefulWidget {
+  //Tela de login, as caixas de acesso/cadastro são estados diferentes controlados por abas que mudam com botão 'Cadastre-se' e 'Voltar'
+  //Botão voltar necessário para futuros usuários de iOS
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }

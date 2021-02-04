@@ -6,9 +6,13 @@ import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
 import 'package:vendasagrindus/screens/pedidos/order_list/order_list_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/saved_orders_screen.dart';
-import 'package:vendasagrindus/screens/perfil/profile_screen.dart';
 import 'package:vendasagrindus/screens/produtos/product_screen.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
+
+//Tela de navegação do aplicativo
+//É a tela inicial do aplicativo depois do login
+//Aqui está disposto a barra de naveção e as telas disponíveis de primeiro acesso
+//Todas as abas associadas a esta tela possuem o profile_drawer.dart
 
 class NavigationScreen extends StatefulWidget {
   final int initialIndex;

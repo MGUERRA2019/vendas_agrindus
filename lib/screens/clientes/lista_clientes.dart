@@ -9,8 +9,6 @@ import 'package:vendasagrindus/utilities/constants.dart';
 import 'clients_search.dart';
 
 class ListaClientes extends StatefulWidget {
-  static const String routeName = 'lista_clientes';
-
   @override
   _ListaClientesState createState() => _ListaClientesState();
 }

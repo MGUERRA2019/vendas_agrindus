@@ -18,6 +18,10 @@ import 'package:vendasagrindus/utilities/constants.dart';
 import '../../data_helper.dart';
 import 'package:http/http.dart' as http;
 
+//Tela que mostra o resumo do pedido
+//Tela importante que pode ser acessada tanto após um novo pedido ser efetuado (new_order_screen.dart) como por um pedido salvo (saved_orders_screen.dart)
+//Tela também que efetua o envio do pedido ou a gravação do pedido (saved_orders_screen.dart)
+
 class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> items;
 
@@ -51,6 +55,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   TextEditingController clientNumberController;
   bool showSpinner = false;
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
+    //Conversão dos itens do carrinho para o tipo Pedido Item (MBPD)
     List<PedidoItem> aux = [];
     int sequencia = 1;
     for (var item in currentItems) {
@@ -115,6 +120,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
+        //Recuperação das observações e número de pedido do cliente, se existir
         if (widget.obsText != null) {
           obsController.text = widget.obsText;
         }
@@ -194,6 +200,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             return FinalItem(
                               item: currentItems[index],
                               deleteFunction: () {
+                                //Função para deletar item (independente da quantidade) do pedido
+                                //Se for o único item do pedido, o pedido será cancelado
                                 if (currentItems.length <= 1) {
                                   Alert(
                                     context: context,
@@ -335,6 +343,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
                 SummaryButton(
                   saveFunction: () {
+                    //Função utilizada para salvar o pedido
                     FocusScope.of(context).unfocus();
                     var newOrder = PedidoMestre(
                       nUMEROSFA: userdata.vendedor.pROXIMOPED,
@@ -362,13 +371,15 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   sendFunction: () async {
+                    //Função utilizada para enviar o pedido
                     FocusScope.of(context).unfocus();
                     setState(() {
                       showSpinner = true;
                     });
-                    final String urlMestre = baseUrl + 'PedidoMestre';
-                    final String urlItens = baseUrl + 'PedidoItens';
+                    final String urlMestre = userdata.baseUrl + 'PedidoMestre';
+                    final String urlItens = userdata.baseUrl + 'PedidoItens';
                     try {
+                      //Adaptação do Pedido Mestre para a sintaxe requisitada do POST Request
                       var bodyMestre = jsonEncode(
                         [
                           {
@@ -397,7 +408,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         ],
                       );
                       List<dynamic> formattedItens = [];
-
+                      //Adaptação dos Pedidos Item para a sintaxe requisitada do POST Request
                       for (var item in _toPedidoItem(
                           userdata.vendedor.pROXIMOPED, date)) {
                         formattedItens.add({

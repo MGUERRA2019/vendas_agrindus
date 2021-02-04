@@ -11,6 +11,8 @@ import '../../data_helper.dart';
 import '../../user_data.dart';
 import 'order_widgets.dart';
 
+//Tela que mostra os produtos com o valor já atribuído correspondendo a condição do cliente
+
 class NewOrderScreen extends StatefulWidget {
   final Cliente cliente;
   NewOrderScreen(this.cliente);
@@ -20,6 +22,8 @@ class NewOrderScreen extends StatefulWidget {
 
 class _NewOrderScreenState extends State<NewOrderScreen> {
   Iterable<Produto> _productQuery(UserData userdata, String search, int key) {
+    //Função para mostrar os elementos desejados na pesquisa
+    //Como padrão mostra todos elementos
     Iterable<Produto> query = [];
 
     query = userdata.produtos;
@@ -38,6 +42,9 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   }
 
   Future<bool> _orderCancel() {
+//Função do WillPopScope
+//Confirmação do usuário de cancelamento do pedido
+
     return Alert(
       context: context,
       title: 'AVISO',
@@ -67,6 +74,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
 
   @override
   void initState() {
+    //Ao iniciar um novo pedido, o carrinho deve ser zerado para não recuperar dados de um pedido anterior (salvo pelo provider)
     super.initState();
     Provider.of<UserData>(context, listen: false).cart.clear();
   }

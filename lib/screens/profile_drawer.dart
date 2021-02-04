@@ -7,6 +7,8 @@ import 'package:vendasagrindus/utilities/constants.dart';
 import '../user_data.dart';
 import 'login/login_screen.dart';
 
+//Widget responsável pelo acesso das configurações do usuário, como o logout
+
 class ProfileDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

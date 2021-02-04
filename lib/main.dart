@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/screens/login/login_manager_screen.dart';
-import 'package:vendasagrindus/screens/login/login_screen.dart';
 import 'package:vendasagrindus/services/push_notification_service.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';

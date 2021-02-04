@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoMestreFull.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
@@ -11,6 +10,8 @@ import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 class OrderListScreen extends StatefulWidget {
+  //Tela que mostra os pedidos realizados pelo vendedor
+  //Dados controlados pelo order_list_bloc.dart
   @override
   _OrderListScreenState createState() => _OrderListScreenState();
 }
@@ -27,8 +28,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
   @override
   void initState() {
     super.initState();
-    _bloc = OrderListBloc(
-        Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR);
+    UserData userData = Provider.of<UserData>(context, listen: false);
+    _bloc = OrderListBloc(userData.vendedor.vENDEDOR, userData.baseUrl);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&

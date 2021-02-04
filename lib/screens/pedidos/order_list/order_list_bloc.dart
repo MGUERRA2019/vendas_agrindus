@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:vendasagrindus/model/pedidoMestreFull.dart';
 import '../../../data_helper.dart';
 
+
+//BLoC utilizado para recuperar e controlar dados visualizados pelo usuário na tela de pedidos do vendedor
+
 class OrderListBloc {
   int _currentMax = 9;
   List<PedidoMestreFull> _allData = List<PedidoMestreFull>();
@@ -11,14 +14,17 @@ class OrderListBloc {
   bool hasMore = true;
   Sink get input => _streamController.sink;
   Stream get output => _streamController.stream;
+  DataHelper _db = DataHelper();
 
-  OrderListBloc(String vendedor) {
-    _getAllData(vendedor);
+  OrderListBloc(String vendedor, String baseUrl) {
+    _getAllData(vendedor, baseUrl);
   }
 
-  Future<void> _getAllData(String vendedor) async {
+  Future<void> _getAllData(String vendedor, String baseUrl) async {
     try {
-      return DataHelper().getPedidoMestreFull(vendedor).then((jsonData) {
+      return _db
+          .getData(_db.getPedidoMestreFull, baseUrl, additionalData1: vendedor)
+          .then((jsonData) {
         for (var item in jsonData) {
           var aux = PedidoMestreFull.fromJson(item);
           if (aux != null) {

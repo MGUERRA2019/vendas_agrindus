@@ -10,6 +10,7 @@ import '../../user_data.dart';
 import '../navigation_screen.dart';
 
 class SignInBox extends StatefulWidget {
+  //Caixa de login do usuário
   final Function changePage;
   SignInBox({@required this.changePage});
 

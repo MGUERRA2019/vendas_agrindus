@@ -5,6 +5,8 @@ import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
+//Tela que mostra os detalhes do pedido oriundo dos "Últimos pedidos" referente a um cliente
+
 class OrderDetailsScreen extends StatelessWidget {
   final PedidoMestre pedidoMestre;
   final List<PedidoItem> pedidosItem;
@@ -41,11 +43,6 @@ class OrderDetailsScreen extends StatelessWidget {
                   title: 'Condição de pagamento:',
                   description:
                       '${cliente.cONDPAGTO} - ${cliente.cONDPAGTOobj.dESCRICAO}',
-                  colour: Colors.blueGrey[700],
-                ),
-                DetailItem(
-                  title: 'Tipo de pagamento:',
-                  description: '',
                   colour: Colors.blueGrey[700],
                 ),
                 DetailItem(

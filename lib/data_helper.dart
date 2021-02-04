@@ -1,19 +1,30 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 //Singleton getClass
 
-
-const baseUrl =
-    "http://189.57.124.26:8081/isapsfa/ISAPServerSFA.dll/datasnap/rest/TSM/";
-
 class DataHelper {
   static final DataHelper _dataHelper = DataHelper._internal();
   static final brNumber = NumberFormat('###0.00', 'pt_BR');
   static final format = DateFormat.yMd('pt_BR');
+
+//Todas chamadas get são definidas por Strings que serão usadas no Provider
+
+  final getVendedor = 'GetVendedor/';
+  final getClientes = 'GetClientes/';
+  final getProdutos = 'GetProdutos';
+  final getGrupos = 'GetGrupos';
+  final getGrupoProdutos = 'GetGrupoProdutos';
+  final getCondPagto = 'GetCondPagto';
+  final getTipoPagto = 'GetTipoPagto';
+  final getTipoMovimento = 'GetTipoMovimento';
+  final getListaPreco = 'GetListaPreco/';
+  final getProdutosImagem = 'GetProdutosImagem';
+  final getPedidoMestre = 'GetPedidoMestre/';
+  final getPedidoMestreFull = 'GetPedidoMestreFull/';
+  final getPedidoItem = 'GetPedidoItens/';
 
   factory DataHelper() {
     return _dataHelper;
@@ -21,159 +32,26 @@ class DataHelper {
 
   DataHelper._internal();
 
-  Future getClientes(String id) async {
-    var url = baseUrl + 'GetClientes/' + id;
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetCliente');
-      print(response.statusCode);
+  Future getData(String call, String baseUrl,
+      {String additionalData1 = '', String additionalData2 = ''}) async {
+    //Função genérica get que recebe uma das Strings get, o base url
+    //e dados adicionais dependendo da chamada get (número do vendedor, código do cliente, etc.)
+
+    if (additionalData2 != '') {
+      additionalData2 = '/' + additionalData2;
     }
-  }
-
-  Future getVendedor(String id) async {
-    var url = baseUrl + "GetVendedor/" + id;
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetVendedor');
-      print(response.statusCode);
-    }
-  }
-
-  Future getProdutos() async {
-    var url = baseUrl + 'GetProdutos';
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetProdutos');
-      print(response.statusCode);
-    }
-  }
-
-  Future getGrupos() async {
-    var url = baseUrl + 'GetGrupos';
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetGrupos');
-      print(response.statusCode);
-    }
-  }
-
-  Future getGrupoProdutos() async {
-    var url = baseUrl + 'GetGrupoProdutos';
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetGrupoProdutos');
-      print(response.statusCode);
-    }
-  }
-
-  Future getCondPagto() async {
-    var url = baseUrl + 'GetCondPagto';
+    var url = baseUrl + call + additionalData1 + additionalData2;
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      print('GetCondPagto');
-      print(response.statusCode);
-    }
-  }
-
-  Future getTipoPagto() async {
-    var url = baseUrl + 'GetTipoPagto';
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetTipoPagto');
-      print(response.statusCode);
-    }
-  }
-
-  Future getTipoMovimento() async {
-    var url = baseUrl + 'GetTipoMovimento';
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetTipoMovimento');
-      print(response.statusCode);
-    }
-  }
-
-  Future getListaPreco(String id) async {
-    var url = baseUrl + "GetListaPreco/" + id;
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetListaPreco');
-      print(response.statusCode);
-    }
-  }
-
-  Future getImagemPreco() async {
-    var url = baseUrl + 'GetProdutosImagem';
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetProdutosImagem');
-      print(response.statusCode);
-    }
-  }
-
-  Future getPedidoMestre(String vendedor, String codCliente) async {
-    var url = baseUrl + 'GetPedidoMestre/$vendedor/$codCliente';
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetPedidoMestre');
-      print(response.statusCode);
-    }
-  }
-
-  Future getPedidoMestreFull(String vendedor) async {
-    var url = baseUrl + 'GetPedidoMestreFull/$vendedor';
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('GetPedidoMestreFull');
-      print(response.statusCode);
-    }
-  }
-
-  Future getPedidoItem(String numPedido) async {
-    var url = baseUrl + 'GetPedidoItens/' + numPedido;
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print('PedidoItem');
+      print(call);
       print(response.statusCode);
     }
   }
 
   static DateTime toDateTime(String date) {
+    //Função para intepretar a data dada pelo banco de dados (status: incompleta)
     String month;
     List<String> splittedDate = date.split(' ');
     String day;
