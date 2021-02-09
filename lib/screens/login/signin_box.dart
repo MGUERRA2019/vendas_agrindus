@@ -121,6 +121,14 @@ class _SignInBoxState extends State<SignInBox> {
                         setState(() {
                           showSpinner = true;
                         });
+                        if (emailController.text == null ||
+                            emailController.text == '' ||
+                            passwordController.text == null ||
+                            passwordController.text == '') {
+                          throw FirebaseAuthException(
+                              message: 'Os campos devem ser preenchidos',
+                              code: 'empty-string');
+                        }
                         UserCredential userCredential = await FirebaseAuth
                             .instance
                             .signInWithEmailAndPassword(
@@ -148,6 +156,8 @@ class _SignInBoxState extends State<SignInBox> {
                         String message = e.toString();
                         if (e.code == 'user-not-found') {
                           message = 'Usuário não cadastrado';
+                        } else if (e.code == 'empty-string') {
+                          message = 'Os campos devem ser preenchidos';
                         } else if (e.code == 'wrong-password') {
                           message = 'Senha incorreta para o usuário';
                         }

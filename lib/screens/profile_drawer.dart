@@ -44,6 +44,9 @@ class ProfileDrawer extends StatelessWidget {
               ],
             ),
           ),
+          ListTile(
+              title: Text(
+                  'Vendedor ${Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR}')),
           ExpansionTile(
             title: Text('Configurações'),
             leading: Icon(Icons.settings),
