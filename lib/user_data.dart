@@ -59,7 +59,7 @@ class UserData extends ChangeNotifier {
         await getClientes();
         await getProdutosEGrupos(id);
       } else {
-        throw new Exception('Usuário não cadastrado');
+        throw new Exception('Usuário não cadastrado.');
       }
     });
   }
@@ -73,6 +73,9 @@ class UserData extends ChangeNotifier {
   getVendedor(String id) async {
     var dadosVendedor =
         await _db.getData(_db.getVendedor, baseUrl, additionalData1: id);
+    if (dadosVendedor[0] is String) {
+      throw Exception('Este vendedor não existe.');
+    }
     vendedor = Vendedor.fromJson(dadosVendedor[0]);
     notifyListeners();
   }

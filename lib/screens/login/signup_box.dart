@@ -7,6 +7,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
+import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 import '../../user_data.dart';
@@ -30,51 +31,82 @@ class _SignUpBoxState extends State<SignUpBox> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController sellerCodeController = TextEditingController();
 
+  Future<List<String>> _getSellersList() async {
+    //Verificação da existência do código de vendedor digitado pelo usuário.
+    try {
+      DataHelper db = DataHelper();
+      List<String> vendedorList = [];
+      Iterable jsonData = await db.getData(db.getVendedor,
+          'http://189.57.124.26:8082/isapsfa/ISAPServerSFA.dll/datasnap/rest/TSM/');
+      vendedorList =
+          jsonData.map((model) => model['VENDEDOR'].toString()).toList();
+      return vendedorList;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   void _validateAccount() async {
-    //Validação da conta e registro no Firebase Auth com email, senha. 
+    //Validação da conta e registro no Firebase Auth com email, senha.
     //Registro no Cloud Firestore do código do vendedor, tipo de uso e url (configurado como padrão o ip de homologação)
     if (formKey.currentState.validate()) {
-      print('All ok');
       try {
         setState(() {
           showSpinner = true;
         });
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-        userCredential.user.updateProfile(displayName: nameController.text);
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user.uid)
-            .set({
-          'vendedor': sellerCodeController.text,
-          'tipo': 'usuário',
-          'url':
-              'http://189.57.124.26:8082/isapsfa/ISAPServerSFA.dll/datasnap/rest/TSM/'
-        }); //set here the IP
-        await Provider.of<UserData>(context, listen: false)
-            .loginSetup(userCredential.user.uid);
-        setState(() {
-          showSpinner = false;
-        });
-        if (Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR !=
-            null) {
+        List<String> sellersList = await _getSellersList();
+        if (sellersList == null) {
+          throw new Exception(
+              'Erro de conexão. Verifique se seu dispositivo está conectado a internet. Se o problema persistir tente novamente mais tarde.');
+        } else if (sellersList
+            .any((element) => element == sellerCodeController.text)) {
+          print('All ok');
+
+          UserCredential userCredential = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: emailController.text,
+                  password: passwordController.text);
+          userCredential.user.updateProfile(displayName: nameController.text);
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user.uid)
+              .set({
+            'vendedor': sellerCodeController.text,
+            'tipo': 'usuário',
+            'url':
+                'http://189.57.124.26:8082/isapsfa/ISAPServerSFA.dll/datasnap/rest/TSM/'
+          }); //set here the IP
+          await Provider.of<UserData>(context, listen: false)
+              .loginSetup(userCredential.user.uid);
+          setState(() {
+            showSpinner = false;
+          });
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => NavigationScreen()),
               (route) => false);
+        } else {
+          throw new Exception(
+              'Código de vendedor não encontrado. Verifique o campo e tente novamente.');
         }
       } catch (e) {
         setState(() {
           showSpinner = false;
         });
-        String message = e.toString();
-        if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
-          message = 'Senha fornecida muito fraca.';
-        } else if (e.code == 'email-already-in-use') {
-          message = 'Endereço de email já cadastrado.';
-          print('The account already exists for that email.');
+        String message = e.message;
+        if (e is FirebaseAuthException) {
+          if (e.code == 'weak-password') {
+            print('The password provided is too weak.');
+            message = 'Senha fornecida muito fraca.';
+          } else if (e.code == 'email-already-in-use') {
+            message = 'Endereço de email já cadastrado.';
+            print('The account already exists for that email.');
+          } else if (e.message ==
+              'com.google.firebase.FirebaseException: An internal error has occurred. [ Unable to resolve host "www.googleapis.com":No address associated with hostname ]') {
+            message =
+                'Houve uma falha de conexão da internet. Verifique se o seu dispositivo está conectado a uma rede e tente novamente.';
+          }
         }
         Alert(
           context: context,

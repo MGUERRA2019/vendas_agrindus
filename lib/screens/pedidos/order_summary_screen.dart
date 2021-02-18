@@ -106,11 +106,55 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     return sum;
   }
 
+  Future<DateTime> _regrasTipoMovimento() async {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+
+    if (widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '310' ||
+        widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '480') {
+      if (today.difference(date) > Duration(days: 1)) {
+        setState(() {
+          date = today;
+        });
+      }
+      return showDatePicker(
+          context: context,
+          initialDate: (date.isBefore(today) || date.isAtSameMomentAs(today))
+              ? today.add(Duration(days: 1))
+              : date,
+          firstDate: now.add(Duration(days: 1)),
+          lastDate: now.add(Duration(days: 31)));
+    } else if (widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '315') {
+      if (today.difference(date) > Duration(days: 35)) {
+        setState(() {
+          date = today;
+        });
+      }
+      return showDatePicker(
+          context: context,
+          initialDate: date,
+          firstDate: now.subtract(Duration(days: 35)),
+          lastDate: now);
+    } else {
+      return showDatePicker(
+          context: context,
+          initialDate: date,
+          firstDate: DateTime.now().subtract(Duration(days: 500)),
+          lastDate: DateTime(date.year + 3));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     if (date == null) {
-      date = DateTime.now();
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+      if (widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '315') {
+        date = today;
+      } else {
+        date = today.add(Duration(days: 1));
+      }
     }
     obsController = TextEditingController();
     clientNumberController = TextEditingController();
@@ -275,11 +319,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           padding: EdgeInsets.only(left: 10),
                           child: FlatButton(
                             onPressed: () async {
-                              final aux = await showDatePicker(
-                                  context: context,
-                                  initialDate: date,
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(date.year + 3));
+                              final aux = await _regrasTipoMovimento();
                               if (aux != null) {
                                 setState(() {
                                   date = aux;

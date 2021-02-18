@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:vendasagrindus/model/pedidoMestreFull.dart';
 import '../../../data_helper.dart';
 
-
 //BLoC utilizado para recuperar e controlar dados visualizados pelo usuário na tela de pedidos do vendedor
 
 class OrderListBloc {
@@ -31,7 +30,14 @@ class OrderListBloc {
             _allData.add(aux);
           }
         }
-        shownData.addAll(_allData.getRange(0, 9).toList());
+        if (_allData != null) {
+          if (_allData.length < 9) {
+            hasMore = false;
+            shownData.addAll(_allData);
+          } else {
+            shownData.addAll(_allData.getRange(0, 9).toList());
+          }
+        }
         input.add(shownData);
       });
     } catch (e) {
@@ -43,7 +49,14 @@ class OrderListBloc {
     _currentMax = 9;
     hasMore = true;
     shownData = List<PedidoMestreFull>();
-    shownData.addAll(_allData.getRange(0, 9).toList());
+    if (_allData != null) {
+      if (_allData.length < 9) {
+        hasMore = false;
+        shownData.addAll(_allData);
+      } else {
+        shownData.addAll(_allData.getRange(0, 9).toList());
+      }
+    }
     input.add(shownData);
   }
 

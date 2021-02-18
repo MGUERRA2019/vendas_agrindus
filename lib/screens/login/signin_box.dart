@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -153,14 +154,21 @@ class _SignInBoxState extends State<SignInBox> {
                         setState(() {
                           showSpinner = false;
                         });
-                        String message = e.toString();
-                        if (e.code == 'user-not-found') {
-                          message = 'Usuário não cadastrado';
-                        } else if (e.code == 'empty-string') {
-                          message = 'Os campos devem ser preenchidos';
-                        } else if (e.code == 'wrong-password') {
-                          message = 'Senha incorreta para o usuário';
+                        String message = e.message;
+                        if (e is FirebaseAuthException) {
+                          if (e.code == 'user-not-found') {
+                            message = 'Usuário não cadastrado';
+                          } else if (e.code == 'empty-string') {
+                            message = 'Os campos devem ser preenchidos';
+                          } else if (e.code == 'wrong-password') {
+                            message = 'Senha incorreta para o usuário';
+                          } else if (e.message ==
+                              'com.google.firebase.FirebaseException: An internal error has occurred. [ Unable to resolve host "www.googleapis.com":No address associated with hostname ]') {
+                            message =
+                                'Houve uma falha de conexão da internet. Verifique se o seu dispositivo está conectado a uma rede e tente novamente.';
+                          }
                         }
+
                         Alert(
                           context: context,
                           title: 'ERRO',
