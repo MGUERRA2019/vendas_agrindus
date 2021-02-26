@@ -36,17 +36,20 @@ class DataHelper {
       {String additionalData1 = '', String additionalData2 = ''}) async {
     //Função genérica get que recebe uma das Strings get, o base url
     //e dados adicionais dependendo da chamada get (número do vendedor, código do cliente, etc.)
-
-    if (additionalData2 != '') {
-      additionalData2 = '/' + additionalData2;
-    }
-    var url = baseUrl + call + additionalData1 + additionalData2;
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      print(call);
-      print(response.statusCode);
+    try {
+      if (additionalData2 != '') {
+        additionalData2 = '/' + additionalData2;
+      }
+      var url = baseUrl + call + additionalData1 + additionalData2;
+      http.Response response = await http.get(url);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        print(call);
+        print(response.statusCode);
+      }
+    } catch (e) {
+      throw new Exception('Erro no servidor. Tente mais tarde');
     }
   }
 

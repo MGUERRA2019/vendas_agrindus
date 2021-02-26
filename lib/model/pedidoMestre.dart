@@ -31,22 +31,22 @@ class PedidoMestre {
   String pORCDESC2;
   String pORCDESC3;
   double cARGATOTAL;
-  int rESERVADO1;
+  // int rESERVADO1;
   int rESERVADO2;
-  int rESERVADO3;
-  int rESERVADO4;
-  String rESERVADO5;
-  String rESERVADO6;
-  String rESERVADO7;
-  int rESERVADO8;
-  String rESERVADO9;
-  String rESERVADO10;
-  String rESERVADO11;
-  String rESERVADO12;
-  String rESERVADO13;
-  String rESERVADO14;
-  String rESERVADO15;
-  String rESERVADO16;
+  // int rESERVADO3;
+  // int rESERVADO4;
+  // String rESERVADO5;
+  // String rESERVADO6;
+  // String rESERVADO7;
+  // int rESERVADO8;
+  // String rESERVADO9;
+  // String rESERVADO10;
+  // String rESERVADO11;
+  // String rESERVADO12;
+  // String rESERVADO13;
+  // String rESERVADO14;
+  // String rESERVADO15;
+  // String rESERVADO16;
   String iNTR;
   String oPERADOR;
   String dATAALTER;
@@ -86,22 +86,22 @@ class PedidoMestre {
       this.pORCDESC2,
       this.pORCDESC3,
       this.cARGATOTAL,
-      this.rESERVADO1,
+      // this.rESERVADO1,
       this.rESERVADO2,
-      this.rESERVADO3,
-      this.rESERVADO4,
-      this.rESERVADO5,
-      this.rESERVADO6,
-      this.rESERVADO7,
-      this.rESERVADO8,
-      this.rESERVADO9,
-      this.rESERVADO10,
-      this.rESERVADO11,
-      this.rESERVADO12,
-      this.rESERVADO13,
-      this.rESERVADO14,
-      this.rESERVADO15,
-      this.rESERVADO16,
+      // this.rESERVADO3,
+      // this.rESERVADO4,
+      // this.rESERVADO5,
+      // this.rESERVADO6,
+      // this.rESERVADO7,
+      // this.rESERVADO8,
+      // this.rESERVADO9,
+      // this.rESERVADO10,
+      // this.rESERVADO11,
+      // this.rESERVADO12,
+      // this.rESERVADO13,
+      // this.rESERVADO14,
+      // this.rESERVADO15,
+      // this.rESERVADO16,
       this.iNTR,
       this.oPERADOR,
       this.dATAALTER,
@@ -143,26 +143,26 @@ class PedidoMestre {
     pORCDESC2 = json['PORC_DESC2'];
     pORCDESC3 = json['PORC_DESC3'];
     cARGATOTAL = (json['CARGA_TOTAL'] is String) ? 0 : json['CARGA_TOTAL'];
-    rESERVADO1 = json['RESERVADO1'];
+    // rESERVADO1 = json['RESERVADO1'];
     rESERVADO2 = (json['RESERVADO2'] is String)
         ? 0
         : json['RESERVADO2']; //pode receber como nulo
-    rESERVADO3 = json['RESERVADO3'];
-    rESERVADO4 = json['RESERVADO4'];
-    rESERVADO5 = json['RESERVADO5'];
-    rESERVADO6 = json['RESERVADO6'];
-    rESERVADO7 = json['RESERVADO7'];
-    rESERVADO8 = (json['RESERVADO8'] is String)
-        ? 0
-        : json['RESERVADO8']; //pode receber como nulo
-    rESERVADO9 = json['RESERVADO9'];
-    rESERVADO10 = json['RESERVADO10'];
-    rESERVADO11 = json['RESERVADO11'];
-    rESERVADO12 = json['RESERVADO12'];
-    rESERVADO13 = json['RESERVADO13'];
-    rESERVADO14 = json['RESERVADO14'];
-    rESERVADO15 = json['RESERVADO15'];
-    rESERVADO16 = json['RESERVADO16'];
+    // rESERVADO3 = json['RESERVADO3'];
+    // rESERVADO4 = json['RESERVADO4'];
+    // rESERVADO5 = json['RESERVADO5'];
+    // rESERVADO6 = json['RESERVADO6'];
+    // rESERVADO7 = json['RESERVADO7'];
+    // rESERVADO8 = (json['RESERVADO8'] is String)
+    //     ? 0
+    //     : json['RESERVADO8']; //pode receber como nulo
+    // rESERVADO9 = json['RESERVADO9'];
+    // rESERVADO10 = json['RESERVADO10'];
+    // rESERVADO11 = json['RESERVADO11'];
+    // rESERVADO12 = json['RESERVADO12'];
+    // rESERVADO13 = json['RESERVADO13'];
+    // rESERVADO14 = json['RESERVADO14'];
+    // rESERVADO15 = json['RESERVADO15'];
+    // rESERVADO16 = json['RESERVADO16'];
     iNTR = json['INTR'];
     oPERADOR = json['OPERADOR'];
     dATAALTER = json['DATA_ALTER'];
@@ -203,22 +203,22 @@ class PedidoMestre {
     data['PORC_DESC2'] = this.pORCDESC2;
     data['PORC_DESC3'] = this.pORCDESC3;
     data['CARGA_TOTAL'] = this.cARGATOTAL;
-    data['RESERVADO1'] = this.rESERVADO1;
+    // data['RESERVADO1'] = this.rESERVADO1;
     data['RESERVADO2'] = this.rESERVADO2;
-    data['RESERVADO3'] = this.rESERVADO3;
-    data['RESERVADO4'] = this.rESERVADO4;
-    data['RESERVADO5'] = this.rESERVADO5;
-    data['RESERVADO6'] = this.rESERVADO6;
-    data['RESERVADO7'] = this.rESERVADO7;
-    data['RESERVADO8'] = this.rESERVADO8;
-    data['RESERVADO9'] = this.rESERVADO9;
-    data['RESERVADO10'] = this.rESERVADO10;
-    data['RESERVADO11'] = this.rESERVADO11;
-    data['RESERVADO12'] = this.rESERVADO12;
-    data['RESERVADO13'] = this.rESERVADO13;
-    data['RESERVADO14'] = this.rESERVADO14;
-    data['RESERVADO15'] = this.rESERVADO15;
-    data['RESERVADO16'] = this.rESERVADO16;
+    // data['RESERVADO3'] = this.rESERVADO3;
+    // data['RESERVADO4'] = this.rESERVADO4;
+    // data['RESERVADO5'] = this.rESERVADO5;
+    // data['RESERVADO6'] = this.rESERVADO6;
+    // data['RESERVADO7'] = this.rESERVADO7;
+    // data['RESERVADO8'] = this.rESERVADO8;
+    // data['RESERVADO9'] = this.rESERVADO9;
+    // data['RESERVADO10'] = this.rESERVADO10;
+    // data['RESERVADO11'] = this.rESERVADO11;
+    // data['RESERVADO12'] = this.rESERVADO12;
+    // data['RESERVADO13'] = this.rESERVADO13;
+    // data['RESERVADO14'] = this.rESERVADO14;
+    // data['RESERVADO15'] = this.rESERVADO15;
+    // data['RESERVADO16'] = this.rESERVADO16;
     data['INTR'] = this.iNTR;
     data['OPERADOR'] = this.oPERADOR;
     data['DATA_ALTER'] = this.dATAALTER;

@@ -400,7 +400,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       tEXTOESP: obsController.text,
                       rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
                           .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
-                      rESERVADO13: clientNumberController.text,
+                      // rESERVADO13: clientNumberController.text,
                       iTENSDOPEDIDO:
                           _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                     );
