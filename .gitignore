@@ -8,7 +8,6 @@
 .buildlog/
 .history
 .svn/
-data_helper.dart
 
 # IntelliJ related
 *.iml
@@ -30,6 +29,7 @@ data_helper.dart
 .pub-cache/
 .pub/
 /build/
+lib/data_helper.dart
 
 # Web related
 lib/generated_plugin_registrant.dart
