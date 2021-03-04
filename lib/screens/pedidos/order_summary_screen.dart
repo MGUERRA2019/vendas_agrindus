@@ -420,6 +420,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     final String urlItens = userdata.baseUrl + 'PedidoItens';
                     try {
                       //Adaptação do Pedido Mestre para a sintaxe requisitada do POST Request
+                      await userdata.updateVendedor();
                       var bodyMestre = jsonEncode(
                         [
                           {

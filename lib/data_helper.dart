@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -9,6 +11,7 @@ class DataHelper {
   static final DataHelper _dataHelper = DataHelper._internal();
   static final brNumber = NumberFormat('###0.00', 'pt_BR');
   static final format = DateFormat.yMd('pt_BR');
+  static final String _permissionPassword = "!Master3270";
 
 //Todas chamadas get são definidas por Strings que serão usadas no Provider
 
@@ -51,6 +54,19 @@ class DataHelper {
     } catch (e) {
       throw new Exception('Erro no servidor. Tente mais tarde');
     }
+  }
+
+  static noDataSnackbar(BuildContext context) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Funcionalidade não disponível no momento'),
+        duration: Duration(milliseconds: 1500),
+      ),
+    );
+  }
+
+  String get permissionPassword {
+    return _permissionPassword;
   }
 
   static DateTime toDateTime(String date) {

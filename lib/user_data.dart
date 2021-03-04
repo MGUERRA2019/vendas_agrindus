@@ -387,6 +387,7 @@ class UserData extends ChangeNotifier {
     final String urlItens = baseUrl + 'PedidoItens';
     Map<int, int> orderStatus = Map<int, int>();
     int order = 1;
+    await updateVendedor();
     for (var pedido in pedidosSalvos) {
       print(vendedor.pROXIMOPED);
       var bodyMestre = jsonEncode(

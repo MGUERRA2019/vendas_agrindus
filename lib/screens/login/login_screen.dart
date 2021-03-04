@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vendasagrindus/screens/login/permission_box.dart';
 import 'package:vendasagrindus/screens/login/signin_box.dart';
 import 'package:vendasagrindus/screens/login/signup_box.dart';
 
@@ -16,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -69,6 +70,15 @@ class _LoginScreenState extends State<LoginScreen>
                     });
                   },
                 ),
+                PermissionBox(popScreen: () {
+                  setState(() {
+                    _tabController.index = 0;
+                  });
+                }, permissionFunction: () {
+                  setState(() {
+                    _tabController.index = 2;
+                  });
+                }),
                 SignUpBox(
                   popScreen: () {
                     setState(() {

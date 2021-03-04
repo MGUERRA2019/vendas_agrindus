@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
+import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 import '../user_data.dart';
 import 'login/login_screen.dart';
@@ -53,11 +54,15 @@ class ProfileDrawer extends StatelessWidget {
             children: [
               ListTile(
                 title: Text('Minha conta'),
-                onTap: () {},
+                onTap: () {
+                  DataHelper.noDataSnackbar(context);
+                },
               ),
               ListTile(
                 title: Text('Configurações do app'),
-                onTap: () {},
+                onTap: () {
+                  DataHelper.noDataSnackbar(context);
+                },
               ),
             ],
           ),

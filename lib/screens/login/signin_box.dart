@@ -7,6 +7,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
+import '../../data_helper.dart';
 import '../../user_data.dart';
 import '../navigation_screen.dart';
 
@@ -91,9 +92,8 @@ class _SignInBoxState extends State<SignInBox> {
                   Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: GestureDetector(
-                      onTap: () {
-                        var user = FirebaseAuth.instance.currentUser;
-                        print(user);
+                      onDoubleTap: () {
+                        DataHelper.noDataSnackbar(context);
                       },
                       child: Text(
                         'Esqueci minha senha',
