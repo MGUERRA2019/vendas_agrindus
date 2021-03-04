@@ -1,12 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
-import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
-import '../navigation_screen.dart';
 
 class PermissionBox extends StatefulWidget {
   //Caixa de cadastro de usuário
@@ -18,18 +16,17 @@ class PermissionBox extends StatefulWidget {
 }
 
 class _PermissionBoxState extends State<PermissionBox> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   bool hidePassword = true;
-  TextEditingController passwordController = TextEditingController();
+  bool showSpinner = false;
+  TextEditingController keyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: widget.popScreen,
-        child: Form(
-          key: formKey,
-          autovalidateMode: _autoValidate,
+        child: ModalProgressHUD(
+          opacity: .02,
+          inAsyncCall: showSpinner,
           child: Stack(
             children: [
               Align(
@@ -52,9 +49,9 @@ class _PermissionBoxState extends State<PermissionBox> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   PermissionInputBox(
-                    label: 'Senha para cadastro',
+                    label: 'Chave para cadastro',
                     isPassword: hidePassword,
-                    controller: passwordController,
+                    controller: keyController,
                     trailingAction: IconButton(
                         icon: Icon(
                           Icons.remove_red_eye,
@@ -66,13 +63,6 @@ class _PermissionBoxState extends State<PermissionBox> {
                             hidePassword = !hidePassword;
                           });
                         }),
-                    validator: (value) {
-                      if (value != DataHelper().permissionPassword) {
-                        return "Senha incorreta";
-                      } else {
-                        return null;
-                      }
-                    },
                   ),
                   FlatButton(
                     shape: RoundedRectangleBorder(
@@ -81,10 +71,54 @@ class _PermissionBoxState extends State<PermissionBox> {
                     color: kLogoColor,
                     splashColor: Colors.white30,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                    onPressed: () {
+                    onPressed: () async {
                       FocusScope.of(context).unfocus();
-                      if (formKey.currentState.validate()) {
-                        widget.permissionFunction();
+                      try {
+                        setState(() {
+                          showSpinner = true;
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('key')
+                            .doc('kRAVH7cMnX24JrgyhKvF')
+                            .get()
+                            .then(
+                          (DocumentSnapshot documentSnapshot) async {
+                            if (documentSnapshot.exists) {
+                              var data = documentSnapshot.data();
+                              String key = data['key'];
+                              if (keyController.text == key) {
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                widget.permissionFunction();
+                              } else {
+                                throw Exception("Senha incorreta.");
+                              }
+                            }
+                          },
+                        );
+                      } catch (e) {
+                        setState(() {
+                          showSpinner = false;
+                        });
+                        String message = e.message;
+                        Alert(
+                          context: context,
+                          title: 'ERRO',
+                          desc: message,
+                          style: kAlertCardStyle,
+                          buttons: [
+                            AlertButton(
+                              label: 'OK',
+                              onTap: () {
+                                setState(() {
+                                  keyController.clear();
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ).show();
                       }
                     },
                     child: Text(
@@ -103,14 +137,12 @@ class _PermissionBoxState extends State<PermissionBox> {
 class PermissionInputBox extends StatelessWidget {
   final String label;
   final bool isPassword;
-  final Function(String) validator;
   final TextEditingController controller;
   final Widget trailingAction;
 
   PermissionInputBox(
       {this.label,
       this.isPassword = false,
-      this.validator,
       this.controller,
       this.trailingAction});
   @override
@@ -124,7 +156,6 @@ class PermissionInputBox extends StatelessWidget {
         controller: controller,
         obscureText: isPassword,
         keyboardType: TextInputType.visiblePassword,
-        validator: validator,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           suffixIcon: trailingAction,
