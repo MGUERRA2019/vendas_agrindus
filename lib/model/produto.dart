@@ -1,3 +1,5 @@
+import 'package:vendasagrindus/data_helper.dart';
+
 class Produto {
   String cPRODPALM;
   String dESCRICAO;
@@ -14,7 +16,7 @@ class Produto {
   String pRECOVENDA;
   int rESERVADO3;
   int rESERVADO4;
-  String rESERVADO9;
+  int rESERVADO9;
   String rESERVADO10;
   String fATORUNI;
   int rESERVADO7;
@@ -50,6 +52,10 @@ class Produto {
     this.vERSION,
     this.gRUPO,
   });
+
+  double get pesoTotal {
+    return DataHelper.brNumber.parse(pESOBRUTO) * rESERVADO9;
+  }
 
   Produto.fromJson(Map<String, dynamic> json) {
     cPRODPALM = json['C_PROD_PALM'];

@@ -126,15 +126,17 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                     value: DataHelper.brNumber.format(userdata.getTotal())),
                 OrderConfirmButton(
                   label: 'CONTINUAR',
-                  onPressed: () {
+                  onPressed: () async {
+                    userdata.removeEmptyItens();
                     if (userdata.cart.isNotEmpty) {
-                      Navigator.push(
+                      final value = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => OrderSummaryScreen(
                                   userdata.cart.values.toList(),
                                   widget.cliente)));
                     }
+                    setState(() {});
                   },
                 ),
               ],

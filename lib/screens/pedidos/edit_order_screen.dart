@@ -44,9 +44,9 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   }
 
   Future<bool> _orderCancel() {
-  //Função do WillPopScope
-  //Confirmação do usuário de cancelamento da edição
-  //Ao cancelar, o pedido será revertido para como estava anteriormente
+    //Função do WillPopScope
+    //Confirmação do usuário de cancelamento da edição
+    //Ao cancelar, o pedido será revertido para como estava anteriormente
 
     return Alert(
       context: context,
@@ -81,6 +81,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   void initState() {
     //A tela precisa recuperar para o carrinho os itens do pedido
     super.initState();
+    Provider.of<UserData>(context, listen: false).cart.clear();
     Provider.of<UserData>(context, listen: false).getCart(widget.cartItems);
   }
 

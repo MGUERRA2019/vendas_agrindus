@@ -24,24 +24,30 @@ class OrderListBloc {
       return _db
           .getData(_db.getPedidoMestreFull, baseUrl, additionalData1: vendedor)
           .then((jsonData) {
-        for (var item in jsonData) {
-          var aux = PedidoMestreFull.fromJson(item);
-          if (aux != null) {
-            _allData.add(aux);
+        try {
+          for (var item in jsonData) {
+            var aux = PedidoMestreFull.fromJson(item);
+            if (aux != null) {
+              _allData.add(aux);
+            }
           }
-        }
-        if (_allData != null) {
-          if (_allData.length < 9) {
-            hasMore = false;
-            shownData.addAll(_allData);
-          } else {
-            shownData.addAll(_allData.getRange(0, 9).toList());
+          if (_allData != null) {
+            if (_allData.length < 9) {
+              hasMore = false;
+              shownData.addAll(_allData);
+            } else {
+              shownData.addAll(_allData.getRange(0, 9).toList());
+            }
           }
+          input.add(shownData);
+        } catch (e) {
+          print(e);
+          input.add(shownData);
         }
-        input.add(shownData);
       });
     } catch (e) {
       print(e);
+      input.add(shownData);
     }
   }
 

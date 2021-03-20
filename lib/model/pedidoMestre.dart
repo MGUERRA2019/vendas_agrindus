@@ -1,3 +1,4 @@
+import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
 
 class PedidoMestre {
@@ -43,7 +44,7 @@ class PedidoMestre {
   // String rESERVADO10;
   // String rESERVADO11;
   // String rESERVADO12;
-  // String rESERVADO13;
+  String rESERVADO13;
   // String rESERVADO14;
   // String rESERVADO15;
   // String rESERVADO16;
@@ -98,7 +99,7 @@ class PedidoMestre {
       // this.rESERVADO10,
       // this.rESERVADO11,
       // this.rESERVADO12,
-      // this.rESERVADO13,
+      this.rESERVADO13,
       // this.rESERVADO14,
       // this.rESERVADO15,
       // this.rESERVADO16,
@@ -137,12 +138,12 @@ class PedidoMestre {
     nUMEROINTEG = json['NUMERO_INTEG'];
     dTLIVRE = json['DT_LIVRE'];
     nRDUP = json['NR_DUP'];
-    vLRPED = (json['VLR_PED'] is String) ? 0 : json['VLR_PED'];
+    vLRPED = DataHelper.brNumber.parse(json['VLR_PED']);
     vLRFAT = json['VLR_FAT'];
     pORCDESC1 = json['PORC_DESC1'];
     pORCDESC2 = json['PORC_DESC2'];
     pORCDESC3 = json['PORC_DESC3'];
-    cARGATOTAL = (json['CARGA_TOTAL'] is String) ? 0 : json['CARGA_TOTAL'];
+    cARGATOTAL = DataHelper.brNumber.parse(json['CARGA_TOTAL']);
     // rESERVADO1 = json['RESERVADO1'];
     rESERVADO2 = (json['RESERVADO2'] is String)
         ? 0
@@ -159,7 +160,7 @@ class PedidoMestre {
     // rESERVADO10 = json['RESERVADO10'];
     // rESERVADO11 = json['RESERVADO11'];
     // rESERVADO12 = json['RESERVADO12'];
-    // rESERVADO13 = json['RESERVADO13'];
+    rESERVADO13 = json['RESERVADO13'];
     // rESERVADO14 = json['RESERVADO14'];
     // rESERVADO15 = json['RESERVADO15'];
     // rESERVADO16 = json['RESERVADO16'];
@@ -215,7 +216,7 @@ class PedidoMestre {
     // data['RESERVADO10'] = this.rESERVADO10;
     // data['RESERVADO11'] = this.rESERVADO11;
     // data['RESERVADO12'] = this.rESERVADO12;
-    // data['RESERVADO13'] = this.rESERVADO13;
+    data['RESERVADO13'] = this.rESERVADO13;
     // data['RESERVADO14'] = this.rESERVADO14;
     // data['RESERVADO15'] = this.rESERVADO15;
     // data['RESERVADO16'] = this.rESERVADO16;

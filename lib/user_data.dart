@@ -159,6 +159,19 @@ class UserData extends ChangeNotifier {
     }
   }
 
+  removeEmptyItens() {
+    List<String> removeValues = [];
+    for (var item in cart.values) {
+      if (item.amount <= 0) {
+        removeValues.add(item.code);
+      }
+    }
+    for (var code in removeValues) {
+      cart.remove(code);
+    }
+    notifyListeners();
+  }
+
   removerQtde(Produto produto) {
     //Função para diminuir quantidade de determinado Produto produto no carrinho
     //Se a quantidade chegar a zero o item será removido do carrinho
@@ -187,6 +200,7 @@ class UserData extends ChangeNotifier {
                 image: produto.iMAGEMURL,
                 code: produto.cPRODPALM,
                 weight: produto.pESOBRUTO,
+                packageWeight: produto.rESERVADO9,
                 group: produto.gRUPO,
                 unity: produto.uNIDADE,
               ));
@@ -210,12 +224,12 @@ class UserData extends ChangeNotifier {
       }
     }
     if (backup) {
-      notifyListeners();
       cart.forEach((key, value) {
         if (value.amount < 1) {
           cart.remove(key);
         }
       });
+      notifyListeners();
     }
   }
 

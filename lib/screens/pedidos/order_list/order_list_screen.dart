@@ -169,11 +169,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                               DetailItem(
                                   title: 'Cliente:', description: nomeCliente),
                               DetailItem(
-                                  title: 'Pedido total:',
-                                  description: snapshot.data[index].vLRPED),
+                                  title: 'Preço total:',
+                                  description:
+                                      'R\$ ${snapshot.data[index].vLRPED}'),
                               DetailItem(
-                                  title: 'Peso total:',
-                                  description: snapshot.data[index].cARGATOTAL),
+                                  title: 'Carga total:',
+                                  description:
+                                      '${snapshot.data[index].cARGATOTAL} kg'),
                             ],
                           );
                         } else if (_bloc.hasMore) {

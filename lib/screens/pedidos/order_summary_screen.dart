@@ -77,8 +77,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           uNIDADE: item.unity,
           rESERVADO2: 0, //não incube ao app
           rESERVADO5: 0, //não incube ao app
-          rESERVADO13:
-              clientNumberController.text, //Número de pedido do cliente
+          rESERVADO9: item.packageWeight.toString(),
+          // rESERVADO13:
+          //     clientNumberController.text, //Número de pedido do cliente
           rESERVADO14: DateFormat('yyyyMMdd')
               .format(DateTime.now()), //data do dia do pedido
           rESERVADO15: '', //não incube ao app
@@ -243,10 +244,11 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           itemBuilder: (context, index) {
                             return FinalItem(
                               item: currentItems[index],
-                              deleteFunction: () {
+                              removeFunction: () {
                                 //Função para deletar item (independente da quantidade) do pedido
                                 //Se for o único item do pedido, o pedido será cancelado
-                                if (currentItems.length <= 1) {
+                                if (currentItems.length <= 1 &&
+                                    currentItems[index].amount <= 1) {
                                   Alert(
                                     context: context,
                                     title: 'ÚLTIMO ITEM DO PEDIDO',
@@ -280,34 +282,47 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                     ],
                                   ).show();
                                 } else {
-                                  Alert(
-                                    context: context,
-                                    title: 'REMOVER ITEM',
-                                    desc:
-                                        'Deseja remover este item do carrinho?',
-                                    style: kAlertCardStyle,
-                                    buttons: [
-                                      AlertButton(
-                                          label: 'Não',
-                                          line: Border.all(
-                                              color: Colors.grey[600]),
-                                          labelColor: Colors.grey[600],
-                                          hasGradient: false,
-                                          cor: Colors.white,
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          }),
-                                      AlertButton(
-                                          label: 'Sim',
-                                          onTap: () {
-                                            setState(() {
-                                              currentItems.removeAt(index);
-                                            });
-                                            Navigator.pop(context);
-                                          }),
-                                    ],
-                                  ).show();
+                                  if (currentItems[index].amount <= 1) {
+                                    Alert(
+                                      context: context,
+                                      title: 'REMOVER ITEM',
+                                      desc:
+                                          'Deseja remover este item do carrinho?',
+                                      style: kAlertCardStyle,
+                                      buttons: [
+                                        AlertButton(
+                                            label: 'Não',
+                                            line: Border.all(
+                                                color: Colors.grey[600]),
+                                            labelColor: Colors.grey[600],
+                                            hasGradient: false,
+                                            cor: Colors.white,
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            }),
+                                        AlertButton(
+                                            label: 'Sim',
+                                            onTap: () {
+                                              setState(() {
+                                                currentItems[index]
+                                                    .removeCartItem();
+                                                currentItems.removeAt(index);
+                                              });
+                                              Navigator.pop(context);
+                                            }),
+                                      ],
+                                    ).show();
+                                  } else {
+                                    setState(() {
+                                      currentItems[index].removeCartItem();
+                                    });
+                                  }
                                 }
+                              },
+                              addFunction: () {
+                                setState(() {
+                                  currentItems[index].addCartItem();
+                                });
                               },
                             );
                           },
@@ -372,8 +387,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             padding: EdgeInsets.only(left: 15, top: 10)),
                         NotesBox(
                           controller: clientNumberController,
-                          maxLines: 1,
-                          inputType: TextInputType.number,
                           hintText: '(Opcional)',
                         ),
                       ],
@@ -400,7 +413,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       tEXTOESP: obsController.text,
                       rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
                           .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
-                      // rESERVADO13: clientNumberController.text,
+                      rESERVADO13: clientNumberController.text,
                       iTENSDOPEDIDO:
                           _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
                     );
@@ -443,6 +456,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                     .cliente
                                     .tIPOMOVIMENTO
                                     .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
+                                'RESERVADO13': clientNumberController.text
                               }
                             ],
                           },

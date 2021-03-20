@@ -8,6 +8,7 @@ class CartItem {
   String image;
   String code;
   String weight;
+  int packageWeight;
   String group;
   String unity;
 
@@ -19,15 +20,34 @@ class CartItem {
       this.image,
       this.code,
       this.weight,
+      this.packageWeight,
       this.group,
       this.unity});
+
+  removeCartItem() {
+    //Função para diminuir quantidade de determinado Produto produto no carrinho
+    //Se a quantidade chegar a zero o item será removido do carrinho
+    if (amount > 0) {
+      amount--;
+    }
+  }
+
+  addCartItem() {
+    //Função para aumentar quantidade de determinado Produto produto no carrinhoø
+    amount++;
+  }
 
   double get total {
     return price * amount;
   }
 
+  double get pesoUnitario {
+    double peso = DataHelper.brNumber.parse(weight);
+    return peso * packageWeight;
+  }
+
   double get pesoTotal {
     double peso = DataHelper.brNumber.parse(weight);
-    return peso * amount;
+    return peso * amount * packageWeight;
   }
 }

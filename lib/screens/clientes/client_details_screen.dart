@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
+import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/pedidos/new_order_screen.dart';
@@ -218,8 +219,13 @@ class ClientDetailsScreen extends StatelessWidget {
                                 description: DateFormat('dd/MM/yyyy')
                                     .format(pedidosMestre[index].date)),
                             DetailItem(
-                                title: 'Status:',
-                                description: pedidosMestre[index].sTATUS),
+                                title: 'Preço total',
+                                description:
+                                    'R\$ ${DataHelper.brNumber.format(pedidosMestre[index].vLRPED)}'),
+                            DetailItem(
+                                title: 'Carga total',
+                                description:
+                                    '${DataHelper.brNumber.format(pedidosMestre[index].cARGATOTAL)} kg'),
                           ],
                         );
                       },

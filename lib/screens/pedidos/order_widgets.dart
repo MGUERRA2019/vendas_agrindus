@@ -138,7 +138,7 @@ class CartView extends StatelessWidget {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
         return Container(
-          height: 170,
+          height: 200,
           margin: EdgeInsets.all(5.5),
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           decoration: BoxDecoration(
@@ -148,11 +148,12 @@ class CartView extends StatelessWidget {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.all(1.5),
-                height: 90,
-                width: 90,
+                margin: EdgeInsets.symmetric(horizontal: 1.5),
+                height: 100,
+                width: 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -194,7 +195,8 @@ class CartView extends StatelessWidget {
                                   : '',
                               style: kDescriptionTextStyle,
                             ),
-                            Text('Peso bruto: ${item.pESOBRUTO} kg',
+                            Text(
+                                'Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg',
                                 style: kDescriptionTextStyle),
                             Text('Qtde por embalagem: ${item.qDTEPEMBAL}',
                                 style: kDescriptionTextStyle),
@@ -214,56 +216,18 @@ class CartView extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 )
                               : Container(),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border:
-                                  Border.all(color: kPrimaryColor, width: 1.5),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    userdata.removerQtde(item);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.horizontal(
-                                          left: Radius.circular(20)),
-                                      color: kPrimaryColor,
-                                    ),
-                                    child: Icon(Icons.remove,
-                                        color: Colors.white, size: 27.5),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  child: Text(
-                                    userdata.cart.containsKey(item.cPRODPALM)
-                                        ? userdata.cart[item.cPRODPALM].amount
-                                            .toString()
-                                        : '0',
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    userdata.addCartItem(item);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.horizontal(
-                                          right: Radius.circular(20)),
-                                      color: kPrimaryColor,
-                                    ),
-                                    child: Icon(Icons.add,
-                                        color: Colors.white, size: 27.5),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          AmountSelector(
+                            removeFunction: () {
+                              userdata.removerQtde(item);
+                            },
+                            amountDisplay:
+                                userdata.cart.containsKey(item.cPRODPALM)
+                                    ? userdata.cart[item.cPRODPALM].amount
+                                        .toString()
+                                    : '0',
+                            addFunction: () {
+                              userdata.addCartItem(item);
+                            },
                           ),
                         ],
                       ),
@@ -281,10 +245,11 @@ class CartView extends StatelessWidget {
 
 class FinalItem extends StatelessWidget {
   //Widget que mostra os itens do pedido no resumo (orders_summary_screen.dart)
-  const FinalItem({@required this.item, @required this.deleteFunction});
+  const FinalItem({@required this.item, this.removeFunction, this.addFunction});
 
   final CartItem item;
-  final Function deleteFunction;
+  final Function removeFunction;
+  final Function addFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -348,10 +313,13 @@ class FinalItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FinalItemText(label: 'Peso Bruto: ${item.weight} kg'),
-              IconButton(
-                  icon: Icon(Icons.delete, color: Colors.grey[400]),
-                  onPressed: deleteFunction),
+              FinalItemText(
+                  label:
+                      'Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg'),
+              AmountSelector(
+                  removeFunction: removeFunction,
+                  amountDisplay: item.amount.toString(),
+                  addFunction: addFunction)
             ],
           ),
           SizedBox(height: 15),
@@ -389,6 +357,62 @@ class FinalItemText extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(color: Colors.grey[700]),
+      ),
+    );
+  }
+}
+
+class AmountSelector extends StatelessWidget {
+  final Function removeFunction;
+  final Function addFunction;
+  final String amountDisplay;
+
+  AmountSelector(
+      {@required this.removeFunction,
+      @required this.amountDisplay,
+      @required this.addFunction});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: kPrimaryColor, width: 1.5),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: removeFunction,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(20)),
+                color: kPrimaryColor,
+              ),
+              child: Icon(Icons.remove, color: Colors.white, size: 27.5),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              amountDisplay,
+              style: TextStyle(fontSize: 15),
+            ),
+          ),
+          GestureDetector(
+            onTap: addFunction,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.horizontal(right: Radius.circular(20)),
+                color: kPrimaryColor,
+              ),
+              child: Icon(Icons.add, color: Colors.white, size: 27.5),
+            ),
+          ),
+        ],
       ),
     );
   }

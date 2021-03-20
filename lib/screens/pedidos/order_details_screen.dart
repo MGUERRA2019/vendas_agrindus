@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
@@ -52,18 +53,32 @@ class OrderDetailsScreen extends StatelessWidget {
                   colour: Colors.blueGrey[700],
                 ),
                 DetailItem(
-                  title: 'Tipo de pedido:',
-                  description: pedidoMestre.tIPOPED,
-                  colour: Colors.blueGrey[700],
-                ),
-                DetailItem(
                   title: 'Emissão:',
-                  description: pedidoMestre.dTPED.toString(),
+                  description: DateFormat('dd/MM/yyyy')
+                      .format(DateTime.tryParse(pedidoMestre.dTPED)),
                   colour: Colors.blueGrey[700],
                 ),
                 DetailItem(
-                  title: 'Status:',
-                  description: pedidoMestre.sTATUS,
+                  title: 'Data de entrega:',
+                  description: DateFormat('dd/MM/yyyy')
+                      .format(DateTime.tryParse(pedidosItem.first.dTENTREGA)),
+                  colour: Colors.blueGrey[700],
+                ),
+                DetailItem(
+                  title: 'Carga total:',
+                  description: '${pedidoMestre.cARGATOTAL} kg',
+                  colour: Colors.blueGrey[700],
+                ),
+                DetailItem(
+                  title: 'Observações:',
+                  description: pedidoMestre.tEXTOESP,
+                  colour: Colors.blueGrey[700],
+                ),
+                DetailItem(
+                  title: 'Pedido cliente:',
+                  description: pedidoMestre.rESERVADO13 != null
+                      ? pedidoMestre.rESERVADO13
+                      : "",
                   colour: Colors.blueGrey[700],
                 ),
               ],
