@@ -420,6 +420,7 @@ class UserData extends ChangeNotifier {
                 'NRO_LISTA': pedido['NRO_LISTA'],
                 'TIPO_CLI': pedido['TIPO_CLI'],
                 'RESERVADO2': pedido['RESERVADO2'],
+                'RESERVADO13': pedido['RESERVADO13']
               }
             ],
           },

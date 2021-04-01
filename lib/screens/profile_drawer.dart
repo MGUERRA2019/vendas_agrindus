@@ -38,7 +38,9 @@ class ProfileDrawer extends StatelessWidget {
                 SizedBox(width: 15),
                 Expanded(
                   child: Text(
-                    FirebaseAuth.instance.currentUser.displayName,
+                    (FirebaseAuth.instance.currentUser.displayName == null)
+                        ? 'Usuário'
+                        : FirebaseAuth.instance.currentUser.displayName,
                     style: kHeaderText,
                   ),
                 ),
@@ -46,8 +48,12 @@ class ProfileDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-              title: Text(
-                  'Vendedor ${Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR}')),
+              title: Text((Provider.of<UserData>(context, listen: false)
+                          .vendedor
+                          .vENDEDOR ==
+                      null)
+                  ? 'Número do vendedor não encontrado'
+                  : 'Vendedor ${Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR}')),
           ExpansionTile(
             title: Text('Configurações'),
             leading: Icon(Icons.settings),
