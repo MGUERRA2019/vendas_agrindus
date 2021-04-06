@@ -138,12 +138,16 @@ class PedidoMestre {
     nUMEROINTEG = json['NUMERO_INTEG'];
     dTLIVRE = json['DT_LIVRE'];
     nRDUP = json['NR_DUP'];
-    vLRPED = DataHelper.brNumber.parse(json['VLR_PED']);
+    vLRPED = (json['VLR_PED'] == "null")
+        ? 0
+        : DataHelper.brNumber.parse(json['VLR_PED']);
     vLRFAT = json['VLR_FAT'];
     pORCDESC1 = json['PORC_DESC1'];
     pORCDESC2 = json['PORC_DESC2'];
     pORCDESC3 = json['PORC_DESC3'];
-    cARGATOTAL = DataHelper.brNumber.parse(json['CARGA_TOTAL']);
+    cARGATOTAL = (json['CARGA_TOTAL'] == "null")
+        ? 0
+        : DataHelper.brNumber.parse(json['CARGA_TOTAL']);
     // rESERVADO1 = json['RESERVADO1'];
     rESERVADO2 = (json['RESERVADO2'] is String)
         ? 0
