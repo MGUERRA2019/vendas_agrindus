@@ -504,46 +504,41 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         headers: {'Content-Type': 'application/json'},
                         body: bodyMestre,
                       );
-                      final responseItens = await http.post(
-                        urlItens,
-                        headers: {'Content-Type': 'application/json'},
-                        body: bodyItens,
-                      );
-                      setState(() {
-                        showSpinner = false;
-                      });
-                      if (responseItens.statusCode == 201 &&
-                          responseItens.statusCode == 201) {
-                        print(responseItens.statusCode);
-                        print('Post sucessful!');
-                        if (widget.isSaved) {
-                          await userdata.removeOrder(widget.currentOrder);
-                        }
+                      if (responseMestre.statusCode == 201) {
+                        final responseItens = await http.post(
+                          urlItens,
+                          headers: {'Content-Type': 'application/json'},
+                          body: bodyItens,
+                        );
                         await userdata.updateVendedor();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderCompletedScreen()));
+                        if (responseItens.statusCode == 201) {
+                          print(
+                              'MBPM: ${responseMestre.statusCode} MBPD :${responseItens.statusCode}');
+                          print('Post sucessful!');
+                          if (widget.isSaved) {
+                            await userdata.removeOrder(widget.currentOrder);
+                          }
+                          setState(() {
+                            showSpinner = false;
+                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      OrderCompletedScreen()));
+                        } else {
+                          print('MBPM: ${responseMestre.statusCode}');
+                          print('MBPD: ${responseItens.statusCode}');
+                          throw Exception(
+                              'Houve um problema ao enviar seu pedido. (Erro ${responseItens.statusCode} [PD])');
+                        }
                       } else {
-                        Alert(
-                          context: context,
-                          title: 'ERRO',
-                          desc:
-                              'Houve um problema ao enviar seu pedido. (Erro ${responseItens.statusCode})',
-                          style: kAlertCardStyle,
-                          buttons: [
-                            AlertButton(
-                                label: 'VOLTAR',
-                                onTap: () {
-                                  Navigator.pop(context);
-                                })
-                          ],
-                        ).show();
-                        print(responseMestre.statusCode);
-                        print(responseItens.statusCode);
-                        print('Post failed...');
+                        print('MBPM: ${responseMestre.statusCode}');
+                        throw Exception(
+                            'Houve um problema ao enviar seu pedido. (Erro ${responseMestre.statusCode} [PM])');
                       }
                     } catch (e) {
+                      await userdata.updateVendedor();
                       setState(() {
                         showSpinner = false;
                       });

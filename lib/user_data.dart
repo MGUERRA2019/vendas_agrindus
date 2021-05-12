@@ -458,28 +458,29 @@ class UserData extends ChangeNotifier {
         ],
       );
 
-      final responseItens = await http.post(
-        urlItens,
-        headers: {'Content-Type': 'application/json'},
-        body: bodyItens,
-      );
-
       final responseMestre = await http.post(
         urlMestre,
         body: bodyMestre,
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (responseItens.statusCode != 201) {
-        print(
-            'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}');
+      if (responseMestre.statusCode == 201) {
+        final responseItens = await http.post(
+          urlItens,
+          headers: {'Content-Type': 'application/json'},
+          body: bodyItens,
+        );
+
+        if (responseItens.statusCode != 201) {
+          print(
+              'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}');
+        }
+
+        await updateVendedor();
       }
 
       orderStatus[order] = responseMestre.statusCode;
       order++;
-      if (responseMestre.statusCode == 201) {
-        await updateVendedor();
-      }
     }
     if (orderStatus.values.all((status) => status == 201)) {
       print('Update completed');
