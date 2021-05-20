@@ -423,11 +423,13 @@ class NotesBox extends StatelessWidget {
   const NotesBox(
       {@required this.controller,
       this.maxLines,
+      this.maxLength,
       this.inputType,
       this.hintText});
 
   final TextEditingController controller;
   final int maxLines;
+  final int maxLength;
   final TextInputType inputType;
   final String hintText;
 
@@ -444,6 +446,7 @@ class NotesBox extends StatelessWidget {
       ),
       child: TextField(
         maxLines: maxLines,
+        maxLength: maxLength,
         controller: controller,
         autofocus: false,
         keyboardType: inputType,

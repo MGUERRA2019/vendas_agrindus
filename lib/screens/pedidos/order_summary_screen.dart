@@ -53,6 +53,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   DateTime date;
   TextEditingController obsController;
   TextEditingController clientNumberController;
+  int _obsNoteMaxLength = 60;
+  int _clientNumMaxLength = 30;
   bool showSpinner = false;
   List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
     //Conversão dos itens do carrinho para o tipo Pedido Item (MBPD)
@@ -89,6 +91,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
       sequencia++;
     }
     return aux;
+  }
+
+  _checkNoteBox() {
+    if (obsController.text.length > _obsNoteMaxLength ||
+        clientNumberController.text.length > _clientNumMaxLength) {
+      throw Exception(
+          'Limite de caracteres ultrapassado! Por favor, verifique os campos de observação e/ou número do pedido do cliente');
+    }
   }
 
   double currentTotal() {
@@ -381,12 +391,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             padding: EdgeInsets.only(left: 15, top: 10)),
                         NotesBox(
                             controller: obsController,
+                            maxLength: _obsNoteMaxLength,
                             hintText: 'Observações finais do pedido...'),
                         SummaryHeader(
                             headerText: 'Número do pedido do cliente',
                             padding: EdgeInsets.only(left: 15, top: 10)),
                         NotesBox(
                           controller: clientNumberController,
+                          maxLength: _clientNumMaxLength,
                           hintText: '(Opcional)',
                         ),
                       ],
@@ -398,30 +410,48 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                   saveFunction: () {
                     //Função utilizada para salvar o pedido
                     FocusScope.of(context).unfocus();
-                    var newOrder = PedidoMestre(
-                      nUMEROSFA: userdata.vendedor.pROXIMOPED,
-                      cLIENTE: widget.cliente.cLIENTE,
-                      cONDPAGTO: widget.cliente.cONDPAGTO,
-                      vENDEDOR: userdata.vendedor.vENDEDOR,
-                      dTPED: DateFormat('yyyyMMdd')
-                          .format(DateTime.now()), //data do dia do pedido
-                      nROLISTA: widget.cliente.pRIORIDADE.toString(),
-                      tIPOCLI: widget.cliente.tIPOCLI,
-                      vLRPED: currentTotal(),
-                      cARGATOTAL: currentWeight(),
-                      nOMECLIENTE: widget.cliente.nOMFANTASIA,
-                      tEXTOESP: obsController.text,
-                      rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
-                          .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
-                      rESERVADO13: clientNumberController.text,
-                      iTENSDOPEDIDO:
-                          _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
-                    );
-                    if (widget.isSaved) {
-                      userdata.removeOrder(widget.currentOrder);
+                    try {
+                      _checkNoteBox();
+                      var newOrder = PedidoMestre(
+                        nUMEROSFA: userdata.vendedor.pROXIMOPED,
+                        cLIENTE: widget.cliente.cLIENTE,
+                        cONDPAGTO: widget.cliente.cONDPAGTO,
+                        vENDEDOR: userdata.vendedor.vENDEDOR,
+                        dTPED: DateFormat('yyyyMMdd')
+                            .format(DateTime.now()), //data do dia do pedido
+                        nROLISTA: widget.cliente.pRIORIDADE.toString(),
+                        tIPOCLI: widget.cliente.tIPOCLI,
+                        vLRPED: currentTotal(),
+                        cARGATOTAL: currentWeight(),
+                        nOMECLIENTE: widget.cliente.nOMFANTASIA,
+                        tEXTOESP: obsController.text,
+                        rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
+                            .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
+                        rESERVADO13: clientNumberController.text,
+                        iTENSDOPEDIDO:
+                            _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
+                      );
+                      if (widget.isSaved) {
+                        userdata.removeOrder(widget.currentOrder);
+                      }
+                      userdata.saveOrder(newOrder);
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    } catch (e) {
+                      Alert(
+                        context: context,
+                        title: 'ERRO',
+                        desc: e.message,
+                        style: kAlertCardStyle,
+                        buttons: [
+                          AlertButton(
+                              label: 'VOLTAR',
+                              onTap: () {
+                                Navigator.pop(context);
+                              })
+                        ],
+                      ).show();
+                      print(e);
                     }
-                    userdata.saveOrder(newOrder);
-                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   sendFunction: () async {
                     //Função utilizada para enviar o pedido
@@ -433,6 +463,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     final String urlItens = userdata.baseUrl + 'PedidoItens';
                     try {
                       //Adaptação do Pedido Mestre para a sintaxe requisitada do POST Request
+                      _checkNoteBox();
                       await userdata.updateVendedor();
                       var bodyMestre = jsonEncode(
                         [
@@ -545,7 +576,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       Alert(
                         context: context,
                         title: 'ERRO',
-                        desc: e.toString(),
+                        desc: e.message,
                         style: kAlertCardStyle,
                         buttons: [
                           AlertButton(
