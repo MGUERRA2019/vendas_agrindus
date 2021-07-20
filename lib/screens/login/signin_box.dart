@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +15,9 @@ import '../navigation_screen.dart';
 
 class SignInBox extends StatefulWidget {
   //Caixa de login do usuário
-  final Function changePage;
-  SignInBox({@required this.changePage});
+  final Function changeToSignUpPage;
+  final Function changeToResetPassword;
+  SignInBox({@required this.changeToSignUpPage, @required this.changeToResetPassword});
 
   @override
   _SignInBoxState createState() => _SignInBoxState();
@@ -92,9 +95,7 @@ class _SignInBoxState extends State<SignInBox> {
                   Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: GestureDetector(
-                      onDoubleTap: () {
-                        DataHelper.noDataSnackbar(context);
-                      },
+                      onTap: widget.changeToResetPassword,
                       child: Text(
                         'Esqueci minha senha',
                         style: TextStyle(
@@ -201,7 +202,7 @@ class _SignInBoxState extends State<SignInBox> {
                   ),
                   color: kLogoColor,
                   splashColor: Colors.white30,
-                  onPressed: widget.changePage,
+                  onPressed: widget.changeToSignUpPage,
                   padding: EdgeInsets.all(12),
                   child: IntrinsicHeight(
                     child: Row(

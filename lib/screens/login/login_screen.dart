@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vendasagrindus/screens/login/permission_box.dart';
+import 'package:vendasagrindus/screens/login/reset_password.dart';
 import 'package:vendasagrindus/screens/login/signin_box.dart';
 import 'package:vendasagrindus/screens/login/signup_box.dart';
 
@@ -17,7 +18,8 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
+    _tabController.index = 1;
   }
 
   @override
@@ -63,26 +65,36 @@ class _LoginScreenState extends State<LoginScreen>
               controller: _tabController,
               physics: NeverScrollableScrollPhysics(),
               children: [
+                ResetPassword(popScreen: () {
+                  setState(() {
+                    _tabController.index = 1;
+                  });
+                }),
                 SignInBox(
-                  changePage: () {
+                  changeToSignUpPage: () {
                     setState(() {
-                      _tabController.index = 1;
+                      _tabController.index = 2;
+                    });
+                  },
+                  changeToResetPassword: () {
+                    setState(() {
+                      _tabController.index = 0;
                     });
                   },
                 ),
                 PermissionBox(popScreen: () {
                   setState(() {
-                    _tabController.index = 0;
+                    _tabController.index = 1;
                   });
                 }, permissionFunction: () {
                   setState(() {
-                    _tabController.index = 2;
+                    _tabController.index = 3;
                   });
                 }),
                 SignUpBox(
                   popScreen: () {
                     setState(() {
-                      _tabController.index = 0;
+                      _tabController.index = 1;
                     });
                   },
                 ),

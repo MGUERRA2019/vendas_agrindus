@@ -166,7 +166,7 @@ class _SignUpBoxState extends State<SignUpBox> {
                     ),
                   ),
                   SignUpInputBox(
-                    label: 'Endereço de email',
+                    label: 'Endereço de e-mail',
                     inputHint: 'exemplo@agrindus.com.br',
                     keyboard: TextInputType.emailAddress,
                     controller: emailController,
