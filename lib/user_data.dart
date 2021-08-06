@@ -120,10 +120,8 @@ class UserData extends ChangeNotifier {
     for (var item in listaGP) {
       grupoProdutos.add(GrupoProdutos.fromJson(item));
     }
-
     for (var produto in produtos) {
-      var element = grupoProdutos
-          .singleWhere((element) => (element.cPRODPALM == produto.cPRODPALM));
+      var element = grupoProdutos.firstWhere((element) => (element.cPRODPALM == produto.cPRODPALM));
       if (element != null) {
         produto.gRUPO = element.gRUPO;
       } else {
