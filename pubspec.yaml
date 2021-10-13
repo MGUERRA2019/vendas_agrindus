@@ -22,7 +22,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   google_fonts: ^1.1.0
-  flutter_svg: ^0.18.0 #it helps us to use SVG in our app
+  flutter_svg: ^0.20.0-nullsafety.3
   http: ^0.12.1 
   rflutter_alert: ^1.1.0
   bubble_bottom_bar: ^1.2.0
@@ -43,6 +43,9 @@ dependencies:
   firebase_auth: ^0.18.4+1
   cloud_firestore: ^0.14.4
   firebase_messaging: ^7.0.3
+
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
 
 dev_dependencies:
   flutter_test:

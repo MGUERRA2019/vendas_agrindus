@@ -155,7 +155,7 @@ class _SignInBoxState extends State<SignInBox> {
                         setState(() {
                           showSpinner = false;
                         });
-                        String message = e.message;
+                        String message = e.toString();
                         if (e is FirebaseAuthException) {
                           if (e.code == 'user-not-found') {
                             message = 'Usuário não cadastrado';
@@ -168,6 +168,8 @@ class _SignInBoxState extends State<SignInBox> {
                             message =
                                 'Houve uma falha de conexão da internet. Verifique se o seu dispositivo está conectado a uma rede e tente novamente.';
                           }
+                        } else if (!(e is TypeError)) {
+                          message = e.message;
                         }
 
                         Alert(
