@@ -121,7 +121,8 @@ class UserData extends ChangeNotifier {
       grupoProdutos.add(GrupoProdutos.fromJson(item));
     }
     for (var produto in produtos) {
-      var element = grupoProdutos.firstWhere((element) => (element.cPRODPALM == produto.cPRODPALM));
+      var element = grupoProdutos
+          .firstWhere((element) => (element.cPRODPALM == produto.cPRODPALM));
       if (element != null) {
         produto.gRUPO = element.gRUPO;
       } else {
@@ -204,6 +205,33 @@ class UserData extends ChangeNotifier {
               ));
     }
 
+    notifyListeners();
+  }
+
+  addNumberedCartItem(Produto produto, int amount) {
+    if (amount == 0 && cart.containsKey(produto.cPRODPALM)) {
+      cart.remove(produto);
+    } else if (amount == 0) {
+      return;
+    }
+    else if (cart.containsKey(produto.cPRODPALM)) {
+      cart[produto.cPRODPALM].amount = amount;
+    } else {
+      cart.putIfAbsent(
+          produto.cPRODPALM,
+          () => CartItem(
+                price: produto.pRECO,
+                name: produto.dESCRICAO,
+                barCode: produto.cODBARRA,
+                image: produto.iMAGEMURL,
+                code: produto.cPRODPALM,
+                weight: produto.pESOBRUTO,
+                packageWeight: produto.rESERVADO9,
+                group: produto.gRUPO,
+                unity: produto.uNIDADE,
+                amount: amount,
+              ));
+    }
     notifyListeners();
   }
 

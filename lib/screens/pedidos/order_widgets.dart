@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/produto.dart';
@@ -217,6 +218,7 @@ class CartView extends StatelessWidget {
                                 )
                               : Container(),
                           AmountSelector(
+                            item: item,
                             removeFunction: () {
                               userdata.removerQtde(item);
                             },
@@ -245,9 +247,14 @@ class CartView extends StatelessWidget {
 
 class FinalItem extends StatelessWidget {
   //Widget que mostra os itens do pedido no resumo (orders_summary_screen.dart)
-  const FinalItem({@required this.item, this.removeFunction, this.addFunction});
+  const FinalItem(
+      {@required this.item,
+      this.removeFunction,
+      this.addFunction,
+      this.changeCartAmount});
 
   final CartItem item;
+  final void Function(int) changeCartAmount;
   final Function removeFunction;
   final Function addFunction;
 
@@ -317,6 +324,7 @@ class FinalItem extends StatelessWidget {
                   label:
                       'Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg'),
               AmountSelector(
+                changeCartAmount: (amount) => changeCartAmount(amount),
                   removeFunction: removeFunction,
                   amountDisplay: item.amount.toString(),
                   addFunction: addFunction)
@@ -348,6 +356,7 @@ class FinalItem extends StatelessWidget {
 
 class FinalItemText extends StatelessWidget {
   FinalItemText({@required this.label});
+
   final String label;
 
   @override
@@ -365,11 +374,15 @@ class FinalItemText extends StatelessWidget {
 class AmountSelector extends StatelessWidget {
   final Function removeFunction;
   final Function addFunction;
+  final Produto item;
+  final void Function(int) changeCartAmount;
   final String amountDisplay;
 
   AmountSelector(
       {@required this.removeFunction,
       @required this.amountDisplay,
+      this.item,
+      this.changeCartAmount,
       @required this.addFunction});
 
   @override
@@ -394,11 +407,28 @@ class AmountSelector extends StatelessWidget {
               child: Icon(Icons.remove, color: Colors.white, size: 27.5),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              amountDisplay,
-              style: TextStyle(fontSize: 15),
+          GestureDetector(
+            onLongPress: () {
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) => SingleChildScrollView(
+                          child: Container(
+                        child: AmountEditorSheet(
+                          produto: item,
+                          changeCartAmount: (amount) =>
+                              changeCartAmount(amount),
+                        ),
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                      )));
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                amountDisplay,
+                style: TextStyle(fontSize: 15),
+              ),
             ),
           ),
           GestureDetector(
@@ -413,6 +443,80 @@ class AmountSelector extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AmountEditorSheet extends StatefulWidget {
+  final Produto produto;
+  final void Function(int) changeCartAmount;
+
+  AmountEditorSheet({this.produto, this.changeCartAmount});
+
+  @override
+  _AmountEditorSheetState createState() => _AmountEditorSheetState();
+}
+
+class _AmountEditorSheetState extends State<AmountEditorSheet> {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: kSheetBackground,
+      child: Container(
+        padding: EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              "Alterar Quantidade",
+              textAlign: TextAlign.center,
+              style: kHeaderText.copyWith(color: kPrimaryColor),
+            ),
+            TextField(
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              controller: controller,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+              ],
+              textAlign: TextAlign.center,
+            ),
+            FlatButton(
+              onPressed: () {
+                final amount = int.tryParse(controller.text);
+                if (amount != null) {
+                  if (widget.produto != null) {
+                    Provider.of<UserData>(context, listen: false)
+                        .addNumberedCartItem(widget.produto, amount);
+                  } else {
+                    widget.changeCartAmount(amount);
+                  }
+                }
+                Navigator.pop(context);
+              },
+              child: Text(
+                "ALTERAR",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              color: kPrimaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -465,6 +569,7 @@ class SummaryHeader extends StatelessWidget {
   //Cabeçalho para cada widget no resumo do pedido (order_summary_screen.dart)
   final String headerText;
   final EdgeInsetsGeometry padding;
+
   SummaryHeader({@required this.headerText, this.padding});
 
   @override

@@ -37,6 +37,10 @@ class CartItem {
     amount++;
   }
 
+  addNumberedCartAmount(int newAmount) {
+    amount = newAmount;
+  }
+
   double get total {
     return price * amount;
   }

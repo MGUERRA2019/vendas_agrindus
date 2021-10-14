@@ -40,6 +40,7 @@ const kPrimaryColor = Color(0xFF035AA6);
 const kSecondaryColor = Color(0xFFFFA41B);
 const kTextColor = Color(0xFF000839);
 const kTextLightColor = Color(0xFF747474);
+const kSheetBackground = Color(0XFF757575);
 const kBlueColor = Color(0xFF40BAD5);
 const kBackgroundColor = Color(0xFFF4F5F9);
 const kHeaderTitleColor = Colors.white70;

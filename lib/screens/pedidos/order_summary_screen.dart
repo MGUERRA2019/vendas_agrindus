@@ -334,6 +334,32 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                   currentItems[index].addCartItem();
                                 });
                               },
+                              changeCartAmount: (amount) {
+                                if (amount == 0) {
+                                  if (currentItems.length <= 1) {
+                                    if (widget.isSaved) {
+                                      userdata.removeOrder(
+                                          widget.currentOrder);
+                                    } else {
+                                      currentItems.removeAt(index);
+                                    }
+                                    int count = 0;
+                                    Navigator.popUntil(context, (_) {
+                                      return count++ == 3;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      currentItems[index]
+                                          .removeCartItem();
+                                      currentItems.removeAt(index);
+                                    });
+                                  }
+                                } else {
+                                  setState(() {
+                                    currentItems[index].addNumberedCartAmount(amount);
+                                  });
+                                }
+                              },
                             );
                           },
                         ),
