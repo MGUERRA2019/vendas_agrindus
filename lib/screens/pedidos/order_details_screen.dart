@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
 import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
+import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
 //Tela que mostra os detalhes do pedido oriundo dos "Últimos pedidos" referente a um cliente
@@ -12,7 +14,9 @@ class OrderDetailsScreen extends StatelessWidget {
   final PedidoMestre pedidoMestre;
   final List<PedidoItem> pedidosItem;
   final Cliente cliente;
+
   OrderDetailsScreen(this.pedidoMestre, this.pedidosItem, this.cliente);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,14 +100,31 @@ class OrderDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.all(0),
               itemCount: pedidosItem.length,
               itemBuilder: (context, index) {
+                final produto = Provider.of<UserData>(context, listen: false)
+                    .getProdutoFromProdPalm(
+                        pedidosItem[index].cPRODPALM.trim());
                 return DetailsCard(
                   items: [
                     DetailItem(
                         title: 'Sequência:',
                         description: pedidosItem[index].sEQUENCIA),
                     DetailItem(
-                        title: 'Código do Produto:',
-                        description: pedidosItem[index].cPRODPALM),
+                        title: 'Produto:', description: produto.dESCRICAO),
+                    RichText(
+                        text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Descrição do Produto:',
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                        WidgetSpan(child: SizedBox(width: 8)),
+                        TextSpan(text: (produto.dESCEXTENSO == null) ? '' : produto.dESCEXTENSO,
+                            style: TextStyle(fontFamily: 'Roboto', color: Colors.black)),
+                      ],
+                    )),
                     DetailItem(
                         title: 'Quantidade:',
                         description: pedidosItem[index].qTDE.toString()),

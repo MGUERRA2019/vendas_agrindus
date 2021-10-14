@@ -379,6 +379,10 @@ class UserData extends ChangeNotifier {
     }
   }
 
+  Produto getProdutoFromProdPalm(String productId) {
+    return produtos.firstWhere((item) => item.cPRODPALM.trim() == productId);
+  }
+
   Future<File> _getFile() async {
     //Função para para recuperar os pedidos salvos, se não houver arquivo, o mesmo será criado
     final directory = await getApplicationDocumentsDirectory();
