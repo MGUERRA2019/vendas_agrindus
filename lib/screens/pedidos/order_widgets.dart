@@ -398,6 +398,7 @@ class AmountSelector extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: removeFunction,
+            onLongPress: () => buildOrderBottomSheet(context),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius:
@@ -408,21 +409,7 @@ class AmountSelector extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onLongPress: () {
-              showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (context) => SingleChildScrollView(
-                          child: Container(
-                        child: AmountEditorSheet(
-                          produto: item,
-                          changeCartAmount: (amount) =>
-                              changeCartAmount(amount),
-                        ),
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                      )));
-            },
+            onLongPress: () => buildOrderBottomSheet(context),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Text(
@@ -433,6 +420,7 @@ class AmountSelector extends StatelessWidget {
           ),
           GestureDetector(
             onTap: addFunction,
+            onLongPress: () => buildOrderBottomSheet(context),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius:
@@ -445,6 +433,38 @@ class AmountSelector extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<dynamic> buildOrderBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (context) => OrderBottomSheet(item: item, changeCartAmount: changeCartAmount));
+  }
+}
+
+class OrderBottomSheet extends StatelessWidget {
+  const OrderBottomSheet({
+    Key key,
+    @required this.item,
+    @required this.changeCartAmount,
+  }) : super(key: key);
+
+  final Produto item;
+  final void Function(int p1) changeCartAmount;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+            child: Container(
+          child: AmountEditorSheet(
+            produto: item,
+            changeCartAmount: (amount) =>
+                changeCartAmount(amount),
+          ),
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+        ));
   }
 }
 
