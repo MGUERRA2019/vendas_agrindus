@@ -187,7 +187,7 @@ class Cliente {
     cONDPAGTO = json['COND_PAGTO'];
     // dESCONTO = json['DESCONTO'];
     pRIORIDADE = json['PRIORIDADE'];
-    // rISCO = json['RISCO'];
+    rISCO = (json['RISCO'] is String) ? int.tryParse(json['RISCO']) : json['RISCO'];
     // // lMCREDITO = json['LM_CREDITO'];
     // // dTVENCTOLM = json['DT_VENCTO_LM'];
     // //  cLASSE = json['CLASSE'];

@@ -36,8 +36,9 @@ class ClientDetailsScreen extends StatelessWidget {
             actions: [
               IconButton(
                   icon: Icon(Icons.add_box_outlined),
-                  onPressed: () {
+                  onPressed: cliente.rISCO != 1 ? () {
                     if (cliente.pRIORIDADE != 0 && cliente.pRIORIDADE != null) {
+                      print(cliente.rISCO);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -57,7 +58,7 @@ class ClientDetailsScreen extends StatelessWidget {
                         ],
                       ).show();
                     }
-                  })
+                  } : null)
             ],
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,

@@ -108,6 +108,8 @@ class UserData extends ChangeNotifier {
     return clientes.singleWhere((element) => element.cLIENTE == cliente);
   }
 
+  bool isClientRisk(Cliente client) => client.rISCO != 1;
+
   getProdutos() async {
     Iterable listaProdutos = await _db.getData(_db.getProdutos, baseUrl);
     produtos = listaProdutos.map((model) => Produto.fromJson(model)).toList();
