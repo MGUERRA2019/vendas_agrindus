@@ -6,6 +6,7 @@ import '../../../data_helper.dart';
 
 class OrderListBloc {
   int _currentMax = 9;
+  int _moreValue = 5;
   List<PedidoMestreFull> _allData = List<PedidoMestreFull>();
   List<PedidoMestreFull> shownData = List<PedidoMestreFull>();
   StreamController<List<PedidoMestreFull>> _streamController =
@@ -78,15 +79,14 @@ class OrderListBloc {
   }
 
   addMoreData() {
-    _currentMax += 5;
-    if (_currentMax + 5 > _allData.length) {
+    if (_currentMax + _moreValue > _allData.length) {
       hasMore = false;
       for (var item
           in _allData.getRange(_currentMax + 1, _allData.length - 1)) {
         shownData.add(item);
       }
     } else {
-      for (var item in _allData.getRange(_currentMax + 1, _currentMax + 5)) {
+      for (var item in _allData.getRange(_currentMax, _currentMax + _moreValue).toList()) {
         shownData.add(item);
       }
       _currentMax += 5;
