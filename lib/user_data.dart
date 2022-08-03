@@ -55,6 +55,7 @@ class UserData extends ChangeNotifier {
         var data = documentSnapshot.data();
         String id = data['vendedor'];
         baseUrl = data['url'];
+        print("Porta conectada: $baseUrl");
         await getVendedor(id);
         await getClientes();
         await getProdutosEGrupos(id);
@@ -77,6 +78,8 @@ class UserData extends ChangeNotifier {
       throw Exception('Este vendedor não existe.');
     }
     vendedor = Vendedor.fromJson(dadosVendedor[0]);
+
+    print("getVendedor success");
     notifyListeners();
   }
 
@@ -94,6 +97,8 @@ class UserData extends ChangeNotifier {
     clientes = listaClientes.map((model) => Cliente.fromJson(model)).toList();
     await _getTipoMovimento();
     await _getCondPagto();
+
+    print("getClientes success");
     notifyListeners();
   }
 
@@ -441,7 +446,6 @@ class UserData extends ChangeNotifier {
           {
             'MBPM': [
               {
-                'NUMERO_SFA': vendedor.pROXIMOPED,
                 'CLIENTE': pedido['CLIENTE'],
                 'COND_PAGTO': pedido['COND_PAGTO'],
                 'VENDEDOR': pedido['VENDEDOR'],
@@ -459,37 +463,6 @@ class UserData extends ChangeNotifier {
         ],
       );
 
-      List<dynamic> formattedItens = [];
-
-      for (var item in pedido['ITENS_DO_PEDIDO']) {
-        formattedItens.add({
-          'NUMERO_SFA': vendedor.pROXIMOPED,
-          'SEQUENCIA': item['SEQUENCIA'],
-          'C_PROD_PALM': item['C_PROD_PALM'],
-          'QTDE': item['QTDE'],
-          'VLR_UNIT': item['VLR_UNIT'],
-          'VLR_TOTAL': item['VLR_TOTAL'],
-          'DT_ENTREGA': item['DT_ENTREGA'],
-          'UNIDADE': item['UNIDADE'],
-          'TES': item['TES'],
-          'GRUPO': item['GRUPO'],
-          'NRO_LISTA': item['NRO_LISTA'],
-          'RESERVADO2': item['RESERVADO2'],
-          'RESERVADO5': item['RESERVADO5'],
-          'RESERVADO13': item['RESERVADO13'],
-          'RESERVADO14': item['RESERVADO14'],
-          'RESERVADO15': item['RESERVADO15'],
-          'RESERVADO16': item['RESERVADO16'],
-        });
-      }
-      var bodyItens = jsonEncode(
-        [
-          {
-            'MBPD': formattedItens,
-          },
-        ],
-      );
-
       final responseMestre = await http.post(
         urlMestre,
         body: bodyMestre,
@@ -497,6 +470,37 @@ class UserData extends ChangeNotifier {
       );
 
       if (responseMestre.statusCode == 201) {
+        List<dynamic> formattedItens = [];
+
+        for (var item in pedido['ITENS_DO_PEDIDO']) {
+          formattedItens.add({
+            'NUMERO_SFA': responseMestre.body,
+            'SEQUENCIA': item['SEQUENCIA'],
+            'C_PROD_PALM': item['C_PROD_PALM'],
+            'QTDE': item['QTDE'],
+            'VLR_UNIT': item['VLR_UNIT'],
+            'VLR_TOTAL': item['VLR_TOTAL'],
+            'DT_ENTREGA': item['DT_ENTREGA'],
+            'UNIDADE': item['UNIDADE'],
+            'TES': item['TES'],
+            'GRUPO': item['GRUPO'],
+            'NRO_LISTA': item['NRO_LISTA'],
+            'RESERVADO2': item['RESERVADO2'],
+            'RESERVADO5': item['RESERVADO5'],
+            'RESERVADO13': item['RESERVADO13'],
+            'RESERVADO14': item['RESERVADO14'],
+            'RESERVADO15': item['RESERVADO15'],
+            'RESERVADO16': item['RESERVADO16'],
+          });
+        }
+        var bodyItens = jsonEncode(
+          [
+            {
+              'MBPD': formattedItens,
+            },
+          ],
+        );
+
         final responseItens = await http.post(
           urlItens,
           headers: {'Content-Type': 'application/json'},
@@ -560,6 +564,7 @@ class UserData extends ChangeNotifier {
     await _getGrupos();
     await _getListaPreco(id);
     await _atribuirImagens();
+    print("getProdutosEGrupos success");
     notifyListeners();
   }
 }

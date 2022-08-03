@@ -31,7 +31,9 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
    }
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
+
+    ndkVersion '21.1.6352462'
 
     lintOptions {
         disable 'InvalidPackage'

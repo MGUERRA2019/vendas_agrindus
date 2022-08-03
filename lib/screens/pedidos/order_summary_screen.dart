@@ -56,7 +56,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   int _obsNoteMaxLength = 60;
   int _clientNumMaxLength = 30;
   bool showSpinner = false;
-  List<PedidoItem> _toPedidoItem(String numeroSFA, DateTime date) {
+  List<PedidoItem> _toPedidoItem(DateTime date) {
     //Conversão dos itens do carrinho para o tipo Pedido Item (MBPD)
     List<PedidoItem> aux = [];
     int sequencia = 1;
@@ -91,6 +91,12 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
       sequencia++;
     }
     return aux;
+  }
+
+  int _fetchSFANumber(String jsonString) {
+    var decoded = json.decode(jsonString);
+    String sfaNumber = decoded[0]['NUMERO_SFA'];
+    return int.parse(sfaNumber);
   }
 
   _checkNoteBox() {
@@ -439,7 +445,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     try {
                       _checkNoteBox();
                       var newOrder = PedidoMestre(
-                        nUMEROSFA: userdata.vendedor.pROXIMOPED,
                         cLIENTE: widget.cliente.cLIENTE,
                         cONDPAGTO: widget.cliente.cONDPAGTO,
                         vENDEDOR: userdata.vendedor.vENDEDOR,
@@ -455,7 +460,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
                         rESERVADO13: clientNumberController.text,
                         iTENSDOPEDIDO:
-                            _toPedidoItem(userdata.vendedor.pROXIMOPED, date),
+                            _toPedidoItem(date),
                       );
                       if (widget.isSaved) {
                         userdata.removeOrder(widget.currentOrder);
@@ -485,7 +490,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     setState(() {
                       showSpinner = true;
                     });
-                    final String urlMestre = userdata.baseUrl + 'PedidoMestre';
+                    final String urlMestre = userdata.baseUrl + 'PedidoMestre22';
                     final String urlItens = userdata.baseUrl + 'PedidoItens';
                     try {
                       //Adaptação do Pedido Mestre para a sintaxe requisitada do POST Request
@@ -496,7 +501,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           {
                             'MBPM': [
                               {
-                                'NUMERO_SFA': userdata.vendedor.pROXIMOPED,
                                 'CLIENTE': widget.cliente.cLIENTE,
                                 'COND_PAGTO': widget.cliente.cONDPAGTO,
                                 'VENDEDOR': userdata.vendedor.vENDEDOR,
@@ -519,49 +523,54 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           },
                         ],
                       );
-                      List<dynamic> formattedItens = [];
-                      //Adaptação dos Pedidos Item para a sintaxe requisitada do POST Request
-                      for (var item in _toPedidoItem(
-                          userdata.vendedor.pROXIMOPED, date)) {
-                        formattedItens.add({
-                          'NUMERO_SFA': userdata.vendedor.pROXIMOPED,
-                          'SEQUENCIA': item.sEQUENCIA,
-                          'C_PROD_PALM': item.cPRODPALM,
-                          'QTDE': item.qTDE,
-                          'VLR_UNIT': item.vLRUNIT,
-                          'VLR_TOTAL': item.vLRTOTAL,
-                          'DT_ENTREGA': item
-                              .dTENTREGA, //data de entrega prevista do pedido
-                          'UNIDADE': item.uNIDADE,
-                          'TES': widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
-                          'GRUPO': '', //não utilizável
-                          'NRO_LISTA': item.nROLISTA,
-                          'RESERVADO2': 0, //não incube ao app
-                          'RESERVADO5': 0, //não incube ao app
-                          'RESERVADO13': clientNumberController
-                              .text, //Número de pedido do cliente
-                          'RESERVADO14': DateFormat('yyyyMMdd')
-                              .format(DateTime.now()), //data do dia do pedido
-                          'RESERVADO15': '', //não incube ao app
-                          'RESERVADO16':
-                              widget.cliente.cLIENTE, //Código do cliente
-                        });
-                      }
-                      var bodyItens = jsonEncode(
-                        [
-                          {
-                            'MBPD': formattedItens,
-                          },
-                        ],
-                      );
-                      print(bodyMestre);
-                      print(bodyItens);
                       final responseMestre = await http.post(
                         urlMestre,
                         headers: {'Content-Type': 'application/json'},
                         body: bodyMestre,
                       );
+                      print(urlMestre);
+                      print(bodyMestre);
+
                       if (responseMestre.statusCode == 201) {
+                        List<dynamic> formattedItens = [];
+
+                        int sfaNumber = _fetchSFANumber(responseMestre.body);
+
+                        //Adaptação dos Pedidos Item para a sintaxe requisitada do POST Request
+                        for (var item in _toPedidoItem(date)) {
+                          formattedItens.add({
+                            'NUMERO_SFA': sfaNumber,
+                            'SEQUENCIA': item.sEQUENCIA,
+                            'C_PROD_PALM': item.cPRODPALM,
+                            'QTDE': item.qTDE,
+                            'VLR_UNIT': item.vLRUNIT,
+                            'VLR_TOTAL': item.vLRTOTAL,
+                            'DT_ENTREGA': item
+                                .dTENTREGA, //data de entrega prevista do pedido
+                            'UNIDADE': item.uNIDADE,
+                            'TES': widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
+                            'GRUPO': '', //não utilizável
+                            'NRO_LISTA': item.nROLISTA,
+                            'RESERVADO2': 0, //não incube ao app
+                            'RESERVADO5': 0, //não incube ao app
+                            'RESERVADO13': clientNumberController
+                                .text, //Número de pedido do cliente
+                            'RESERVADO14': DateFormat('yyyyMMdd')
+                                .format(DateTime.now()), //data do dia do pedido
+                            'RESERVADO15': '', //não incube ao app
+                            'RESERVADO16':
+                            widget.cliente.cLIENTE, //Código do cliente
+                          });
+                        }
+
+                        var bodyItens = jsonEncode(
+                          [
+                            {
+                              'MBPD': formattedItens,
+                            },
+                          ],
+                        );
+                        print(bodyItens);
                         final responseItens = await http.post(
                           urlItens,
                           headers: {'Content-Type': 'application/json'},
