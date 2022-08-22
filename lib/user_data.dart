@@ -433,7 +433,7 @@ class UserData extends ChangeNotifier {
     //Função para enviar todos pedidos salvos no arquivo
     //Se a operação for completa, serão removidos todos pedidos salvos
 
-    final String urlMestre = baseUrl + 'PedidoMestre';
+    final String urlMestre = baseUrl + 'PedidoMestre22';
     final String urlItens = baseUrl + 'PedidoItens';
     Map<int, int> orderStatus = Map<int, int>();
     int order = 1;
