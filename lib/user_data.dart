@@ -471,9 +471,13 @@ class UserData extends ChangeNotifier {
       if (responseMestre.statusCode == 201) {
         List<dynamic> formattedItens = [];
 
+        int sfaNumber = _fetchSFANumber(responseMestre.body);
+
+        print(sfaNumber);
+
         for (var item in pedido['ITENS_DO_PEDIDO']) {
           formattedItens.add({
-            'NUMERO_SFA': responseMestre.body,
+            'NUMERO_SFA': sfaNumber,
             'SEQUENCIA': item['SEQUENCIA'],
             'C_PROD_PALM': item['C_PROD_PALM'],
             'QTDE': item['QTDE'],
@@ -507,8 +511,9 @@ class UserData extends ChangeNotifier {
         );
 
         if (responseItens.statusCode != 201) {
-          print(
-              'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}');
+          String messageError = 'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}';
+          print(messageError);
+          throw Exception(messageError);
         }
 
         await updateVendedor();
@@ -554,6 +559,12 @@ class UserData extends ChangeNotifier {
         gRUPO: '',
       ),
     ];
+  }
+
+  int _fetchSFANumber(String jsonString) {
+    var decoded = json.decode(jsonString);
+    String sfaNumber = decoded[0]['NUMERO_SFA'];
+    return int.parse(sfaNumber);
   }
 
   getProdutosEGrupos(String id) async {

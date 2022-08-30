@@ -80,8 +80,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           rESERVADO2: 0, //não incube ao app
           rESERVADO5: 0, //não incube ao app
           rESERVADO9: item.packageWeight.toString(),
-          // rESERVADO13:
-          //     clientNumberController.text, //Número de pedido do cliente
+          rESERVADO13: clientNumberController.text, //Número de pedido do cliente
           rESERVADO14: DateFormat('yyyyMMdd')
               .format(DateTime.now()), //data do dia do pedido
           rESERVADO15: '', //não incube ao app
@@ -535,6 +534,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         List<dynamic> formattedItens = [];
 
                         int sfaNumber = _fetchSFANumber(responseMestre.body);
+
+                        print(sfaNumber);
 
                         //Adaptação dos Pedidos Item para a sintaxe requisitada do POST Request
                         for (var item in _toPedidoItem(date)) {
