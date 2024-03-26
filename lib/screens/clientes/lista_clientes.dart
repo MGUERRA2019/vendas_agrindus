@@ -5,7 +5,7 @@ import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/screens/clientes/client_details_screen.dart';
 import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import 'clients_search.dart';
 
 class ListaClientes extends StatefulWidget {

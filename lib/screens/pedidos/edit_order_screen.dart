@@ -8,7 +8,7 @@ import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import '../../user_data.dart';
 
 //Tela que controla edição de pedido que já foi salvo (saved_order)

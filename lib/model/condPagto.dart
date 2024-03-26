@@ -1,36 +1,40 @@
+import 'package:vendasagrindus/utilities/string_utils.dart';
+
+import 'package:vendasagrindus/utilities/string_utils.dart';
+
 class CondPagto {
-  String cONDPAGTO;
-  String dESCRICAO;
-  int cPINTELIGENTE;
-  String nROLISTA;
-  int fORMAPAGTO;
-  int dIASADICENTR;
-  int uSADIASADIC;
-  String tIPOPAGTO;
-  int uSATIPOPAGTO;
-  String cODTES;
-  int uSATES;
-  int vLRMINPED;
-  String uSADESC;
-  String iNTR;
-  String vERSION;
+  String cONDPAGTO = stringEmpty;
+  String dESCRICAO = stringEmpty;
+  int cPINTELIGENTE = 0;
+  String nROLISTA = stringEmpty;
+  int fORMAPAGTO = 0;
+  int dIASADICENTR = 0;
+  int uSADIASADIC = 0;
+  String tIPOPAGTO = stringEmpty;
+  int uSATIPOPAGTO = 0;
+  String cODTES = stringEmpty;
+  int uSATES = 0;
+  int vLRMINPED = 0;
+  String uSADESC = stringEmpty;
+  String iNTR = stringEmpty;
+  String vERSION = stringEmpty;
 
   CondPagto(
-      {this.cONDPAGTO,
-        this.dESCRICAO,
-        this.cPINTELIGENTE,
-        this.nROLISTA,
-        this.fORMAPAGTO,
-        this.dIASADICENTR,
-        this.uSADIASADIC,
-        this.tIPOPAGTO,
-        this.uSATIPOPAGTO,
-        this.cODTES,
-        this.uSATES,
-        this.vLRMINPED,
-        this.uSADESC,
-        this.iNTR,
-        this.vERSION});
+      {this.cONDPAGTO = stringEmpty,
+      this.dESCRICAO = stringEmpty,
+      this.cPINTELIGENTE = 0,
+      this.nROLISTA = stringEmpty,
+      this.fORMAPAGTO = 0,
+      this.dIASADICENTR = 0,
+      this.uSADIASADIC = 0,
+      this.tIPOPAGTO = stringEmpty,
+      this.uSATIPOPAGTO = 0,
+      this.cODTES = stringEmpty,
+      this.uSATES = 0,
+      this.vLRMINPED = 0,
+      this.uSADESC = stringEmpty,
+      this.iNTR = stringEmpty,
+      this.vERSION = stringEmpty});
 
   CondPagto.fromJson(Map<String, dynamic> json) {
     cONDPAGTO = json['COND_PAGTO'];

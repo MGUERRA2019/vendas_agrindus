@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vendasagrindus/screens/login/login_manager_screen.dart';
 import 'package:vendasagrindus/services/push_notification_service.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

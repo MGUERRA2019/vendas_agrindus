@@ -7,7 +7,7 @@ import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
 import 'package:vendasagrindus/screens/pedidos/order_list/order_list_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/saved_orders_screen.dart';
 import 'package:vendasagrindus/screens/produtos/product_screen.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 
 //Tela de navegação do aplicativo
 //É a tela inicial do aplicativo depois do login

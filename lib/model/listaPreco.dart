@@ -1,18 +1,19 @@
 import 'package:vendasagrindus/data_helper.dart';
+import 'package:vendasagrindus/utilities/string_utils.dart';
 
 class ListaPreco {
-  String vENDEDOR;
-  int nROLISTA;
-  String cPROD;
-  String cPRODPALM;
-  String uNIDADE;
-  double pRECO;
-  String dTVIGDE;
-  String iNTR;
-  int vERSION;
+  String vENDEDOR = stringEmpty;
+  int nROLISTA = 0;
+  String cPROD = stringEmpty;
+  String cPRODPALM = stringEmpty;
+  String uNIDADE = stringEmpty;
+  double pRECO = 0;
+  String dTVIGDE = stringEmpty;
+  String iNTR = stringEmpty;
+  int vERSION = 0;
 
   ListaPreco(
-      {this.vENDEDOR,
+      this.vENDEDOR,
       this.nROLISTA,
       this.cPROD,
       this.cPRODPALM,
@@ -20,7 +21,7 @@ class ListaPreco {
       this.pRECO,
       this.dTVIGDE,
       this.iNTR,
-      this.vERSION});
+      this.vERSION);
 
   ListaPreco.fromJson(Map<String, dynamic> json) {
     vENDEDOR = json['VENDEDOR'];
@@ -28,7 +29,7 @@ class ListaPreco {
     cPROD = json['C_PROD'];
     cPRODPALM = json['C_PROD_PALM'];
     uNIDADE = json['UNIDADE'];
-    pRECO = DataHelper.brNumber.parse(json['PRECO']);
+    pRECO = DataHelper.brNumber.parse(json['PRECO']).toDouble();
     dTVIGDE = json['DT_VIG_DE'];
     iNTR = json['INTR'];
     vERSION = json['VERSION'];
