@@ -12,7 +12,7 @@ import 'package:vendasagrindus/utilities/constants.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final PedidoMestre pedidoMestre;
-  final List<PedidoItem> pedidosItem;
+  final List<PedidoItem>? pedidosItem;
   final Cliente cliente;
 
   OrderDetailsScreen(this.pedidoMestre, this.pedidosItem, this.cliente);
@@ -29,15 +29,13 @@ class OrderDetailsScreen extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.blueGrey[700]),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }),
+                    icon: Icon(Icons.arrow_back, color: Colors.blueGrey.shade700),
+                    onPressed: () { Navigator.pop(context); }),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: Text(
-                    'Pedido ${pedidoMestre.nUMEROSFA}',
-                    style: kHeaderText.copyWith(color: Colors.blueGrey[400]),
+                    'Pedido ${pedidoMestre.nUMEROSFA ?? ''}',
+                    style: kHeaderText.copyWith(color: Colors.blueGrey.shade400),
                   ),
                 ),
               ],
@@ -46,68 +44,63 @@ class OrderDetailsScreen extends StatelessWidget {
               items: [
                 DetailItem(
                   title: 'Condição de pagamento:',
-                  description:
-                      '${cliente.cONDPAGTO} - ${cliente.cONDPAGTOobj.dESCRICAO}',
-                  colour: Colors.blueGrey[700],
+                  description: '${cliente.cONDPAGTO ?? ''} - ${cliente.cONDPAGTOobj?.dESCRICAO ?? ''}',
+                  colour: Colors.blueGrey.shade700,
                 ),
                 DetailItem(
                   title: 'Tipo de movimento:',
-                  description:
-                      '${cliente.tIPOMOVIMENTO.tIPOMOVTO} - ${cliente.tIPOMOVIMENTO.dESCRICAO}',
-                  colour: Colors.blueGrey[700],
+                  description: '${cliente.tIPOMOVIMENTO?.tIPOMOVTO ?? ''} - ${cliente.tIPOMOVIMENTO?.dESCRICAO ?? ''}',
+                  colour: Colors.blueGrey.shade700,
                 ),
                 DetailItem(
                   title: 'Emissão:',
-                  description: DateFormat('dd/MM/yyyy')
-                      .format(DateTime.tryParse(pedidoMestre.dTPED)),
-                  colour: Colors.blueGrey[700],
+                  description: pedidoMestre.dTPED != null
+                      ? DateFormat('dd/MM/yyyy').format(DateTime.parse(pedidoMestre.dTPED!))
+                      : 'N/A',
+                  colour: Colors.blueGrey.shade700,
                 ),
                 DetailItem(
                   title: 'Data de entrega:',
-                  description: DateFormat('dd/MM/yyyy')
-                      .format(DateTime.tryParse(pedidosItem.first.dTENTREGA)),
-                  colour: Colors.blueGrey[700],
+                  description: (pedidosItem != null && pedidosItem!.isNotEmpty && pedidosItem!.first.dTENTREGA != null)
+                      ? DateFormat('dd/MM/yyyy').format(DateTime.parse(pedidosItem!.first.dTENTREGA!))
+                      : 'N/A',
+                  colour: Colors.blueGrey.shade700,
                 ),
                 DetailItem(
                   title: 'Carga total:',
                   description: '${pedidoMestre.cARGATOTAL} kg',
-                  colour: Colors.blueGrey[700],
+                  colour: Colors.blueGrey.shade700,
                 ),
                 DetailItem(
                   title: 'Observações:',
                   description: pedidoMestre.tEXTOESP,
-                  colour: Colors.blueGrey[700],
+                  colour: Colors.blueGrey.shade700,
                 ),
                 DetailItem(
                   title: 'Pedido cliente:',
-                  description: pedidoMestre.rESERVADO13 != null
-                      ? pedidoMestre.rESERVADO13
-                      : "",
-                  colour: Colors.blueGrey[700],
+                  description: pedidoMestre.rESERVADO13 ?? '',
+                  colour: Colors.blueGrey.shade700,
                 ),
               ],
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
-              child: Text(
-                'Itens do pedido',
-                style: kHeaderText.copyWith(color: Colors.blueGrey[400]),
-              ),
+              child: Text('Itens do pedido', style: kHeaderText.copyWith(color: Colors.blueGrey.shade400)),
             ),
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               padding: EdgeInsets.all(0),
-              itemCount: pedidosItem.length,
+              itemCount: pedidosItem?.length ?? 0,
               itemBuilder: (context, index) {
                 final produto = Provider.of<UserData>(context, listen: false)
                     .getProdutoFromProdPalm(
-                        pedidosItem[index].cPRODPALM.trim());
+                        (pedidosItem![index].cPRODPALM ?? '').trim());
                 return DetailsCard(
                   items: [
                     DetailItem(
                         title: 'Sequência:',
-                        description: pedidosItem[index].sEQUENCIA),
+                        description: pedidosItem![index].sEQUENCIA),
                     DetailItem(
                         title: 'Produto:', description: produto.dESCRICAO),
                     RichText(
@@ -121,13 +114,14 @@ class OrderDetailsScreen extends StatelessWidget {
                               color: Colors.black),
                         ),
                         WidgetSpan(child: SizedBox(width: 8)),
-                        TextSpan(text: (produto.dESCEXTENSO == null) ? '' : produto.dESCEXTENSO,
+                        TextSpan(
+                            text: produto.dESCEXTENSO ?? '',
                             style: TextStyle(fontFamily: 'Roboto', color: Colors.black)),
                       ],
                     )),
                     DetailItem(
                         title: 'Quantidade:',
-                        description: pedidosItem[index].qTDE.toString()),
+                        description: pedidosItem![index].qTDE.toString()),
                   ],
                 );
               },

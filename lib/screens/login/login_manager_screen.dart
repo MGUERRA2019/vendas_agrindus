@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
-import 'package:vendasagrindus/screens/login/login_screen.dart';
 import 'package:vendasagrindus/screens/navigation_screen.dart';
+import 'package:vendasagrindus/screens/login/login_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
 
@@ -21,55 +21,58 @@ class LoginManagerScreen extends StatefulWidget {
 class _LoginManagerScreenState extends State<LoginManagerScreen> {
   double opacity = 0.0;
   void _login() async {
-    User user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      setState(() {
-        opacity = 1;
-      });
-      try {
-        await Provider.of<UserData>(context, listen: false)
-            .loginSetup(user.uid);
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => NavigationScreen()));
-      } catch (e) {
-        String message = e.message;
-        if (e is SocketException) {
-          message =
-              'Houve uma falha de conexão da internet. Verifique se o seu dispositivo está conectado a uma rede e tente novamente.';
-        }
-        Alert(
-          context: context,
-          title: 'ERRO',
-          desc:
-              '$message Deseja desconectar? (Ao desconectar seus pedidos salvos serão perdidos)',
-          style: kAlertCardStyle,
-          buttons: [
-            AlertButton(
-                label: 'Não',
-                line: Border.all(color: Colors.grey[600]),
-                labelColor: Colors.grey[600],
-                hasGradient: false,
-                cor: Colors.white,
-                onTap: () {
-                  SystemNavigator
-                      .pop(); //doesn't work with iOS (função não funciona com iOS)
-                }),
-            AlertButton(
-                label: 'Sim',
-                onTap: () async {
-                  await Provider.of<UserData>(context, listen: false).signOut();
-                  await FirebaseAuth.instance
-                      .signOut()
-                      .whenComplete(() => SystemNavigator.pop());
-                }),
-          ],
-        ).show();
-      }
-    } else {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    // No logged-in user → go to login screen
+    if (user == null) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      return;
     }
-  }
+
+    setState(() {
+      opacity = 1;
+    });
+    try {
+      await Provider.of<UserData>(context, listen: false)
+          .loginSetup(user.uid);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => NavigationScreen()));
+    } catch (e) {
+      String message = e.toString();
+      if (e is SocketException) {
+        message =
+            'Houve uma falha de conexão da internet. Verifique se o seu dispositivo está conectado a uma rede e tente novamente.';
+      }
+      Alert(
+        context: context,
+        title: 'ERRO',
+        desc:
+            '$message Deseja desconectar? (Ao desconectar seus pedidos salvos serão perdidos)',
+        style: kAlertCardStyle,
+        buttons: [
+          AlertButton(
+              label: 'Não',
+              line: Border.all(color: Colors.grey.shade600),
+              labelColor: Colors.grey.shade600,
+              hasGradient: false,
+              cor: Colors.white,
+              onTap: () {
+                SystemNavigator
+                    .pop(); //doesn't work with iOS (função não funciona com iOS)
+              }),
+          AlertButton(
+              label: 'Sim',
+              onTap: () async {
+                await Provider.of<UserData>(context, listen: false).signOut();
+                await FirebaseAuth.instance
+                    .signOut()
+                    .whenComplete(() => SystemNavigator.pop());
+              }),
+        ],
+      ).show();
+    }
+    }
 
   @override
   void initState() {

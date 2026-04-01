@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
@@ -22,7 +21,7 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  int currentIndex;
+  late int currentIndex;
 
   @override
   void initState() {
@@ -43,7 +42,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     OrderListScreen(),
   ];
 
-  Future<bool> _exitPressed() {
+  Future<bool?> _exitPressed() {
     return Alert(
       context: context,
       title: 'SAIR',
@@ -51,7 +50,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         padding: EdgeInsets.only(top: 10.0),
         child: Icon(
           Icons.exit_to_app,
-          color: Colors.blue[800],
+          color: Colors.blue.shade800,
           size: 50.0,
         ),
       ),
@@ -60,8 +59,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
       buttons: [
         AlertButton(
             label: 'Não',
-            line: Border.all(color: Colors.grey[600]),
-            labelColor: Colors.grey[600],
+            line: Border.all(color: Colors.grey.shade600),
+            labelColor: Colors.grey.shade600,
             hasGradient: false,
             cor: Colors.white,
             onTap: () {
@@ -78,69 +77,44 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _exitPressed,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          final shouldPop = (await _exitPressed()) ?? false;
+          if (shouldPop && context.mounted) Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
-        bottomNavigationBar: BubbleBottomBar(
-          backgroundColor: kPrimaryColor,
+        bottomNavigationBar: ClipRRect(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          currentIndex: currentIndex,
-          hasInk: true,
-          inkColor: Colors.black12,
-          hasNotch: true,
-          opacity: 0.2,
-          elevation: 8,
-          items: <BubbleBottomBarItem>[
-            BubbleBottomBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(
-                Icons.people_outline,
-                color: Colors.white,
+          child: BottomNavigationBar(
+            backgroundColor: kPrimaryColor,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white54,
+            currentIndex: currentIndex,
+            elevation: 8,
+            type: BottomNavigationBarType.fixed,
+            onTap: changePage,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people_outline),
+                label: 'Clientes',
               ),
-              activeIcon: Icon(
-                Icons.people_outline,
-                color: Colors.white,
+              BottomNavigationBarItem(
+                icon: Icon(Icons.folder_open_outlined),
+                label: 'Salvos',
               ),
-              title: Text('Clientes'),
-            ),
-            BubbleBottomBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(
-                Icons.folder_open_outlined,
-                color: Colors.white,
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_basket_outlined),
+                label: 'Produtos',
               ),
-              activeIcon: Icon(
-                Icons.folder_open_outlined,
-                color: Colors.white,
+              BottomNavigationBarItem(
+                icon: Icon(Icons.receipt_long_outlined),
+                label: 'Pedidos',
               ),
-              title: Text('Salvos'),
-            ),
-            BubbleBottomBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(
-                Icons.shopping_basket_outlined,
-                color: Colors.white,
-              ),
-              activeIcon: Icon(
-                Icons.shopping_basket_outlined,
-                color: Colors.white,
-              ),
-              title: Text('Produtos'),
-            ),
-            BubbleBottomBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(
-                Icons.receipt_long_outlined,
-                color: Colors.white,
-              ),
-              activeIcon: Icon(
-                Icons.receipt_long_outlined,
-                color: Colors.white,
-              ),
-              title: Text('Pedidos'),
-            ),
-          ],
-          onTap: changePage,
+            ],
+          ),
         ),
         body: PageTransitionSwitcher(
           transitionBuilder: (child, primaryAnimation, secondaryAnimation) {

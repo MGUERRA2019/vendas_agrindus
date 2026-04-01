@@ -7,7 +7,7 @@ class SearchBox extends StatelessWidget {
     this.onChanged,
   });
 
-  final ValueChanged onChanged;
+  final ValueChanged? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class SearchBox extends StatelessWidget {
         horizontal: kDefaultPadding, // 5 top and bottom
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.4),
+        color: Colors.white.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(

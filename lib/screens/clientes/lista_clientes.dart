@@ -16,13 +16,10 @@ class ListaClientes extends StatefulWidget {
 class _ListaClientesState extends State<ListaClientes> {
   Iterable<Cliente> _clientQuery(UserData userdata, String search) {
     Iterable<Cliente> query = [];
-
     query = userdata.clientes;
-
-    if (search != null || search != '') {
-      query = query.where((element) => element.nOMFANTASIA.contains(search));
+    if (search.isNotEmpty) {
+      query = query.where((element) => (element.nOMFANTASIA ?? '').contains(search));
     }
-
     return query;
   }
 
@@ -37,16 +34,14 @@ class _ListaClientesState extends State<ListaClientes> {
             IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () async {
-                  final String result = await showSearch(
+                  final String? result = await showSearch(
                       context: context,
                       delegate: ClientsSearch(
                           Provider.of<UserData>(context, listen: false)
                               .clientes));
-                  if (result != null) {
-                    setState(() {
-                      query = result;
-                    });
-                  }
+                  setState(() {
+                    query = result ?? '';
+                  });
                 })
           ],
         ),
@@ -81,10 +76,10 @@ class _ListaClientesState extends State<ListaClientes> {
                               foregroundColor: Color(0XB3046dc8),
                             ),
                             title: Text(
-                              cliente.nOMFANTASIA,
+                              cliente.nOMFANTASIA ?? '',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey[800],
+                                color: Colors.grey.shade800,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -92,18 +87,18 @@ class _ListaClientesState extends State<ListaClientes> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  cliente.eNDERECO,
+                                  cliente.eNDERECO ?? '',
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w300),
                                 ),
                                 Row(children: <Widget>[
                                   Text(
-                                    cliente.bAIRRO + ' - ',
+                                    '${cliente.bAIRRO ?? ''} - ',
                                     style: TextStyle(fontSize: 10),
                                   ),
                                   Text(
-                                    cliente.cIDADE,
+                                    cliente.cIDADE ?? '',
                                     style: TextStyle(fontSize: 10),
                                   ),
                                 ]),

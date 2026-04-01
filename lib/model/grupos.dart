@@ -1,8 +1,8 @@
 class Grupos {
-  String gRUPO;
-  String dESCRICAO;
-  String iNTR;
-  String vERSION;
+  String? gRUPO;
+  String? dESCRICAO;
+  String? iNTR;
+  String? vERSION;
 
   Grupos({this.gRUPO, this.dESCRICAO, this.iNTR, this.vERSION});
 

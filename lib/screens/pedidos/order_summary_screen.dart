@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
@@ -24,13 +24,12 @@ import 'package:http/http.dart' as http;
 
 class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> items;
-
   final Cliente cliente;
   final bool isSaved;
-  final String obsText;
-  final String clientOrderNumber;
-  final int currentOrder;
-  final DateTime orderDate;
+  final String? obsText;
+  final String? clientOrderNumber;
+  final int? currentOrder;
+  final DateTime? orderDate;
   OrderSummaryScreen(
     this.items,
     this.cliente, {
@@ -47,15 +46,17 @@ class OrderSummaryScreen extends StatefulWidget {
 }
 
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
-  _OrderSummaryScreenState(this.currentItems, {this.date});
+  _OrderSummaryScreenState(this.currentItems, {DateTime? date})
+      : date = date ?? DateTime.now();
 
-  List<CartItem> currentItems = List<CartItem>();
-  DateTime date;
-  TextEditingController obsController;
-  TextEditingController clientNumberController;
+  List<CartItem> currentItems = <CartItem>[];
+  late DateTime date;
+  late TextEditingController obsController;
+  late TextEditingController clientNumberController;
   int _obsNoteMaxLength = 60;
   int _clientNumMaxLength = 30;
   bool showSpinner = false;
+
   List<PedidoItem> _toPedidoItem(DateTime date) {
     //Conversão dos itens do carrinho para o tipo Pedido Item (MBPD)
     List<PedidoItem> aux = [];
@@ -69,17 +70,17 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           vLRUNIT: item.price,
           vLRTOTAL: item.total,
           dTENTREGA: DateFormat('yyyyMMdd').format(date),
-          nROLISTA: widget.cliente.pRIORIDADE.toString(),
+          nROLISTA: (widget.cliente.pRIORIDADE ?? 0).toString(),
           dESCRICAO: item.name,
           cODBARRA: item.barCode,
           iMAGE: item.image,
           pESO: item.weight,
           gRUPO: '', //não utilizável
-          tES: widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
+          tES: widget.cliente.tIPOMOVIMENTO?.tIPOMOVTO,
           uNIDADE: item.unity,
           rESERVADO2: 0, //não incube ao app
           rESERVADO5: 0, //não incube ao app
-          rESERVADO9: item.packageWeight.toString(),
+          rESERVADO9: (item.packageWeight ?? 0).toString(),
           rESERVADO13: clientNumberController.text, //Número de pedido do cliente
           rESERVADO14: DateFormat('yyyyMMdd')
               .format(DateTime.now()), //data do dia do pedido
@@ -108,30 +109,24 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
 
   double currentTotal() {
     double sum = 0.0;
-    for (var item in currentItems) {
-      sum += item.total;
-    }
+    for (var item in currentItems) { sum += item.total; }
     return sum;
   }
 
   double currentWeight() {
     double sum = 0.0;
-    for (var item in currentItems) {
-      sum += item.pesoTotal;
-    }
+    for (var item in currentItems) { sum += item.pesoTotal; }
     return sum;
   }
 
-  Future<DateTime> _regrasTipoMovimento() async {
+  Future<DateTime?> _regrasTipoMovimento() async {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
+    final tIPOMOVTO = widget.cliente.tIPOMOVIMENTO?.tIPOMOVTO ?? '';
 
-    if (widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '310' ||
-        widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '480') {
+    if (tIPOMOVTO == '310' || tIPOMOVTO == '480') {
       if (today.difference(date) > Duration(days: 1)) {
-        setState(() {
-          date = today;
-        });
+        setState(() { date = today; });
       }
       return showDatePicker(
           context: context,
@@ -140,11 +135,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               : date,
           firstDate: now.add(Duration(days: 1)),
           lastDate: now.add(Duration(days: 31)));
-    } else if (widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '315') {
+    } else if (tIPOMOVTO == '315') {
       if (today.difference(date) > Duration(days: 35)) {
-        setState(() {
-          date = today;
-        });
+        setState(() { date = today; });
       }
       return showDatePicker(
           context: context,
@@ -163,15 +156,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   @override
   void initState() {
     super.initState();
-    if (date == null) {
-      DateTime now = DateTime.now();
-      DateTime today = DateTime(now.year, now.month, now.day);
-      if (widget.cliente.tIPOMOVIMENTO.tIPOMOVTO == '315') {
-        date = today;
-      } else {
-        date = today.add(Duration(days: 1));
-      }
-    }
     obsController = TextEditingController();
     clientNumberController = TextEditingController();
   }
@@ -181,12 +165,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
         //Recuperação das observações e número de pedido do cliente, se existir
-        if (widget.obsText != null) {
-          obsController.text = widget.obsText;
-        }
-        if (widget.clientOrderNumber != null) {
-          clientNumberController.text = widget.clientOrderNumber;
-        }
+        obsController.text = widget.obsText ?? '';
+        clientNumberController.text = widget.clientOrderNumber ?? '';
         return ModalProgressHUD(
           inAsyncCall: showSpinner,
           child: Scaffold(
@@ -197,16 +177,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       IconButton(
                         icon: Icon(Icons.edit, color: Colors.white),
                         onPressed: () async {
-                          List newItens = await Navigator.push(
+                          List<CartItem>? newItens = await Navigator.push<List<CartItem>>(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => EditOrderScreen(
                                     widget.cliente, currentItems)),
                           );
                           if (newItens != null) {
-                            setState(() {
-                              currentItems = newItens;
-                            });
+                            setState(() { currentItems = newItens; });
                           }
                         },
                       ),
@@ -216,25 +194,21 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             Alert(
                               context: context,
                               title: 'DELETAR PEDIDO',
-                              desc:
-                                  'Deseja deletar este pedido? A ação não poderá ser desfeita.',
+                              desc: 'Deseja deletar este pedido? A ação não poderá ser desfeita.',
                               style: kAlertCardStyle,
                               buttons: [
                                 AlertButton(
                                     label: 'Não',
-                                    line: Border.all(color: Colors.grey[600]),
-                                    labelColor: Colors.grey[600],
+                                    line: Border.all(color: Colors.grey.shade600),
+                                    labelColor: Colors.grey.shade600,
                                     hasGradient: false,
                                     cor: Colors.white,
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    }),
+                                    onTap: () { Navigator.pop(context); }),
                                 AlertButton(
                                     label: 'Sim',
                                     onTap: () {
-                                      userdata.removeOrder(widget.currentOrder);
-                                      Navigator.of(context)
-                                          .popUntil((route) => route.isFirst);
+                                      userdata.removeOrder(widget.currentOrder ?? 0);
+                                      Navigator.of(context).popUntil((route) => route.isFirst);
                                     }),
                               ],
                             ).show();
@@ -262,37 +236,29 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                               removeFunction: () {
                                 //Função para deletar item (independente da quantidade) do pedido
                                 //Se for o único item do pedido, o pedido será cancelado
-                                if (currentItems.length <= 1 &&
-                                    currentItems[index].amount <= 1) {
+                                if (currentItems.length <= 1 && currentItems[index].amount <= 1) {
                                   Alert(
                                     context: context,
                                     title: 'ÚLTIMO ITEM DO PEDIDO',
-                                    desc:
-                                        'Ao remover este item, estará cancelando o pedido. Deseja prosseguir?',
+                                    desc: 'Ao remover este item, estará cancelando o pedido. Deseja prosseguir?',
                                     style: kAlertCardStyle,
                                     buttons: [
                                       AlertButton(
                                           label: 'Não',
-                                          line: Border.all(
-                                              color: Colors.grey[600]),
-                                          labelColor: Colors.grey[600],
+                                          line: Border.all(color: Colors.grey.shade600),
+                                          labelColor: Colors.grey.shade600,
                                           hasGradient: false,
                                           cor: Colors.white,
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          }),
+                                          onTap: () { Navigator.pop(context); }),
                                       AlertButton(
                                           label: 'Sim',
                                           onTap: () {
                                             if (widget.isSaved) {
-                                              userdata.removeOrder(
-                                                  widget.currentOrder);
+                                              userdata.removeOrder(widget.currentOrder ?? 0);
                                             } else {
                                               currentItems.removeAt(index);
                                             }
-
-                                            Navigator.of(context).popUntil(
-                                                (route) => route.isFirst);
+                                            Navigator.of(context).popUntil((route) => route.isFirst);
                                           }),
                                     ],
                                   ).show();
@@ -301,26 +267,21 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                     Alert(
                                       context: context,
                                       title: 'REMOVER ITEM',
-                                      desc:
-                                          'Deseja remover este item do carrinho?',
+                                      desc: 'Deseja remover este item do carrinho?',
                                       style: kAlertCardStyle,
                                       buttons: [
                                         AlertButton(
                                             label: 'Não',
-                                            line: Border.all(
-                                                color: Colors.grey[600]),
-                                            labelColor: Colors.grey[600],
+                                            line: Border.all(color: Colors.grey.shade600),
+                                            labelColor: Colors.grey.shade600,
                                             hasGradient: false,
                                             cor: Colors.white,
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            }),
+                                            onTap: () { Navigator.pop(context); }),
                                         AlertButton(
                                             label: 'Sim',
                                             onTap: () {
                                               setState(() {
-                                                currentItems[index]
-                                                    .removeCartItem();
+                                                currentItems[index].removeCartItem();
                                                 currentItems.removeAt(index);
                                               });
                                               Navigator.pop(context);
@@ -328,105 +289,79 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                       ],
                                     ).show();
                                   } else {
-                                    setState(() {
-                                      currentItems[index].removeCartItem();
-                                    });
+                                    setState(() { currentItems[index].removeCartItem(); });
                                   }
                                 }
                               },
                               addFunction: () {
-                                setState(() {
-                                  currentItems[index].addCartItem();
-                                });
+                                setState(() { currentItems[index].addCartItem(); });
                               },
                               changeCartAmount: (amount) {
                                 if (amount == 0) {
                                   if (currentItems.length <= 1) {
                                     if (widget.isSaved) {
-                                      userdata.removeOrder(
-                                          widget.currentOrder);
+                                      userdata.removeOrder(widget.currentOrder ?? 0);
                                     } else {
                                       currentItems.removeAt(index);
                                     }
                                     int count = 0;
-                                    Navigator.popUntil(context, (_) {
-                                      return count++ == 3;
-                                    });
+                                    Navigator.popUntil(context, (_) => count++ == 3);
                                   } else {
                                     setState(() {
-                                      currentItems[index]
-                                          .removeCartItem();
+                                      currentItems[index].removeCartItem();
                                       currentItems.removeAt(index);
                                     });
                                   }
                                 } else {
-                                  setState(() {
-                                    currentItems[index].addNumberedCartAmount(amount);
-                                  });
+                                  setState(() { currentItems[index].addNumberedCartAmount(amount); });
                                 }
                               },
                             );
                           },
                         ),
-                        SummaryHeader(
-                            headerText: 'Data da entrega',
-                            padding: EdgeInsets.all(15)),
+                        SummaryHeader(headerText: 'Data da entrega', padding: EdgeInsets.all(15)),
                         Padding(
                           padding: EdgeInsets.only(left: 10),
-                          child: FlatButton(
+                          child: TextButton(
+                            style: TextButton.styleFrom(backgroundColor: Colors.grey.shade200),
                             onPressed: () async {
                               final aux = await _regrasTipoMovimento();
-                              if (aux != null) {
-                                setState(() {
-                                  date = aux;
-                                });
-                              }
+                              if (aux != null) setState(() { date = aux; });
                             },
                             child: Text(DateFormat('dd/MM/yyyy').format(date)),
-                            color: Colors.grey[200],
                           ),
                         ),
-                        SummaryHeader(
-                            headerText: 'Resumo do pedido',
-                            padding: EdgeInsets.only(left: 15, top: 10)),
+                        SummaryHeader(headerText: 'Resumo do pedido', padding: EdgeInsets.only(left: 15, top: 10)),
                         DetailsCard(
                           items: [
                             DetailItem(
                               title: 'Condição do pagamento:',
-                              description:
-                                  '${widget.cliente.cONDPAGTO} - ${widget.cliente.cONDPAGTOobj.dESCRICAO}',
-                              colour: Colors.blueGrey[700],
+                              description: '${widget.cliente.cONDPAGTO ?? ''} - ${widget.cliente.cONDPAGTOobj?.dESCRICAO ?? ''}',
+                              colour: Colors.blueGrey.shade700,
                             ),
                             DetailItem(
                               title: 'Tipo de movimento:',
-                              description:
-                                  '${widget.cliente.tIPOMOVIMENTO.tIPOMOVTO} - ${widget.cliente.tIPOMOVIMENTO.dESCRICAO}',
-                              colour: Colors.blueGrey[700],
+                              description: '${widget.cliente.tIPOMOVIMENTO?.tIPOMOVTO ?? ''} - ${widget.cliente.tIPOMOVIMENTO?.dESCRICAO ?? ''}',
+                              colour: Colors.blueGrey.shade700,
                             ),
                             DetailItem(
                               title: 'Peso total:',
-                              description:
-                                  '${DataHelper.brNumber.format(currentWeight())} kg',
-                              colour: Colors.blueGrey[700],
+                              description: '${DataHelper.brNumber.format(currentWeight())} kg',
+                              colour: Colors.blueGrey.shade700,
                             ),
                             DetailItem(
                               title: 'Total:',
-                              description:
-                                  'R\$ ${DataHelper.brNumber.format(currentTotal())}',
-                              colour: Colors.blueGrey[700],
+                              description: 'R\$ ${DataHelper.brNumber.format(currentTotal())}',
+                              colour: Colors.blueGrey.shade700,
                             ),
                           ],
                         ),
-                        SummaryHeader(
-                            headerText: 'Observações finais',
-                            padding: EdgeInsets.only(left: 15, top: 10)),
+                        SummaryHeader(headerText: 'Observações finais', padding: EdgeInsets.only(left: 15, top: 10)),
                         NotesBox(
                             controller: obsController,
                             maxLength: _obsNoteMaxLength,
                             hintText: 'Observações finais do pedido...'),
-                        SummaryHeader(
-                            headerText: 'Número do pedido do cliente',
-                            padding: EdgeInsets.only(left: 15, top: 10)),
+                        SummaryHeader(headerText: 'Número do pedido do cliente', padding: EdgeInsets.only(left: 15, top: 10)),
                         NotesBox(
                           controller: clientNumberController,
                           maxLength: _clientNumMaxLength,
@@ -447,22 +382,19 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         cLIENTE: widget.cliente.cLIENTE,
                         cONDPAGTO: widget.cliente.cONDPAGTO,
                         vENDEDOR: userdata.vendedor.vENDEDOR,
-                        dTPED: DateFormat('yyyyMMdd')
-                            .format(DateTime.now()), //data do dia do pedido
-                        nROLISTA: widget.cliente.pRIORIDADE.toString(),
+                        dTPED: DateFormat('yyyyMMdd').format(DateTime.now()), //data do dia do pedido
+                        nROLISTA: (widget.cliente.pRIORIDADE ?? 0).toString(),
                         tIPOCLI: widget.cliente.tIPOCLI,
                         vLRPED: currentTotal(),
                         cARGATOTAL: currentWeight(),
                         nOMECLIENTE: widget.cliente.nOMFANTASIA,
                         tEXTOESP: obsController.text,
-                        rESERVADO2: int.parse(widget.cliente.tIPOMOVIMENTO
-                            .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
+                        rESERVADO2: int.tryParse(widget.cliente.tIPOMOVIMENTO?.tIPOMOVTO ?? '0') ?? 0, //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
                         rESERVADO13: clientNumberController.text,
-                        iTENSDOPEDIDO:
-                            _toPedidoItem(date),
+                        iTENSDOPEDIDO: _toPedidoItem(date),
                       );
                       if (widget.isSaved) {
-                        userdata.removeOrder(widget.currentOrder);
+                        userdata.removeOrder(widget.currentOrder ?? 0);
                       }
                       userdata.saveOrder(newOrder);
                       Navigator.of(context).popUntil((route) => route.isFirst);
@@ -470,14 +402,10 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       Alert(
                         context: context,
                         title: 'ERRO',
-                        desc: e.message,
+                        desc: e.toString(),
                         style: kAlertCardStyle,
                         buttons: [
-                          AlertButton(
-                              label: 'VOLTAR',
-                              onTap: () {
-                                Navigator.pop(context);
-                              })
+                          AlertButton(label: 'VOLTAR', onTap: () { Navigator.pop(context); })
                         ],
                       ).show();
                       print(e);
@@ -486,44 +414,34 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                   sendFunction: () async {
                     //Função utilizada para enviar o pedido
                     FocusScope.of(context).unfocus();
-                    setState(() {
-                      showSpinner = true;
-                    });
+                    setState(() { showSpinner = true; });
                     final String urlMestre = userdata.baseUrl + 'PedidoMestre22';
                     final String urlItens = userdata.baseUrl + 'PedidoItens';
                     try {
                       //Adaptação do Pedido Mestre para a sintaxe requisitada do POST Request
                       _checkNoteBox();
                       await userdata.updateVendedor();
-                      var bodyMestre = jsonEncode(
-                        [
-                          {
-                            'MBPM': [
-                              {
-                                'CLIENTE': widget.cliente.cLIENTE,
-                                'COND_PAGTO': widget.cliente.cONDPAGTO,
-                                'VENDEDOR': userdata.vendedor.vENDEDOR,
-                                'TEXTO_ESP':
-                                    obsController.text, //não pode ser vazio
-                                'DT_PED': DateFormat('yyyyMMdd').format(
-                                    DateTime.now()), //data do dia do pedido
-                                'VLR_PED': currentTotal(),
-                                'CARGA_TOTAL': currentWeight(),
-                                'NRO_LISTA':
-                                    widget.cliente.pRIORIDADE.toString(),
-                                'TIPO_CLI': widget.cliente.tIPOCLI,
-                                'RESERVADO2': int.parse(widget
-                                    .cliente
-                                    .tIPOMOVIMENTO
-                                    .tIPOMOVTO), //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
-                                'RESERVADO13': clientNumberController.text
-                              }
-                            ],
-                          },
-                        ],
-                      );
+                      var bodyMestre = jsonEncode([
+                        {
+                          'MBPM': [
+                            {
+                              'CLIENTE': widget.cliente.cLIENTE,
+                              'COND_PAGTO': widget.cliente.cONDPAGTO,
+                              'VENDEDOR': userdata.vendedor.vENDEDOR,
+                              'TEXTO_ESP': obsController.text, //não pode ser vazio
+                              'DT_PED': DateFormat('yyyyMMdd').format(DateTime.now()), //data do dia do pedido
+                              'VLR_PED': currentTotal(),
+                              'CARGA_TOTAL': currentWeight(),
+                              'NRO_LISTA': (widget.cliente.pRIORIDADE ?? 0).toString(),
+                              'TIPO_CLI': widget.cliente.tIPOCLI,
+                              'RESERVADO2': int.tryParse(widget.cliente.tIPOMOVIMENTO?.tIPOMOVTO ?? '0') ?? 0, //Anterior: 0 //Atual: Tipo de movimento do cliente widget.cliente.tIPOMOVIMENTO.tIPOMOVTO
+                              'RESERVADO13': clientNumberController.text,
+                            }
+                          ],
+                        },
+                      ]);
                       final responseMestre = await http.post(
-                        urlMestre,
+                        Uri.parse(urlMestre),
                         headers: {'Content-Type': 'application/json'},
                         body: bodyMestre,
                       );
@@ -549,7 +467,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             'DT_ENTREGA': item
                                 .dTENTREGA, //data de entrega prevista do pedido
                             'UNIDADE': item.uNIDADE,
-                            'TES': widget.cliente.tIPOMOVIMENTO.tIPOMOVTO,
+                            'TES': widget.cliente.tIPOMOVIMENTO?.tIPOMOVTO,
                             'GRUPO': '', //não utilizável
                             'NRO_LISTA': item.nROLISTA,
                             'RESERVADO2': 0, //não incube ao app
@@ -564,62 +482,38 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           });
                         }
 
-                        var bodyItens = jsonEncode(
-                          [
-                            {
-                              'MBPD': formattedItens,
-                            },
-                          ],
-                        );
+                        var bodyItens = jsonEncode([{'MBPD': formattedItens}]);
+
                         print(bodyItens);
                         final responseItens = await http.post(
-                          urlItens,
+                          Uri.parse(urlItens),
                           headers: {'Content-Type': 'application/json'},
                           body: bodyItens,
                         );
                         await userdata.updateVendedor();
                         if (responseItens.statusCode == 201) {
-                          print(
-                              'MBPM: ${responseMestre.statusCode} MBPD :${responseItens.statusCode}');
                           print('Post sucessful!');
                           if (widget.isSaved) {
-                            await userdata.removeOrder(widget.currentOrder);
+                            await userdata.removeOrder(widget.currentOrder ?? 0);
                           }
-                          setState(() {
-                            showSpinner = false;
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      OrderCompletedScreen()));
+                          setState(() { showSpinner = false; });
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletedScreen()));
                         } else {
-                          print('MBPM: ${responseMestre.statusCode}');
-                          print('MBPD: ${responseItens.statusCode}');
-                          throw Exception(
-                              'Houve um problema ao enviar seu pedido. (Erro ${responseItens.statusCode} [PD])');
+                          throw Exception('Houve um problema ao enviar seu pedido. (Erro ${responseItens.statusCode} [PD])');
                         }
                       } else {
-                        print('MBPM: ${responseMestre.statusCode}');
-                        throw Exception(
-                            'Houve um problema ao enviar seu pedido. (Erro ${responseMestre.statusCode} [PM])');
+                        throw Exception('Houve um problema ao enviar seu pedido. (Erro ${responseMestre.statusCode} [PM])');
                       }
                     } catch (e) {
                       await userdata.updateVendedor();
-                      setState(() {
-                        showSpinner = false;
-                      });
+                      setState(() { showSpinner = false; });
                       Alert(
                         context: context,
                         title: 'ERRO',
-                        desc: e.message,
+                        desc: e.toString(),
                         style: kAlertCardStyle,
                         buttons: [
-                          AlertButton(
-                              label: 'VOLTAR',
-                              onTap: () {
-                                Navigator.pop(context);
-                              })
+                          AlertButton(label: 'VOLTAR', onTap: () { Navigator.pop(context); })
                         ],
                       ).show();
                       print(e);

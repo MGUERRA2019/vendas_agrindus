@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vendasagrindus/data_helper.dart';
@@ -22,47 +21,32 @@ import 'package:darq/darq.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 
-//Single Provider class
-//Funções get usadas para recuperar os dados do banco de dados via http (ver data_helper.dart)
-
 class UserData extends ChangeNotifier {
   var _db = DataHelper();
-  String baseUrl;
+  late String baseUrl;
   Vendedor vendedor = Vendedor();
-  List<Cliente> clientes = List<Cliente>();
-  List<Produto> produtos = List<Produto>();
-  Map<int, List<ListaPreco>> grupoPreco = Map<int, List<ListaPreco>>();
-  List<int> listNumber = List<int>();
-  Map<String, CartItem> cart = Map<String, CartItem>();
+  List<Cliente> clientes = <Cliente>[];
+  List<Produto> produtos = <Produto>[];
+  Map<int, List<ListaPreco>> grupoPreco = <int, List<ListaPreco>>{};
+  List<int> listNumber = <int>[];
+  Map<String, CartItem> cart = <String, CartItem>{};
   List<dynamic> pedidosSalvos = [];
-  Map<String, int> backupAmount;
-  List<PedidoMestreFull> allData = List<PedidoMestreFull>();
+  Map<String, int> backupAmount = <String, int>{};
+  List<PedidoMestreFull> allData = <PedidoMestreFull>[];
   List<Grupos> grupos = [
-    Grupos(
-      dESCRICAO: 'TODOS',
-      gRUPO: '',
-    ),
+    Grupos(dESCRICAO: 'TODOS', gRUPO: ''),
   ];
 
-  loginSetup(String uid) async {
-    //O login recupera o número do vendedor e o base url que será usado
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) async {
-      if (documentSnapshot.exists) {
-        var data = documentSnapshot.data();
-        String id = data['vendedor'];
-        baseUrl = data['url'];
-        print("Porta conectada: $baseUrl");
-        await getVendedor(id);
-        await getClientes();
-        await getProdutosEGrupos(id);
-      } else {
-        throw new Exception('Usuário não cadastrado.');
-      }
-    });
+  Future<void> loginSetup(String uid) async {
+    var documentSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    var data = documentSnapshot.data()!;
+    String url = data['url'] as String;
+    String vendedorCode = data['vendedor'] as String;
+    baseUrl = url;
+    await getVendedor(vendedorCode);
+    await getClientes();
+    await getProdutosEGrupos(vendedorCode);
   }
 
   signOut() async {
@@ -83,18 +67,19 @@ class UserData extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateVendedor() async {
-    //Função para atualizar o vendedor (atualizar o número SFA, ou seja: número do pedido)
-    var dadosVendedor = await _db.getData(_db.getVendedor, baseUrl,
-        additionalData1: vendedor.vENDEDOR);
-    vendedor = Vendedor.fromJson(dadosVendedor[0]);
+  Future<void> updateVendedor() async {
+    Iterable jsonData = await _db.getData(
+        _db.getVendedor, baseUrl,
+        additionalData1: vendedor.vENDEDOR ?? '');
+    vendedor = Vendedor.fromJson(jsonData.first);
     notifyListeners();
   }
 
-  getClientes() async {
-    Iterable listaClientes = await _db.getData(_db.getClientes, baseUrl,
-        additionalData1: vendedor.vENDEDOR);
-    clientes = listaClientes.map((model) => Cliente.fromJson(model)).toList();
+  Future<void> getClientes() async {
+    Iterable jsonData = await _db.getData(
+        _db.getClientes, baseUrl,
+        additionalData1: vendedor.vENDEDOR ?? '');
+    clientes = jsonData.map((model) => Cliente.fromJson(model)).toList();
     await _getTipoMovimento();
     await _getCondPagto();
 
@@ -102,10 +87,9 @@ class UserData extends ChangeNotifier {
     notifyListeners();
   }
 
-  Cliente getClienteFromCod(String codCliente) {
+  Cliente? getClienteFromCod(String codCliente) {
     //Função para recuperar o cliente dado seu código
-    return clientes.singleWhere((element) => element.cLIENTE == codCliente,
-        orElse: () => null);
+    return clientes.singleWhereOrNull((element) => element.cLIENTE == codCliente);
   }
 
   Cliente getClienteFromPedidosSalvos(int index) {
@@ -122,13 +106,14 @@ class UserData extends ChangeNotifier {
 
   _getGrupoProduto() async {
     //Ao recuperar os grupos, são associados aos produtos na mesma função
-    List<GrupoProdutos> grupoProdutos = List<GrupoProdutos>();
+    List<GrupoProdutos> grupoProdutos = <GrupoProdutos>[];
     var listaGP = await _db.getData(_db.getGrupoProdutos, baseUrl);
     for (var item in listaGP) {
       grupoProdutos.add(GrupoProdutos.fromJson(item));
     }
     for (var produto in produtos) {
-      var element = grupoProdutos.firstWhereOrNull((element) => (element.cPRODPALM == produto.cPRODPALM));
+      var element = grupoProdutos.firstWhereOrNull(
+          (element) => (element.cPRODPALM == produto.cPRODPALM));
       if (element != null) {
         produto.gRUPO = element.gRUPO;
       } else {
@@ -155,7 +140,7 @@ class UserData extends ChangeNotifier {
 
   atribuirPreco(int key) {
     //Função para atribuir o preço do produto a partir da lista de preço de número int key
-    for (var item in grupoPreco[key]) {
+    for (var item in grupoPreco[key]!) {
       for (var produto in produtos) {
         if (produto.cPRODPALM == item.cPRODPALM) {
           produto.pRECO = item.pRECO;
@@ -168,7 +153,7 @@ class UserData extends ChangeNotifier {
     List<String> removeValues = [];
     for (var item in cart.values) {
       if (item.amount <= 0) {
-        removeValues.add(item.code);
+        removeValues.add(item.code ?? '');
       }
     }
     for (var code in removeValues) {
@@ -181,79 +166,42 @@ class UserData extends ChangeNotifier {
     //Função para diminuir quantidade de determinado Produto produto no carrinho
     //Se a quantidade chegar a zero o item será removido do carrinho
     if (cart.containsKey(produto.cPRODPALM)) {
-      if (cart[produto.cPRODPALM].amount > 0) {
-        cart[produto.cPRODPALM].amount--;
+      if (cart[produto.cPRODPALM]!.amount > 0) {
+        cart[produto.cPRODPALM]!.amount--;
       }
-      if (cart[produto.cPRODPALM].amount == 0) {
+      if (cart[produto.cPRODPALM]!.amount == 0) {
         cart.remove(produto.cPRODPALM);
       }
       notifyListeners();
     }
   }
 
-  addCartItem(Produto produto) {
-    //Função para aumentar quantidade de determinado Produto produto no carrinho
-    if (cart.containsKey(produto.cPRODPALM)) {
-      cart[produto.cPRODPALM].amount += 1;
-    } else {
-      cart.putIfAbsent(
-          produto.cPRODPALM,
-          () => CartItem(
-                price: produto.pRECO,
-                name: produto.dESCRICAO,
-                barCode: produto.cODBARRA,
-                image: produto.iMAGEMURL,
-                code: produto.cPRODPALM,
-                weight: produto.pESOBRUTO,
-                packageWeight: produto.rESERVADO9,
-                group: produto.gRUPO,
-                unity: produto.uNIDADE,
-              ));
-    }
-
+  void addCartItem(Produto produto) {
+    String key = produto.cPRODPALM ?? '';
+    cart.putIfAbsent(key,
+        () => CartItem(code: produto.cPRODPALM, name: produto.dESCRICAO,
+        barCode: produto.cODBARRA, image: produto.iMAGEMURL,
+        weight: produto.pESOBRUTO, packageWeight: produto.rESERVADO9,
+        group: produto.gRUPO, unity: produto.uNIDADE,
+        price: produto.pRECO));
     notifyListeners();
   }
 
-  addNumberedCartItem(Produto produto, int amount) {
-    if (amount == 0 && cart.containsKey(produto.cPRODPALM)) {
-      cart.remove(produto);
-    } else if (amount == 0) {
-      return;
-    }
-    else if (cart.containsKey(produto.cPRODPALM)) {
-      cart[produto.cPRODPALM].amount = amount;
-    } else {
-      cart.putIfAbsent(
-          produto.cPRODPALM,
-          () => CartItem(
-                price: produto.pRECO,
-                name: produto.dESCRICAO,
-                barCode: produto.cODBARRA,
-                image: produto.iMAGEMURL,
-                code: produto.cPRODPALM,
-                weight: produto.pESOBRUTO,
-                packageWeight: produto.rESERVADO9,
-                group: produto.gRUPO,
-                unity: produto.uNIDADE,
-                amount: amount,
-              ));
-    }
+  void addNumberedCartItem(Produto produto, int amount) {
+    String key = produto.cPRODPALM ?? '';
+    cart.putIfAbsent(key,
+        () => CartItem(code: produto.cPRODPALM, name: produto.dESCRICAO,
+        barCode: produto.cODBARRA, image: produto.iMAGEMURL,
+        weight: produto.pESOBRUTO, packageWeight: produto.rESERVADO9,
+        group: produto.gRUPO, unity: produto.uNIDADE,
+        amount: amount, price: produto.pRECO));
     notifyListeners();
   }
 
-  getCart(List<CartItem> items, {bool backup = false}) {
-    //Função para recuperar o carrinho no provider com determinado carrinho salvo (items)
-    //Backup utilizado para salvar o carrinho antes do edit_order_screen.dart
-    if (!backup) {
-      backupAmount = Map<String, int>();
-    }
-    for (var item in items) {
-      cart[item.code] = item;
-      if (backup) {
-        cart[item.code].amount = backupAmount[item.code];
-      } else {
-        backupAmount[item.code] = item.amount;
-      }
+  getCart(List<CartItem> cartItems, {bool backup = false}) {
+    for (var item in cartItems) {
+      String key = item.code ?? '';
+      cart.putIfAbsent(key, () => item);
     }
     if (backup) {
       cart.forEach((key, value) {
@@ -285,12 +233,11 @@ class UserData extends ChangeNotifier {
     //Função para atribuir imagens e descrição dos produtos
     //São recuperadas por função get e associados a classe Produto
     //imagem = String url
-    List<ProdutoImagem> imageList = List<ProdutoImagem>();
+    List<ProdutoImagem> imageList = <ProdutoImagem>[];
     var aux = await _db.getData(_db.getProdutosImagem, baseUrl);
     for (var item in aux) {
       imageList.add(ProdutoImagem.fromJson(item));
     }
-
     for (var item in imageList) {
       for (var produto in produtos) {
         if (item.cODIGO == produto.cODBARRA) {
@@ -301,30 +248,11 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  _getListaPreco(String id) async {
-    //Função get para recuperar a lista de preços e ordernar em ordem númerica
-    List<ListaPreco> precos = List<ListaPreco>();
-    var listaPreco =
-        await _db.getData(_db.getListaPreco, baseUrl, additionalData1: id);
-    for (var item in listaPreco) {
-      precos.add(ListaPreco.fromJson(item));
-    }
-
-    grupoPreco = groupBy(precos, (p) => p.nROLISTA);
-
-    listNumber = precos
-        .select((element, index) => element.nROLISTA)
-        .distinct((element) => element)
-        .orderBy((element) => element)
-        .toList();
-  }
-
   _getTipoMovimento() async {
     //Ao recuperar o tipo movimento, é associado ao cliente na mesma função
-    List<TipoMovimento> listaMovimentos = List<TipoMovimento>();
+    List<TipoMovimento> listaMovimentos = <TipoMovimento>[];
     Iterable aux = await _db.getData(_db.getTipoMovimento, baseUrl);
-    listaMovimentos =
-        aux.map((model) => TipoMovimento.fromJson(model)).toList();
+    listaMovimentos = aux.map((model) => TipoMovimento.fromJson(model)).toList();
     for (var item in listaMovimentos) {
       for (var cliente in clientes) {
         if (cliente.tIPOCLI == item.tIPOCLI) {
@@ -336,7 +264,7 @@ class UserData extends ChangeNotifier {
 
   _getCondPagto() async {
     //Ao recuperar a condição de pagamento, é associada ao cliente na mesma função
-    List<CondPagto> listaCondPagtos = List<CondPagto>();
+    List<CondPagto> listaCondPagtos = <CondPagto>[];
     Iterable aux = await _db.getData(_db.getCondPagto, baseUrl);
     listaCondPagtos = aux.map((model) => CondPagto.fromJson(model)).toList();
     for (var item in listaCondPagtos) {
@@ -348,9 +276,9 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  Future<List<PedidoMestre>> getPedidoMestre(String codCliente) async {
+  Future<List<PedidoMestre>?> getPedidoMestre(String codCliente) async {
     Iterable aux = await _db.getData(_db.getPedidoMestre, baseUrl,
-        additionalData1: vendedor.vENDEDOR, additionalData2: codCliente);
+        additionalData1: vendedor.vENDEDOR ?? '', additionalData2: codCliente);
     try {
       List<PedidoMestre> pedidosMestre =
           aux.map((model) => PedidoMestre.fromJson(model)).toList();
@@ -361,7 +289,7 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  Future<List<PedidoItem>> getPedidoItem(String numeroDoPedido) async {
+  Future<List<PedidoItem>?> getPedidoItem(String numeroDoPedido) async {
     try {
       Iterable aux = await _db.getData(_db.getPedidoItem, baseUrl,
           additionalData1: numeroDoPedido);
@@ -372,12 +300,12 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  void getPedidoMestreFull() async {
-    Iterable aux = await _db.getData(_db.getPedidoMestreFull, baseUrl,
-        additionalData1: vendedor.vENDEDOR);
+  Future<void> getPedidoMestreFull() async {
+    Iterable jsonData = await _db.getData(_db.getPedidoMestreFull, baseUrl,
+        additionalData1: vendedor.vENDEDOR ?? '');
     try {
       List<PedidoMestreFull> pedidosMestreFull =
-          aux.map((model) => PedidoMestreFull.fromJson(model)).toList();
+          jsonData.map((model) => PedidoMestreFull.fromJson(model)).toList();
       allData = pedidosMestreFull;
       notifyListeners();
     } catch (e) {
@@ -386,7 +314,8 @@ class UserData extends ChangeNotifier {
   }
 
   Produto getProdutoFromProdPalm(String productId) {
-    return produtos.firstWhere((item) => item.cPRODPALM.trim() == productId);
+    return produtos
+        .firstWhere((item) => (item.cPRODPALM ?? '').trim() == productId);
   }
 
   Future<File> _getFile() async {
@@ -435,35 +364,33 @@ class UserData extends ChangeNotifier {
 
     final String urlMestre = baseUrl + 'PedidoMestre22';
     final String urlItens = baseUrl + 'PedidoItens';
-    Map<int, int> orderStatus = Map<int, int>();
+    Map<int, int> orderStatus = <int, int>{};
     int order = 1;
     await updateVendedor();
     for (var pedido in pedidosSalvos) {
       print(vendedor.pROXIMOPED);
-      var bodyMestre = jsonEncode(
-        [
-          {
-            'MBPM': [
-              {
-                'CLIENTE': pedido['CLIENTE'],
-                'COND_PAGTO': pedido['COND_PAGTO'],
-                'VENDEDOR': pedido['VENDEDOR'],
-                'TEXTO_ESP': pedido['TEXTO_ESP'],
-                'DT_PED': pedido['DT_PED'], //data do dia do pedido
-                'VLR_PED': pedido['VLR_PED'], //valor total do pedido
-                'CARGA_TOTAL': pedido['CARGA_TOTAL'], //peso total do pedido
-                'NRO_LISTA': pedido['NRO_LISTA'],
-                'TIPO_CLI': pedido['TIPO_CLI'],
-                'RESERVADO2': pedido['RESERVADO2'],
-                'RESERVADO13': pedido['RESERVADO13']
-              }
-            ],
-          },
-        ],
-      );
+      var bodyMestre = jsonEncode([
+        {
+          'MBPM': [
+            {
+              'CLIENTE': pedido['CLIENTE'],
+              'COND_PAGTO': pedido['COND_PAGTO'],
+              'VENDEDOR': pedido['VENDEDOR'],
+              'TEXTO_ESP': pedido['TEXTO_ESP'],
+              'DT_PED': pedido['DT_PED'],
+              'VLR_PED': pedido['VLR_PED'],
+              'CARGA_TOTAL': pedido['CARGA_TOTAL'],
+              'NRO_LISTA': pedido['NRO_LISTA'],
+              'TIPO_CLI': pedido['TIPO_CLI'],
+              'RESERVADO2': pedido['RESERVADO2'],
+              'RESERVADO13': pedido['RESERVADO13']
+            }
+          ],
+        },
+      ]);
 
       final responseMestre = await http.post(
-        urlMestre,
+        Uri.parse(urlMestre),
         body: bodyMestre,
         headers: {'Content-Type': 'application/json'},
       );
@@ -496,22 +423,17 @@ class UserData extends ChangeNotifier {
             'RESERVADO16': item['RESERVADO16'],
           });
         }
-        var bodyItens = jsonEncode(
-          [
-            {
-              'MBPD': formattedItens,
-            },
-          ],
-        );
+        var bodyItens = jsonEncode([{'MBPD': formattedItens}]);
 
         final responseItens = await http.post(
-          urlItens,
+          Uri.parse(urlItens),
           headers: {'Content-Type': 'application/json'},
           body: bodyItens,
         );
 
         if (responseItens.statusCode != 201) {
-          String messageError = 'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}';
+          String messageError =
+              'Erro nos itens do pedido: $order: Erro #${responseItens.statusCode}';
           print(messageError);
           throw Exception(messageError);
         }
@@ -534,7 +456,7 @@ class UserData extends ChangeNotifier {
         print('Order #$key: Problem $value');
       });
       String errors = aux.join(', ');
-      throw new Exception('Erro nos seguintes pedidos: $errors');
+      throw Exception('Erro nos seguintes pedidos: $errors');
     }
   }
 
@@ -547,24 +469,38 @@ class UserData extends ChangeNotifier {
   _resetData() {
     //Função para zerar todos os dados do provedor
     vendedor = Vendedor();
-    clientes = List<Cliente>();
-    produtos = List<Produto>();
-    grupoPreco = Map<int, List<ListaPreco>>();
-    listNumber = List<int>();
-    cart = Map<String, CartItem>();
+    clientes = <Cliente>[];
+    produtos = <Produto>[];
+    grupoPreco = <int, List<ListaPreco>>{};
+    listNumber = <int>[];
+    cart = <String, CartItem>{};
     pedidosSalvos = [];
-    grupos = [
-      Grupos(
-        dESCRICAO: 'TODOS',
-        gRUPO: '',
-      ),
-    ];
+    grupos = [Grupos(dESCRICAO: 'TODOS', gRUPO: '')];
   }
 
   int _fetchSFANumber(String jsonString) {
     var decoded = json.decode(jsonString);
     String sfaNumber = decoded[0]['NUMERO_SFA'];
     return int.parse(sfaNumber);
+  }
+
+  _getListaPreco(String id) async {
+    //Função para recuperar as listas de preço associadas ao vendedor
+    List<ListaPreco> listaDePrecos = [];
+    var aux = await _db.getData(_db.getListaPreco, baseUrl, additionalData1: id);
+    for (var item in aux) {
+      listaDePrecos.add(ListaPreco.fromJson(item));
+    }
+    grupoPreco = {};
+    for (var item in listaDePrecos) {
+      int key = item.nROLISTA ?? 0;
+      if (grupoPreco.containsKey(key)) {
+        grupoPreco[key]!.add(item);
+      } else {
+        grupoPreco[key] = [item];
+      }
+    }
+    listNumber = grupoPreco.keys.toList()..sort();
   }
 
   getProdutosEGrupos(String id) async {

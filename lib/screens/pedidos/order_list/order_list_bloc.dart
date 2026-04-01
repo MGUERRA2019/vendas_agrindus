@@ -7,8 +7,8 @@ import '../../../data_helper.dart';
 class OrderListBloc {
   int _currentMax = 9;
   int _moreValue = 5;
-  List<PedidoMestreFull> _allData = List<PedidoMestreFull>();
-  List<PedidoMestreFull> shownData = List<PedidoMestreFull>();
+  List<PedidoMestreFull> _allData = <PedidoMestreFull>[];
+  List<PedidoMestreFull> shownData = <PedidoMestreFull>[];
   StreamController<List<PedidoMestreFull>> _streamController =
       StreamController();
   bool hasMore = true;
@@ -28,19 +28,15 @@ class OrderListBloc {
         try {
           for (var item in jsonData) {
             var aux = PedidoMestreFull.fromJson(item);
-            if (aux != null) {
-              _allData.add(aux);
-            }
+            _allData.add(aux);
+                    }
+          if (_allData.length < 9) {
+            hasMore = false;
+            shownData.addAll(_allData);
+          } else {
+            shownData.addAll(_allData.getRange(0, 9).toList());
           }
-          if (_allData != null) {
-            if (_allData.length < 9) {
-              hasMore = false;
-              shownData.addAll(_allData);
-            } else {
-              shownData.addAll(_allData.getRange(0, 9).toList());
-            }
-          }
-          input.add(shownData);
+                  input.add(shownData);
         } catch (e) {
           print(e);
           input.add(shownData);
@@ -55,20 +51,18 @@ class OrderListBloc {
   cancelQuery() {
     _currentMax = 9;
     hasMore = true;
-    shownData = List<PedidoMestreFull>();
-    if (_allData != null) {
-      if (_allData.length < 9) {
-        hasMore = false;
-        shownData.addAll(_allData);
-      } else {
-        shownData.addAll(_allData.getRange(0, 9).toList());
-      }
+    shownData = <PedidoMestreFull>[];
+    if (_allData.length < 9) {
+      hasMore = false;
+      shownData.addAll(_allData);
+    } else {
+      shownData.addAll(_allData.getRange(0, 9).toList());
     }
-    input.add(shownData);
+      input.add(shownData);
   }
 
   queryDatabyDate(DateTime date) {
-    shownData = List<PedidoMestreFull>();
+    shownData = <PedidoMestreFull>[];
     for (var item in _allData) {
       if (item.dTPED == date) {
         shownData.add(item);

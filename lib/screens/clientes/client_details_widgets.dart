@@ -5,8 +5,8 @@ import 'package:vendasagrindus/utilities/constants.dart';
 class DetailsCard extends StatelessWidget {
   final List<Widget> items;
   final bool isInteractive;
-  final Function onPressed;
-  DetailsCard({this.items, this.isInteractive = false, this.onPressed});
+  final VoidCallback? onPressed;
+  DetailsCard({required this.items, this.isInteractive = false, this.onPressed});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -35,9 +35,9 @@ class DetailsCard extends StatelessWidget {
 
 class DetailItem extends StatelessWidget {
   final String title;
-  final String description;
-  final Color colour;
-  DetailItem({@required this.title, @required this.description, this.colour});
+  final String? description;
+  final Color? colour;
+  DetailItem({required this.title, this.description, this.colour});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -55,13 +55,13 @@ class DetailItem extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onLongPress: () {
-                Clipboard.setData(ClipboardData(text: description));
-                Scaffold.of(context).showSnackBar(SnackBar(
+                Clipboard.setData(ClipboardData(text: description ?? ''));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Texto copiado para a área de transferência.'),
                   duration: Duration(milliseconds: 1500),
                 ));
               },
-              child: Text((description == null) ? '' : description,
+              child: Text(description ?? '',
                   style: TextStyle(fontFamily: 'Roboto')),
             ),
           ),
@@ -73,7 +73,7 @@ class DetailItem extends StatelessWidget {
 
 class DetailsHeader extends StatelessWidget {
   final String title;
-  DetailsHeader({@required this.title});
+  DetailsHeader({required this.title});
 
   @override
   Widget build(BuildContext context) {

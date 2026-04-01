@@ -38,9 +38,7 @@ class ProfileDrawer extends StatelessWidget {
                 SizedBox(width: 15),
                 Expanded(
                   child: Text(
-                    (FirebaseAuth.instance.currentUser.displayName == null)
-                        ? 'Usuário'
-                        : FirebaseAuth.instance.currentUser.displayName,
+                    FirebaseAuth.instance.currentUser?.displayName ?? 'Usuário',
                     style: kHeaderText,
                   ),
                 ),
@@ -56,7 +54,7 @@ class ProfileDrawer extends StatelessWidget {
                   : 'Vendedor ${Provider.of<UserData>(context, listen: false).vendedor.vENDEDOR}')),
           ExpansionTile(
             title: Text('Configurações'),
-            leading: Icon(Icons.settings),
+            leading: Icon(Icons.settings_outlined, color: Colors.blue.shade800),
             children: [
               ListTile(
                 title: Text('Minha conta'),
@@ -93,8 +91,8 @@ class ProfileDrawer extends StatelessWidget {
                 buttons: [
                   AlertButton(
                       label: 'Não',
-                      line: Border.all(color: Colors.grey[600]),
-                      labelColor: Colors.grey[600],
+                      line: Border.all(color: Colors.grey.shade600),
+                      labelColor: Colors.grey.shade600,
                       hasGradient: false,
                       cor: Colors.white,
                       onTap: () {

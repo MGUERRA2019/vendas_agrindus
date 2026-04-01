@@ -2,59 +2,45 @@ import 'package:vendasagrindus/data_helper.dart';
 import 'package:vendasagrindus/model/pedidoItem.dart';
 
 class PedidoMestre {
-  int eMPRESA;
-  int fILIAL;
-  int nUMERO;
-  double pESOTOTAL;
-  String nUMEROSFA;
-  String cLIENTE;
-  String nOMECLIENTE;
-  String lOJACLI;
-  String tIPOPED;
-  String cONDPAGTO;
-  String vENDEDOR;
-  String tEXTOESP;
-  String dTPED;
-  String nROLISTA;
-  String tIPOCLI;
-  String sTATUS;
-  int aSSINA;
-  int eMITENF;
-  String eMISSAO;
-  String nFISCAL;
-  String sERIE;
-  String nUMEROINTEG;
-  String dTLIVRE;
-  String nRDUP;
-  double vLRPED;
-  String vLRFAT;
-  String pORCDESC1;
-  String pORCDESC2;
-  String pORCDESC3;
-  double cARGATOTAL;
-  // int rESERVADO1;
-  int rESERVADO2;
-  // int rESERVADO3;
-  // int rESERVADO4;
-  // String rESERVADO5;
-  // String rESERVADO6;
-  // String rESERVADO7;
-  // int rESERVADO8;
-  // String rESERVADO9;
-  // String rESERVADO10;
-  // String rESERVADO11;
-  // String rESERVADO12;
-  String rESERVADO13;
-  // String rESERVADO14;
-  // String rESERVADO15;
-  // String rESERVADO16;
-  String iNTR;
-  String oPERADOR;
-  String dATAALTER;
-  int hORAALTER;
-  int tIMESTAMP;
-  int vERSION;
-  List<PedidoItem> iTENSDOPEDIDO;
+  int? eMPRESA;
+  int? fILIAL;
+  int? nUMERO;
+  double? pESOTOTAL;
+  String? nUMEROSFA;
+  String? cLIENTE;
+  String? nOMECLIENTE;
+  String? lOJACLI;
+  String? tIPOPED;
+  String? cONDPAGTO;
+  String? vENDEDOR;
+  String? tEXTOESP;
+  String? dTPED;
+  String? nROLISTA;
+  String? tIPOCLI;
+  String? sTATUS;
+  int? aSSINA;
+  int? eMITENF;
+  String? eMISSAO;
+  String? nFISCAL;
+  String? sERIE;
+  String? nUMEROINTEG;
+  String? dTLIVRE;
+  String? nRDUP;
+  double? vLRPED;
+  String? vLRFAT;
+  String? pORCDESC1;
+  String? pORCDESC2;
+  String? pORCDESC3;
+  double? cARGATOTAL;
+  int? rESERVADO2;
+  String? rESERVADO13;
+  String? iNTR;
+  String? oPERADOR;
+  String? dATAALTER;
+  int? hORAALTER;
+  int? tIMESTAMP;
+  int? vERSION;
+  List<PedidoItem>? iTENSDOPEDIDO;
 
   PedidoMestre(
       {this.eMPRESA,
@@ -87,22 +73,8 @@ class PedidoMestre {
       this.pORCDESC2,
       this.pORCDESC3,
       this.cARGATOTAL,
-      // this.rESERVADO1,
       this.rESERVADO2,
-      // this.rESERVADO3,
-      // this.rESERVADO4,
-      // this.rESERVADO5,
-      // this.rESERVADO6,
-      // this.rESERVADO7,
-      // this.rESERVADO8,
-      // this.rESERVADO9,
-      // this.rESERVADO10,
-      // this.rESERVADO11,
-      // this.rESERVADO12,
       this.rESERVADO13,
-      // this.rESERVADO14,
-      // this.rESERVADO15,
-      // this.rESERVADO16,
       this.iNTR,
       this.oPERADOR,
       this.dATAALTER,
@@ -138,16 +110,12 @@ class PedidoMestre {
     nUMEROINTEG = json['NUMERO_INTEG'];
     dTLIVRE = json['DT_LIVRE'];
     nRDUP = json['NR_DUP'];
-    vLRPED = (json['VLR_PED'] == "null")
-        ? 0
-        : DataHelper.brNumber.parse(json['VLR_PED']);
+    vLRPED = DataHelper.parseDouble(json['VLR_PED']);
     vLRFAT = json['VLR_FAT'];
     pORCDESC1 = json['PORC_DESC1'];
     pORCDESC2 = json['PORC_DESC2'];
     pORCDESC3 = json['PORC_DESC3'];
-    cARGATOTAL = (json['CARGA_TOTAL'] == "null")
-        ? 0
-        : DataHelper.brNumber.parse(json['CARGA_TOTAL']);
+    cARGATOTAL = DataHelper.parseDouble(json['CARGA_TOTAL']);
     // rESERVADO1 = json['RESERVADO1'];
     rESERVADO2 = (json['RESERVADO2'] is String)
         ? 0
@@ -234,7 +202,7 @@ class PedidoMestre {
     return data;
   }
 
-  DateTime get date {
-    return (dTPED == 'null') ? null : DateTime.parse(dTPED);
+  DateTime? get date {
+    return (dTPED == null || dTPED == 'null') ? null : DateTime.parse(dTPED!);
   }
 }

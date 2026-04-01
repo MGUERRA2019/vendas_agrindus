@@ -1,9 +1,9 @@
 class PedidoMestreFull {
-  String nUMEROSFA;
-  DateTime dTPED;
-  String cLIENTE;
-  String vLRPED;
-  String cARGATOTAL;
+  String? nUMEROSFA;
+  DateTime? dTPED;
+  String? cLIENTE;
+  String? vLRPED;
+  String? cARGATOTAL;
 
   PedidoMestreFull(
       {this.nUMEROSFA, this.dTPED, this.cLIENTE, this.vLRPED, this.cARGATOTAL});

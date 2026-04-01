@@ -28,7 +28,7 @@ class ClientsSearch extends SearchDelegate<String> {
   }
 
   @override
-  Widget buildResults(BuildContext context) => null;
+  Widget buildResults(BuildContext context) => Container();
 
   @override
   void showResults(BuildContext context) {
@@ -38,13 +38,13 @@ class ClientsSearch extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     final results = clientes.where((element) =>
-        element.nOMFANTASIA.toLowerCase().contains(query.toLowerCase()));
+        (element.nOMFANTASIA ?? '').toLowerCase().contains(query.toLowerCase()));
     return ListView(
       children: results
           .map<ListTile>((e) => ListTile(
-                title: Text(e.nOMFANTASIA),
+                title: Text(e.nOMFANTASIA ?? ''),
                 onTap: () {
-                  close(context, e.nOMFANTASIA);
+                  close(context, e.nOMFANTASIA ?? '');
                 },
               ))
           .toList(),

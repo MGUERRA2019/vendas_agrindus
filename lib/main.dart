@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ import 'package:vendasagrindus/utilities/constants.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await PushNotificationService().initialize();
+  await PushNotificationService.initialize();
   runApp(MyApp());
 }
 
@@ -24,17 +25,17 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'SFA Agrindus',
         localizationsDelegates: [
-          GlobalWidgetsLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [Locale("pt", "BR")],
         theme: ThemeData(
           textTheme: TextTheme(
-              bodyText1:
+              bodyLarge:
                   TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w500)),
           primaryColor: kPrimaryColor,
-          accentColor: kPrimaryColor,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+          visualDensity: VisualDensity.adaptivePlatformDensity, colorScheme: ColorScheme.fromSwatch().copyWith(secondary: kPrimaryColor),
         ),
         home: LoginManagerScreen(),
       ),

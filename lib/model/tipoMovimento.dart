@@ -1,12 +1,12 @@
 class TipoMovimento {
-  String tIPOCLI;
-  String tIPOMOVTO;
-  String dESCRICAO;
-  int dTENT;
-  String cONDPAGTO;
-  String bLOQUEADO;
-  String iNTR;
-  String vERSION;
+  String? tIPOCLI;
+  String? tIPOMOVTO;
+  String? dESCRICAO;
+  int? dTENT;
+  String? cONDPAGTO;
+  String? bLOQUEADO;
+  String? iNTR;
+  String? vERSION;
 
   TipoMovimento(
       {this.tIPOCLI,

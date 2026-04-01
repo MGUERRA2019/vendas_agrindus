@@ -9,11 +9,9 @@ class AppTheme {
 
   ThemeData get defaultTheme => ThemeData(
       primaryColor: AppColors.primary,
-      accentColor: AppColors.button,
       
-      textTheme: GoogleFonts.muliTextTheme(
+      textTheme: GoogleFonts.mulishTextTheme(
         Theme.of(context).textTheme,
-        
       ),
 
       visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -27,22 +25,16 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-      ),
-      textSelectionColor: AppColors.primary.withOpacity(0.4),
-      colorScheme: ColorScheme(
+      ), textSelectionTheme: TextSelectionThemeData(selectionColor: AppColors.primary.withValues(alpha: 0.4)), colorScheme: ColorScheme(
           primary: AppColors.primary,
-          primaryVariant: AppColors.primary,
           secondary: AppColors.button,
-          secondaryVariant: AppColors.accent,
           surface: Colors.white,
-          background: Colors.white,
           error: Colors.red,
           onPrimary: Colors.green,
           onSecondary: AppColors.accent,
           onSurface: Colors.white,
-          onBackground: Colors.white,
           onError: Colors.red,
-          brightness: Brightness.light),
+          brightness: Brightness.light).copyWith(secondary: AppColors.button),
           );
 
 }

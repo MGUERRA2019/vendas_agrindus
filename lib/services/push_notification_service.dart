@@ -1,103 +1,71 @@
-import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Background message: ${message.messageId}");
+}
+
 class PushNotificationService {
-  //class to set up notification services. Using Cloud Messaging (Firebase). To local notifications, read the docs of the plugin flutter_local_notifications.
-
-  final FirebaseMessaging _fcm = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  static final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  NotificationDetails platformChannelSpecifics;
 
-  Future initialize() async {
+  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'vendas_agrindus',
+    'Notificações Vendas Agrindus',
+    description: 'vendas_agrindus_description',
+    importance: Importance.max,
+  );
+
+  static Future<void> initialize() async {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('agrindusnotification');
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
-            onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
 
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('vendas_agrindus',
-            'Notificações Vendas Agrindus', 'vendas_agrindus_description',
+    await _fcm.requestPermission(alert: true, badge: true, sound: true);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('onMessage: ${message.data}');
+      _showLocalNotification(message);
+    });
+
+    String? token = await _fcm.getToken();
+    print('TOKEN: $token');
+  }
+
+  static void _showLocalNotification(RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    if (notification != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
             importance: Importance.max,
             priority: Priority.max,
-            showWhen: false);
-    platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-
-    _fcm.configure(
-      onBackgroundMessage: backgroundMessageHandler,
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        _processmessage(message);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        _processmessage(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        _processmessage(message);
-      },
-    );
-    print('TOKEN: ${await _fcm.getToken()}');
-  }
-
-  void _processmessage(message) {
-    _pushNotificationManager(message);
-  }
-
-  void _pushNotificationManager(message) async {
-    String payload;
-    if (Platform.isIOS) {
-      payload = message['payload'];
-    } else {
-      payload = message['data']['payload'];
+            showWhen: false,
+          ),
+        ),
+      );
     }
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      message['notification']['title'],
-      message['notification']['body'],
-      platformChannelSpecifics,
-    );
-  }
-
-  static Future<dynamic> backgroundMessageHandler(
-      Map<String, dynamic> message) async {
-    if (message.containsKey('data')) {
-      // Handle data message
-      final dynamic data = message['data'];
-      return data;
-    }
-
-    if (message.containsKey('notification')) {
-      // Handle notification message
-      final dynamic notification = message['notification'];
-      return notification;
-    }
-    // Or do other work.
-  }
-
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) {}
-
-  Future onSelectNotification(String payload) {
-    //For future treatment of other notifications, use strategy pattern (factories)
-    print('Completed');
   }
 }

@@ -7,7 +7,7 @@ import 'package:vendasagrindus/utilities/constants.dart';
 
 class GridItem extends StatelessWidget {
   //Widget com visualização dos produtos em forma de grade
-  GridItem({@required this.item});
+  GridItem({required this.item});
 
   final Produto item;
 
@@ -21,44 +21,47 @@ class GridItem extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
-              width: 125,
-              height: 115,
-              margin: EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                // item.iMAGEMURL != null ? Colors.white : Colors.black26,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: (item.iMAGEMURL != null)
-                  ? CachedNetworkImage(
-                      imageUrl: item.iMAGEMURL,
-                      fit: BoxFit.fitHeight,
-                      fadeInCurve: Curves.bounceIn,
-                      fadeInDuration: Duration(milliseconds: 300),
-                      errorWidget: (context, url, error) =>
-                          Icon(Icons.image_not_supported_outlined),
-                    )
-                  : Icon(
-                      Icons.image_not_supported_outlined,
-                      color: Colors.black45,
-                      size: 50,
-                    )),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.only(bottom: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: (item.iMAGEMURL != null)
+                    ? CachedNetworkImage(
+                        imageUrl: item.iMAGEMURL!,
+                        fit: BoxFit.contain,
+                        fadeInCurve: Curves.bounceIn,
+                        fadeInDuration: Duration(milliseconds: 300),
+                        errorWidget: (context, url, error) =>
+                            Icon(Icons.image_not_supported_outlined),
+                      )
+                    : Icon(
+                        Icons.image_not_supported_outlined,
+                        color: Colors.black45,
+                        size: 50,
+                      )),
+          ),
           Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                item.dESCRICAO,
+                item.dESCRICAO ?? '',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w500),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
               ),
-              SizedBox(height: 5),
-              item.pRECO != null
-                  ? Text(
-                      'R\$ ${DataHelper.brNumber.format(item.pRECO)}',
-                      textAlign: TextAlign.center,
-                    )
-                  : Container(),
+              if (item.pRECO != null) ...[
+                SizedBox(height: 3),
+                Text(
+                  'R\$ ${DataHelper.brNumber.format(item.pRECO)}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11),
+                ),
+              ],
             ],
           ),
         ],
@@ -69,7 +72,7 @@ class GridItem extends StatelessWidget {
 
 class ListItem extends StatelessWidget {
   //Widget com visualização dos produtos em forma de lista
-  const ListItem({@required this.item});
+  ListItem({required this.item});
 
   final Produto item;
 
@@ -96,7 +99,7 @@ class ListItem extends StatelessWidget {
             ),
             child: (item.iMAGEMURL != null)
                 ? CachedNetworkImage(
-                    imageUrl: item.iMAGEMURL,
+                    imageUrl: item.iMAGEMURL!,
                     fit: BoxFit.fitHeight,
                     fadeInCurve: Curves.bounceIn,
                     fadeInDuration: Duration(milliseconds: 300),
@@ -117,16 +120,20 @@ class ListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.dESCRICAO,
+                    item.dESCRICAO ?? '',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                   SizedBox(height: 4),
                   Expanded(
                     child: Text(
-                      (item.dESCEXTENSO != null) ? item.dESCEXTENSO : '',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      item.dESCEXTENSO ?? '',
+                      style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                     ),
                   ),
+                  SizedBox(height: 4),
+                  Text('Código do produto: ${item.cPRODPALM ?? ''}',
+                      style:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 12)),
                   SizedBox(height: 4),
                   item.pRECO != null
                       ? Text(
@@ -146,15 +153,11 @@ class ListItem extends StatelessWidget {
 
 class ListViewIcon extends StatelessWidget {
   //Widget que determina o tipo de visualização dos produtos (Grade ou Lista)
-  final ViewType viewStyle;
-  final ViewType currentView;
-  final Function onPressed;
-  final IconData icon;
-  ListViewIcon(
-      {@required this.viewStyle,
-      @required this.currentView,
-      @required this.onPressed,
-      @required this.icon});
+  final IconData? icon;
+  final ViewType? viewStyle;
+  final ViewType? currentView;
+  final VoidCallback? onPressed;
+  ListViewIcon({this.icon, this.viewStyle, this.currentView, this.onPressed});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

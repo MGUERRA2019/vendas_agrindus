@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/utilities/constants.dart';
@@ -10,7 +9,7 @@ class PermissionBox extends StatefulWidget {
   //Caixa de cadastro de usuário
   final Function popScreen;
   final Function permissionFunction;
-  PermissionBox({@required this.popScreen, @required this.permissionFunction});
+  PermissionBox({required this.popScreen, required this.permissionFunction});
   @override
   _PermissionBoxState createState() => _PermissionBoxState();
 }
@@ -22,8 +21,11 @@ class _PermissionBoxState extends State<PermissionBox> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: widget.popScreen,
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) widget.popScreen();
+        },
         child: ModalProgressHUD(
           opacity: .02,
           inAsyncCall: showSpinner,
@@ -55,8 +57,7 @@ class _PermissionBoxState extends State<PermissionBox> {
                     trailingAction: IconButton(
                         icon: Icon(
                           Icons.remove_red_eye,
-                          color:
-                              hidePassword ? Colors.grey[400] : kPrimaryColor,
+                          color: hidePassword ? Colors.grey.shade400 : kPrimaryColor,
                         ),
                         onPressed: () {
                           setState(() {
@@ -64,56 +65,46 @@ class _PermissionBoxState extends State<PermissionBox> {
                           });
                         }),
                   ),
-                  FlatButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: kLogoColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                     ),
-                    color: kLogoColor,
-                    splashColor: Colors.white30,
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                     onPressed: () async {
                       FocusScope.of(context).unfocus();
                       try {
-                        setState(() {
-                          showSpinner = true;
-                        });
+                        setState(() { showSpinner = true; });
                         await FirebaseFirestore.instance
                             .collection('key')
                             .doc('kRAVH7cMnX24JrgyhKvF')
                             .get()
-                            .then(
-                          (DocumentSnapshot documentSnapshot) async {
+                            .then((DocumentSnapshot documentSnapshot) async {
                             if (documentSnapshot.exists) {
-                              var data = documentSnapshot.data();
-                              String key = data['key'];
-                              if (keyController.text == key) {
-                                setState(() {
-                                  showSpinner = false;
-                                });
-                                widget.permissionFunction();
-                              } else {
-                                throw Exception("Senha incorreta.");
-                              }
+                            var data = documentSnapshot.data() as Map<String, dynamic>;
+                            String key = data['key'] as String;
+                            if (keyController.text == key) {
+                              setState(() { showSpinner = false; });
+                              widget.permissionFunction();
+                            } else {
+                              throw Exception("Senha incorreta.");
                             }
-                          },
-                        );
-                      } catch (e) {
-                        setState(() {
-                          showSpinner = false;
+                          }
                         });
-                        String message = e.message;
+                      } catch (e) {
+                        setState(() { showSpinner = false; });
                         Alert(
                           context: context,
                           title: 'ERRO',
-                          desc: message,
+                          desc: e.toString(),
                           style: kAlertCardStyle,
                           buttons: [
                             AlertButton(
                               label: 'OK',
                               onTap: () {
-                                setState(() {
-                                  keyController.clear();
-                                });
+                                setState(() { keyController.clear(); });
                                 Navigator.pop(context);
                               },
                             ),
@@ -121,10 +112,7 @@ class _PermissionBoxState extends State<PermissionBox> {
                         ).show();
                       }
                     },
-                    child: Text(
-                      'Começar cadastro',
-                      style: TextStyle(color: Colors.white, fontSize: 17),
-                    ),
+                    child: Text('Começar cadastro', style: TextStyle(color: Colors.white, fontSize: 17)),
                   ),
                 ],
               ),
@@ -135,24 +123,19 @@ class _PermissionBoxState extends State<PermissionBox> {
 }
 
 class PermissionInputBox extends StatelessWidget {
-  final String label;
+  final String? label;
   final bool isPassword;
-  final TextEditingController controller;
-  final Widget trailingAction;
+  final TextEditingController? controller;
+  final Widget? trailingAction;
 
-  PermissionInputBox(
-      {this.label,
-      this.isPassword = false,
-      this.controller,
-      this.trailingAction});
+  PermissionInputBox({this.label, this.isPassword = false, this.controller, this.trailingAction});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
       child: TextFormField(
-        style: TextStyle(
-          fontSize: 16,
-        ),
+        style: TextStyle(fontSize: 16),
         controller: controller,
         obscureText: isPassword,
         keyboardType: TextInputType.visiblePassword,
@@ -160,10 +143,7 @@ class PermissionInputBox extends StatelessWidget {
         decoration: InputDecoration(
           suffixIcon: trailingAction,
           labelText: label,
-          hintStyle: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[400],
-          ),
+          hintStyle: TextStyle(fontSize: 16, color: Colors.grey.shade400),
           contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 15),
           focusColor: kPrimaryColor,
           focusedBorder: OutlineInputBorder(
@@ -180,7 +160,7 @@ class PermissionInputBox extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(27),
-            borderSide: BorderSide(color: Colors.grey[350]),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
         ),
       ),

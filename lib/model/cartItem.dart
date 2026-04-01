@@ -1,16 +1,16 @@
 import '../data_helper.dart';
 
 class CartItem {
-  String name;
+  String? name;
   int amount;
-  double price;
-  String barCode;
-  String image;
-  String code;
-  String weight;
-  int packageWeight;
-  String group;
-  String unity;
+  double? price;
+  String? barCode;
+  String? image;
+  String? code;
+  String? weight;
+  int? packageWeight;
+  String? group;
+  String? unity;
 
   CartItem(
       {this.name,
@@ -42,16 +42,16 @@ class CartItem {
   }
 
   double get total {
-    return price * amount;
+    return (price ?? 0) * amount;
   }
 
   double get pesoUnitario {
-    double peso = DataHelper.brNumber.parse(weight);
-    return peso * packageWeight;
+    double peso = DataHelper.brNumber.parse(weight ?? '0').toDouble();
+    return peso * (packageWeight ?? 0);
   }
 
   double get pesoTotal {
-    double peso = DataHelper.brNumber.parse(weight);
-    return peso * amount * packageWeight;
+    double peso = DataHelper.brNumber.parse(weight ?? '0').toDouble();
+    return peso * amount * (packageWeight ?? 0);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
@@ -71,8 +71,8 @@ class _SavedOrdersScreenState extends State<SavedOrdersScreen> {
                         buttons: [
                           AlertButton(
                               label: 'Não',
-                              line: Border.all(color: Colors.grey[600]),
-                              labelColor: Colors.grey[600],
+                              line: Border.all(color: Colors.grey.shade600),
+                              labelColor: Colors.grey.shade600,
                               hasGradient: false,
                               cor: Colors.white,
                               onTap: () {

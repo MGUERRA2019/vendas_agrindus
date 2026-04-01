@@ -22,26 +22,19 @@ class NewOrderScreen extends StatefulWidget {
 
 class _NewOrderScreenState extends State<NewOrderScreen> {
   Iterable<Produto> _productQuery(UserData userdata, String search, int key) {
-    //Função para mostrar os elementos desejados na pesquisa
-    //Como padrão mostra todos elementos
     Iterable<Produto> query = [];
-
     query = userdata.produtos;
-
-    if (search != null || search != '') {
+    if (search.isNotEmpty) {
       query = query.where((element) =>
-          element.dESCRICAO.contains(search) ||
-          element.cPRODPALM.contains(search));
+          (element.dESCRICAO ?? '').contains(search) ||
+          (element.cPRODPALM ?? '').contains(search));
     }
-
     userdata.atribuirPreco(key);
-
     query = query.where((element) => element.pRECO != null);
-
     return query;
   }
 
-  Future<bool> _orderCancel() {
+  Future<bool?> _orderCancel() {
 //Função do WillPopScope
 //Confirmação do usuário de cancelamento do pedido
 
@@ -54,8 +47,8 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       buttons: [
         AlertButton(
             label: 'Não',
-            line: Border.all(color: Colors.grey[600]),
-            labelColor: Colors.grey[600],
+            line: Border.all(color: Colors.grey.shade600),
+            labelColor: Colors.grey.shade600,
             hasGradient: false,
             cor: Colors.white,
             onTap: () {
@@ -83,8 +76,14 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
-        return WillPopScope(
-          onWillPop: _orderCancel,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (!didPop) {
+              final shouldPop = (await _orderCancel()) ?? false;
+              if (shouldPop && context.mounted) Navigator.of(context).pop();
+            }
+          },
           child: Scaffold(
             backgroundColor: kPrimaryColor,
             appBar: AppBar(
@@ -110,11 +109,11 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                     child: ListView.builder(
                       padding: EdgeInsets.fromLTRB(15, 25, 15, 10),
                       itemCount: _productQuery(
-                              userdata, search, widget.cliente.pRIORIDADE)
+                              userdata, search, widget.cliente.pRIORIDADE ?? 0)
                           .length,
                       itemBuilder: (context, index) {
                         var item = _productQuery(
-                                userdata, search, widget.cliente.pRIORIDADE)
+                                userdata, search, widget.cliente.pRIORIDADE ?? 0)
                             .elementAt(index);
                         var cartView = CartView(item: item);
                         return cartView;
@@ -129,7 +128,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                   onPressed: () async {
                     userdata.removeEmptyItens();
                     if (userdata.cart.isNotEmpty) {
-                      final value = await Navigator.push(
+                      await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => OrderSummaryScreen(
