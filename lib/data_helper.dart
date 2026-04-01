@@ -78,9 +78,9 @@ class DataHelper {
   }
 
 
-  static DateTime? toDateTime(String date) {
+  static DateTime toDateTime(String date) {
     //Função para intepretar a data dada pelo banco de dados (status: incompleta)
-    String? month;
+    String month;
     List<String> splittedDate = date.split(' ');
     String day;
     switch (splittedDate[0]) {
@@ -121,7 +121,6 @@ class DataHelper {
         month = '12';
         break;
     }
-    if (month == null) return null;
     day = splittedDate[2];
 
     if (splittedDate[2].length == 1) {

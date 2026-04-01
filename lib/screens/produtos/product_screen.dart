@@ -5,7 +5,7 @@ import 'package:vendasagrindus/components/search_box.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import 'product_screen_components.dart';
 
 enum ViewType {

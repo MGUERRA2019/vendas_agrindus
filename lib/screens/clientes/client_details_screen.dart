@@ -9,7 +9,7 @@ import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/pedidos/new_order_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_details_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import 'client_details_widgets.dart';
 
 class ClientDetailsScreen extends StatelessWidget {

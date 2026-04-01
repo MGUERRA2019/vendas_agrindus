@@ -6,7 +6,7 @@ import 'package:vendasagrindus/components/search_box.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/pedidos/order_summary_screen.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import '../../data_helper.dart';
 import '../../user_data.dart';
 import 'order_widgets.dart';

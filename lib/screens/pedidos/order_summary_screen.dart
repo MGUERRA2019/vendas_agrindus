@@ -14,7 +14,7 @@ import 'package:vendasagrindus/screens/pedidos/order_completed_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/edit_order_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import '../../data_helper.dart';
 import 'package:http/http.dart' as http;
 

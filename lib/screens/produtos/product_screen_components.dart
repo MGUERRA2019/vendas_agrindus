@@ -3,7 +3,7 @@ import 'product_screen.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:vendasagrindus/data_helper.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 
 class GridItem extends StatelessWidget {
   //Widget com visualização dos produtos em forma de grade
