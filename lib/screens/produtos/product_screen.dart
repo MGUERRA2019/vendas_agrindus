@@ -5,7 +5,7 @@ import 'package:vendasagrindus/components/search_box.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import 'product_screen_components.dart';
 
 enum ViewType {
@@ -26,14 +26,14 @@ class _ProductScreenState extends State<ProductScreen> {
   List<Widget> groupList = [];
   int selectedIndex = 0;
   String search = '';
-  int currentList;
+  late int currentList;
 
-  List<DropdownMenuItem> _getDropdownItems(List<int> listNumber) {
+  List<DropdownMenuItem<int>> _getDropdownItems(List<int> listNumber) {
     //Função para recuperar os itens do DropDown Widget
     //Associa as listas de preços disponíveis ao vendedor
     List<DropdownMenuItem<int>> list = [];
     for (var item in listNumber) {
-      var newItem = DropdownMenuItem(
+      var newItem = DropdownMenuItem<int>(
         child: Text(item.toString()),
         value: item,
       );
@@ -56,10 +56,10 @@ class _ProductScreenState extends State<ProductScreen> {
           (element) => element.gRUPODESC == userdata.grupos[index].dESCRICAO);
     }
 
-    if (search != null || search != '') {
+    if (search.isNotEmpty) {
       query = query.where((element) =>
-          element.dESCRICAO.contains(search) ||
-          element.cPRODPALM.contains(search));
+          (element.dESCRICAO ?? '').contains(search) ||
+          (element.cPRODPALM ?? '').contains(search));
     }
 
     userdata.atribuirPreco(key);
@@ -143,13 +143,13 @@ class _ProductScreenState extends State<ProductScreen> {
                           items: _getDropdownItems(userdata.listNumber),
                           onChanged: (value) {
                             setState(() {
-                              currentList = value;
+                              currentList = value ?? currentList;
                             });
                           }),
                       IconButton(
                         icon: SvgPicture.asset(
                           "assets/icons/filter.svg",
-                          color: Colors.white,
+                          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                         ),
                         onPressed: () {
                           showDialog(
@@ -169,16 +169,15 @@ class _ProductScreenState extends State<ProductScreen> {
                                       child: ListView.builder(
                                           itemCount: userdata.grupos.length,
                                           itemBuilder: (context, index) {
-                                            return RadioListTile(
+                                            return RadioListTile<int>(
                                                 title: Text(
-                                                  userdata
-                                                      .grupos[index].dESCRICAO,
+                                                  userdata.grupos[index].dESCRICAO ?? '',
                                                 ),
                                                 value: index,
                                                 groupValue: selectedIndex,
                                                 onChanged: (value) {
                                                   setState(() {
-                                                    selectedIndex = value;
+                                                    selectedIndex = value ?? selectedIndex;
                                                   });
                                                 });
                                           }),
@@ -187,10 +186,11 @@ class _ProductScreenState extends State<ProductScreen> {
                                   actionsPadding:
                                       EdgeInsets.only(right: 80, bottom: 5),
                                   actions: [
-                                    FlatButton(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 40),
-                                        color: kPrimaryColor,
+                                    TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: kPrimaryColor,
+                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                                        ),
                                         onPressed: () {
                                           Navigator.pop(context, selectedIndex);
                                         },
@@ -202,7 +202,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                 );
                               }).then((value) {
                             setState(() {
-                              selectedIndex = value;
+                              selectedIndex = value ?? selectedIndex;
                             });
                           });
                         },

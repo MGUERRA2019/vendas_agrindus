@@ -9,7 +9,7 @@ import 'package:vendasagrindus/model/pedidoMestre.dart';
 import 'package:vendasagrindus/screens/pedidos/new_order_screen.dart';
 import 'package:vendasagrindus/screens/pedidos/order_details_screen.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import 'client_details_widgets.dart';
 
 class ClientDetailsScreen extends StatelessWidget {
@@ -37,7 +37,7 @@ class ClientDetailsScreen extends StatelessWidget {
               IconButton(
                   icon: Icon(Icons.add_box_outlined),
                   onPressed: cliente.rISCO != 1 ? () {
-                    if (cliente.pRIORIDADE != 0 && cliente.pRIORIDADE != null) {
+                    if (cliente.pRIORIDADE != 0) {
                       print(cliente.rISCO);
                       Navigator.push(
                           context,
@@ -63,7 +63,7 @@ class ClientDetailsScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
-                cliente.nOMFANTASIA,
+                cliente.nOMFANTASIA ?? '',
                 textAlign: TextAlign.center,
                 style: kHeaderText,
               ),
@@ -118,21 +118,21 @@ class ClientDetailsScreen extends StatelessWidget {
                 items: [
                   DetailItem(
                       title: 'Data da primeira compra:',
-                      description: (cliente.dTPRCOMP != 'null')
-                          ? cliente.dTPRCOMP
-                              .substring(0, (cliente.dTPRCOMP.length - 8))
+                      description: (cliente.dTPRCOMP != null && cliente.dTPRCOMP != 'null')
+                          ? cliente.dTPRCOMP!
+                              .substring(0, (cliente.dTPRCOMP!.length - 8))
                           : ''),
                   DetailItem(
                       title: 'Data da última compra:',
-                      description: (cliente.dTULTCOMP != 'null')
-                          ? cliente.dTULTCOMP
-                              .substring(0, (cliente.dTULTCOMP.length - 8))
+                      description: (cliente.dTULTCOMP != null && cliente.dTULTCOMP != 'null')
+                          ? cliente.dTULTCOMP!
+                              .substring(0, (cliente.dTULTCOMP!.length - 8))
                           : ''),
                   DetailItem(
                       title: 'Data da última visita:',
-                      description: (cliente.dTULTVISITA != 'null')
-                          ? cliente.dTULTVISITA
-                              .substring(0, (cliente.dTULTVISITA.length - 8))
+                      description: (cliente.dTULTVISITA != null && cliente.dTULTVISITA != 'null')
+                          ? cliente.dTULTVISITA!
+                              .substring(0, (cliente.dTULTVISITA!.length - 8))
                           : ''),
                 ],
               ),
@@ -167,14 +167,14 @@ class ClientDetailsScreen extends StatelessWidget {
           )),
           DetailsHeader(title: 'Últimos pedidos'),
           SliverPadding(padding: EdgeInsets.only(bottom: 20)),
-          FutureBuilder(
+          FutureBuilder<List<PedidoMestre>?>(
             future: Provider.of<UserData>(context, listen: false)
-                .getPedidoMestre(cliente.cLIENTE),
+                .getPedidoMestre(cliente.cLIENTE ?? ''),
             builder: (BuildContext context,
-                AsyncSnapshot<List<PedidoMestre>> snapshot) {
+                AsyncSnapshot<List<PedidoMestre>?> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasData) {
-                  List<PedidoMestre> pedidosMestre = snapshot.data;
+                if (snapshot.hasData && snapshot.data != null) {
+                  List<PedidoMestre> pedidosMestre = snapshot.data!;
 
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
@@ -185,31 +185,14 @@ class ClientDetailsScreen extends StatelessWidget {
                             var pedidosItem = await Provider.of<UserData>(
                                     context,
                                     listen: false)
-                                .getPedidoItem(pedidosMestre[index].nUMEROSFA);
-                            if (pedidosItem == null) {
-                              Alert(
-                                context: context,
-                                title: 'ERRO',
-                                desc:
-                                    'Não foi possível localizar os itens do pedido.',
-                                style: kAlertCardStyle,
-                                buttons: [
-                                  AlertButton(
-                                      label: 'VOLTAR',
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      })
-                                ],
-                              ).show();
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OrderDetailsScreen(
-                                          pedidosMestre[index],
-                                          pedidosItem,
-                                          cliente)));
-                            }
+                                .getPedidoItem(pedidosMestre[index].nUMEROSFA ?? '');
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderDetailsScreen(
+                                        pedidosMestre[index],
+                                        pedidosItem,
+                                        cliente)));
                           },
                           items: [
                             DetailItem(
@@ -217,8 +200,9 @@ class ClientDetailsScreen extends StatelessWidget {
                                 description: pedidosMestre[index].nUMEROSFA),
                             DetailItem(
                                 title: 'Emissão:',
-                                description: DateFormat('dd/MM/yyyy')
-                                    .format(pedidosMestre[index].date)),
+                                description: pedidosMestre[index].date != null
+                                    ? DateFormat('dd/MM/yyyy').format(pedidosMestre[index].date!)
+                                    : 'N/A'),
                             DetailItem(
                                 title: 'Preço total',
                                 description:

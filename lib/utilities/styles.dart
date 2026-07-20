@@ -48,7 +48,7 @@ const kCardShadow = Color(0x12000000);
 const kLogoColor = Color(0xFF00194D);
 
 final kGradientStyle = LinearGradient(
-    colors: [Colors.lightBlueAccent[400], Colors.blueAccent[700]],
+    colors: [Colors.lightBlueAccent.shade400, Colors.blueAccent.shade700],
     begin: Alignment.bottomCenter,
     end: Alignment.topRight);
 

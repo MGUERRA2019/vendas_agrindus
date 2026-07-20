@@ -4,16 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/produto.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import '../../data_helper.dart';
 import '../../user_data.dart';
 
 class TotalSummary extends StatelessWidget {
-  //Widget que mostra o valor do pedido
-  final String value;
-
+  final String? value;
   TotalSummary({this.value});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,17 +18,13 @@ class TotalSummary extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(10),
       child: Text(
-        'Total: R\$ $value',
+        'Total: R\$ ${value ?? ''}',
         textAlign: TextAlign.center,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Colors.grey.shade300,
         boxShadow: [
-          BoxShadow(
-            color: Color(0x4B000000),
-            blurRadius: 1.5,
-            spreadRadius: 1,
-          ),
+          BoxShadow(color: Color(0x4B000000), blurRadius: 1.5, spreadRadius: 1),
         ],
       ),
     );
@@ -39,30 +32,22 @@ class TotalSummary extends StatelessWidget {
 }
 
 class OrderConfirmButton extends StatelessWidget {
-  //Widget que direciona o pedido para a tela de resumo do pedido (order_summary_screen.dart)
-  final String label;
-  final Function onPressed;
-
+  final String? label;
+  final VoidCallback? onPressed;
   OrderConfirmButton({this.label, this.onPressed});
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        decoration: BoxDecoration(
-          gradient: kGradientStyle,
-        ),
+        decoration: BoxDecoration(gradient: kGradientStyle),
         height: 55,
         width: double.infinity,
         child: Center(
           child: Text(
-            label,
+            label ?? '',
             style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                letterSpacing: .7),
+                color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7),
           ),
         ),
       ),
@@ -71,12 +56,9 @@ class OrderConfirmButton extends StatelessWidget {
 }
 
 class SummaryButton extends StatelessWidget {
-  //Widget que definde se o pedido será salvo (saveFunction) ou enviado (sendFunction)
-  final Function saveFunction;
-  final Function sendFunction;
-
+  final VoidCallback? saveFunction;
+  final VoidCallback? sendFunction;
   SummaryButton({this.saveFunction, this.sendFunction});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,14 +72,9 @@ class SummaryButton extends StatelessWidget {
               child: Container(
                 color: Colors.grey,
                 child: Center(
-                  child: Text(
-                    'SALVAR PEDIDO',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        letterSpacing: .7),
-                  ),
+                  child: Text('SALVAR PEDIDO',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
                 ),
               ),
             ),
@@ -106,18 +83,11 @@ class SummaryButton extends StatelessWidget {
             child: InkWell(
               onTap: sendFunction,
               child: Container(
-                decoration: BoxDecoration(
-                  gradient: kGradientStyle,
-                ),
+                decoration: BoxDecoration(gradient: kGradientStyle),
                 child: Center(
-                  child: Text(
-                    'ENVIAR PEDIDO',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        letterSpacing: .7),
-                  ),
+                  child: Text('ENVIAR PEDIDO',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
                 ),
               ),
             ),
@@ -129,11 +99,8 @@ class SummaryButton extends StatelessWidget {
 }
 
 class CartView extends StatelessWidget {
-  //Widget que mostra todos produtos na tela para a formação do carrinho
-  const CartView({@required this.item});
-
+  const CartView({required this.item});
   final Produto item;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<UserData>(
@@ -145,7 +112,7 @@ class CartView extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: Colors.grey[300]),
+            border: Border.all(color: Colors.grey.shade300),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -161,18 +128,14 @@ class CartView extends StatelessWidget {
                 ),
                 child: (item.iMAGEMURL != null)
                     ? CachedNetworkImage(
-                        imageUrl: item.iMAGEMURL,
+                        imageUrl: item.iMAGEMURL!,
                         fit: BoxFit.fitHeight,
                         fadeInCurve: Curves.bounceIn,
                         fadeInDuration: Duration(milliseconds: 300),
                         errorWidget: (context, url, error) =>
                             Icon(Icons.image_not_supported_outlined),
                       )
-                    : Icon(
-                        Icons.image_not_supported_outlined,
-                        color: Colors.black45,
-                        size: 50,
-                      ),
+                    : Icon(Icons.image_not_supported_outlined, color: Colors.black45, size: 50),
               ),
               Expanded(
                 child: Padding(
@@ -181,23 +144,14 @@ class CartView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        item.dESCRICAO,
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
+                      Text(item.dESCRICAO ?? '', style: TextStyle(fontWeight: FontWeight.w500)),
                       SizedBox(height: 4),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              (item.dESCEXTENSO != null)
-                                  ? item.dESCEXTENSO
-                                  : '',
-                              style: kDescriptionTextStyle,
-                            ),
-                            Text(
-                                'Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg',
+                            Text(item.dESCEXTENSO ?? '', style: kDescriptionTextStyle),
+                            Text('Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg',
                                 style: kDescriptionTextStyle),
                             Text('Qtde por embalagem: ${item.qDTEPEMBAL}',
                                 style: kDescriptionTextStyle),
@@ -212,24 +166,16 @@ class CartView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           item.pRECO != null
-                              ? Text(
-                                  'R\$ ${DataHelper.brNumber.format(item.pRECO)}',
-                                  textAlign: TextAlign.center,
-                                )
+                              ? Text('R\$ ${DataHelper.brNumber.format(item.pRECO)}',
+                                  textAlign: TextAlign.center)
                               : Container(),
                           AmountSelector(
                             item: item,
-                            removeFunction: () {
-                              userdata.removerQtde(item);
-                            },
-                            amountDisplay:
-                                userdata.cart.containsKey(item.cPRODPALM)
-                                    ? userdata.cart[item.cPRODPALM].amount
-                                        .toString()
-                                    : '0',
-                            addFunction: () {
-                              userdata.addCartItem(item);
-                            },
+                            removeFunction: () { userdata.removerQtde(item); },
+                            amountDisplay: userdata.cart.containsKey(item.cPRODPALM)
+                                ? userdata.cart[item.cPRODPALM]!.amount.toString()
+                                : '0',
+                            addFunction: () { userdata.addCartItem(item); },
                           ),
                         ],
                       ),
@@ -246,17 +192,16 @@ class CartView extends StatelessWidget {
 }
 
 class FinalItem extends StatelessWidget {
-  //Widget que mostra os itens do pedido no resumo (orders_summary_screen.dart)
-  const FinalItem(
-      {@required this.item,
-      this.removeFunction,
-      this.addFunction,
-      this.changeCartAmount});
-
+  const FinalItem({
+    required this.item,
+    this.removeFunction,
+    this.addFunction,
+    this.changeCartAmount,
+  });
   final CartItem item;
-  final void Function(int) changeCartAmount;
-  final Function removeFunction;
-  final Function addFunction;
+  final void Function(int)? changeCartAmount;
+  final VoidCallback? removeFunction;
+  final VoidCallback? addFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +210,7 @@ class FinalItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(width: 1.5, color: Colors.grey[300]),
+        border: Border.all(width: 1.5, color: Colors.grey.shade300),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -287,20 +232,16 @@ class FinalItem extends StatelessWidget {
                     ),
                     child: (item.image != null)
                         ? CachedNetworkImage(
-                            imageUrl: item.image,
+                            imageUrl: item.image!,
                             fit: BoxFit.fitHeight,
                             fadeInCurve: Curves.bounceIn,
                             fadeInDuration: Duration(milliseconds: 300),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.image_not_supported_outlined),
                           )
-                        : Icon(
-                            Icons.image_not_supported_outlined,
-                            color: Colors.black45,
-                            size: 50,
-                          ),
+                        : Icon(Icons.image_not_supported_outlined, color: Colors.black45, size: 50),
                   ),
-                  Text(item.name),
+                  Text(item.name ?? ''),
                 ],
               ),
               Padding(
@@ -308,45 +249,36 @@ class FinalItem extends StatelessWidget {
                 child: Text(
                   'R\$ ${DataHelper.brNumber.format(item.price)}',
                   textAlign: TextAlign.end,
-                  style: TextStyle(
-                      color: Colors.grey, fontWeight: FontWeight.w500),
+                  style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
           ),
           SizedBox(height: 10),
-          FinalItemText(label: 'Ref.: ${item.code}'),
-          FinalItemText(label: 'Cod. Barra: ${item.barCode}'),
+          FinalItemText(label: 'Ref.: ${item.code ?? ''}'),
+          FinalItemText(label: 'Cod. Barra: ${item.barCode ?? ''}'),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FinalItemText(
-                  label:
-                      'Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg'),
+              FinalItemText(label: 'Peso: ${DataHelper.brNumber.format(item.pesoTotal)} kg'),
               AmountSelector(
-                changeCartAmount: (amount) => changeCartAmount(amount),
-                  removeFunction: removeFunction,
-                  amountDisplay: item.amount.toString(),
-                  addFunction: addFunction)
+                changeCartAmount: changeCartAmount,
+                removeFunction: removeFunction,
+                amountDisplay: item.amount.toString(),
+                addFunction: addFunction,
+              )
             ],
           ),
           SizedBox(height: 15),
-          Divider(
-            height: 0.0,
-            color: Colors.grey[300],
-            thickness: 1.5,
-          ),
+          Divider(height: 0.0, color: Colors.grey.shade300, thickness: 1.5),
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: Colors.grey.shade200,
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
             ),
-            child: Text(
-              'Quantidade: ${item.amount}',
-              textAlign: TextAlign.end,
-            ),
+            child: Text('Quantidade: ${item.amount}', textAlign: TextAlign.end),
           ),
         ],
       ),
@@ -355,35 +287,31 @@ class FinalItem extends StatelessWidget {
 }
 
 class FinalItemText extends StatelessWidget {
-  FinalItemText({@required this.label});
-
+  FinalItemText({required this.label});
   final String label;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-      child: Text(
-        label,
-        style: TextStyle(color: Colors.grey[700]),
-      ),
+      child: Text(label, style: TextStyle(color: Colors.grey.shade700)),
     );
   }
 }
 
 class AmountSelector extends StatelessWidget {
-  final Function removeFunction;
-  final Function addFunction;
-  final Produto item;
-  final void Function(int) changeCartAmount;
+  final VoidCallback? removeFunction;
+  final VoidCallback? addFunction;
+  final Produto? item;
+  final void Function(int)? changeCartAmount;
   final String amountDisplay;
 
-  AmountSelector(
-      {@required this.removeFunction,
-      @required this.amountDisplay,
-      this.item,
-      this.changeCartAmount,
-      @required this.addFunction});
+  AmountSelector({
+    this.removeFunction,
+    required this.amountDisplay,
+    this.item,
+    this.changeCartAmount,
+    this.addFunction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -398,33 +326,28 @@ class AmountSelector extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: removeFunction,
-            onLongPress: () => buildOrderBottomSheet(context),
+            onLongPress: item != null ? () => buildOrderBottomSheet(context) : null,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.horizontal(left: Radius.circular(20)),
+                borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
                 color: kPrimaryColor,
               ),
               child: Icon(Icons.remove, color: Colors.white, size: 27.5),
             ),
           ),
           GestureDetector(
-            onLongPress: () => buildOrderBottomSheet(context),
+            onLongPress: item != null ? () => buildOrderBottomSheet(context) : null,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                amountDisplay,
-                style: TextStyle(fontSize: 15),
-              ),
+              child: Text(amountDisplay, style: TextStyle(fontSize: 15)),
             ),
           ),
           GestureDetector(
             onTap: addFunction,
-            onLongPress: () => buildOrderBottomSheet(context),
+            onLongPress: item != null ? () => buildOrderBottomSheet(context) : null,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.horizontal(right: Radius.circular(20)),
+                borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
                 color: kPrimaryColor,
               ),
               child: Icon(Icons.add, color: Colors.white, size: 27.5),
@@ -437,43 +360,40 @@ class AmountSelector extends StatelessWidget {
 
   Future<dynamic> buildOrderBottomSheet(BuildContext context) {
     return showModalBottomSheet(
-                isScrollControlled: true,
-                context: context,
-                builder: (context) => OrderBottomSheet(item: item, changeCartAmount: changeCartAmount));
+        isScrollControlled: true,
+        context: context,
+        builder: (context) => OrderBottomSheet(item: item!, changeCartAmount: changeCartAmount!));
   }
 }
 
 class OrderBottomSheet extends StatelessWidget {
   const OrderBottomSheet({
-    Key key,
-    @required this.item,
-    @required this.changeCartAmount,
+    Key? key,
+    required this.item,
+    required this.changeCartAmount,
   }) : super(key: key);
 
   final Produto item;
-  final void Function(int p1) changeCartAmount;
+  final void Function(int) changeCartAmount;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-            child: Container(
-          child: AmountEditorSheet(
-            produto: item,
-            changeCartAmount: (amount) =>
-                changeCartAmount(amount),
-          ),
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
-        ));
+      child: Container(
+        child: AmountEditorSheet(
+          produto: item,
+          changeCartAmount: (amount) => changeCartAmount(amount),
+        ),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      ),
+    );
   }
 }
 
 class AmountEditorSheet extends StatefulWidget {
-  final Produto produto;
-  final void Function(int) changeCartAmount;
-
+  final Produto? produto;
+  final void Function(int)? changeCartAmount;
   AmountEditorSheet({this.produto, this.changeCartAmount});
-
   @override
   _AmountEditorSheetState createState() => _AmountEditorSheetState();
 }
@@ -497,11 +417,9 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              "Alterar Quantidade",
-              textAlign: TextAlign.center,
-              style: kHeaderText.copyWith(color: kPrimaryColor),
-            ),
+            Text("Alterar Quantidade",
+                textAlign: TextAlign.center,
+                style: kHeaderText.copyWith(color: kPrimaryColor)),
             TextField(
               autofocus: true,
               keyboardType: TextInputType.number,
@@ -511,30 +429,21 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
               ],
               textAlign: TextAlign.center,
             ),
-            FlatButton(
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: kPrimaryColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+              ),
               onPressed: () {
                 final amount = int.tryParse(controller.text);
-                if (amount != null) {
-                  if (widget.produto != null) {
-                    Provider.of<UserData>(context, listen: false)
-                        .addNumberedCartItem(widget.produto, amount);
-                  } else {
-                    widget.changeCartAmount(amount);
-                  }
+                if (amount != null && widget.produto != null) {
+                  Provider.of<UserData>(context, listen: false)
+                      .addNumberedCartItem(widget.produto!, amount);
                 }
                 Navigator.pop(context);
               },
-              child: Text(
-                "ALTERAR",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              color: kPrimaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-            )
+              child: Text("ALTERAR", style: TextStyle(color: Colors.white)),
+            ),
           ],
         ),
       ),
@@ -543,20 +452,18 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
 }
 
 class NotesBox extends StatelessWidget {
-  //Caixa de notação para as observações do pedido e número do pedido do cliente
-  const NotesBox(
-      {@required this.controller,
-      this.maxLines,
-      this.maxLength,
-      this.inputType,
-      this.hintText});
-
+  const NotesBox({
+    required this.controller,
+    this.maxLines,
+    this.maxLength,
+    this.inputType,
+    this.hintText,
+  });
   final TextEditingController controller;
-  final int maxLines;
-  final int maxLength;
-  final TextInputType inputType;
-  final String hintText;
-
+  final int? maxLines;
+  final int? maxLength;
+  final TextInputType? inputType;
+  final String? hintText;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -564,9 +471,7 @@ class NotesBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(color: kCardShadow, blurRadius: 15, spreadRadius: 6)
-        ],
+        boxShadow: [BoxShadow(color: kCardShadow, blurRadius: 15, spreadRadius: 6)],
       ),
       child: TextField(
         maxLines: maxLines,
@@ -586,20 +491,14 @@ class NotesBox extends StatelessWidget {
 }
 
 class SummaryHeader extends StatelessWidget {
-  //Cabeçalho para cada widget no resumo do pedido (order_summary_screen.dart)
   final String headerText;
-  final EdgeInsetsGeometry padding;
-
-  SummaryHeader({@required this.headerText, this.padding});
-
+  final EdgeInsetsGeometry? padding;
+  SummaryHeader({required this.headerText, this.padding});
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding,
-      child: Text(
-        headerText,
-        style: kHeaderText.copyWith(color: Colors.blueGrey[400]),
-      ),
+      padding: padding ?? EdgeInsets.zero,
+      child: Text(headerText, style: kHeaderText.copyWith(color: Colors.blueGrey.shade400)),
     );
   }
 }

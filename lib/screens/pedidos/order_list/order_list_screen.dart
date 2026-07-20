@@ -7,7 +7,7 @@ import 'package:vendasagrindus/screens/clientes/client_details_widgets.dart';
 import 'package:vendasagrindus/screens/pedidos/order_list/order_list_bloc.dart';
 import 'package:vendasagrindus/screens/profile_drawer.dart';
 import 'package:vendasagrindus/user_data.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 
 class OrderListScreen extends StatefulWidget {
   //Tela que mostra os pedidos realizados pelo vendedor
@@ -21,15 +21,15 @@ class _OrderListScreenState extends State<OrderListScreen> {
   List<PedidoMestreFull> ordersList = [];
   int currentMax = 9;
   ScrollController _scrollController = ScrollController();
-  OrderListBloc _bloc;
-  DateTime selectedDate;
+  late OrderListBloc _bloc;
+  DateTime? selectedDate;
   bool queryOn = false;
 
   @override
   void initState() {
     super.initState();
     UserData userData = Provider.of<UserData>(context, listen: false);
-    _bloc = OrderListBloc(userData.vendedor.vENDEDOR, userData.baseUrl);
+    _bloc = OrderListBloc(userData.vendedor.vENDEDOR ?? '', userData.baseUrl);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
@@ -61,17 +61,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Icon(
-                  Icons.date_range,
-                  color: Colors.white,
-                  size: 30,
-                ),
+                child: Icon(Icons.date_range, color: Colors.white, size: 30),
               ),
-              FlatButton(
+              TextButton(
+                style: TextButton.styleFrom(backgroundColor: kBackgroundColor2),
                 child: Text(selectedDate == null
                     ? 'Selecionar data'
-                    : DateFormat('dd/MM/yyyy').format(selectedDate)),
-                color: kBackgroundColor2,
+                    : DateFormat('dd/MM/yyyy').format(selectedDate!)),
                 onPressed: () async {
                   selectedDate = await showDatePicker(
                       context: context,
@@ -79,10 +75,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       firstDate: DateTime(2018),
                       lastDate: DateTime.now());
                   if (selectedDate != null) {
-                    _bloc.queryDatabyDate(selectedDate);
-                    setState(() {
-                      queryOn = true;
-                    });
+                    _bloc.queryDatabyDate(selectedDate!);
+                    setState(() { queryOn = true; });
                   }
                 },
               ),
@@ -141,14 +135,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       controller: _scrollController,
                       itemBuilder: (context, index) {
                         if (index < snapshot.data.length) {
-                          Cliente cliente = Provider.of<UserData>(context,
+                          Cliente? cliente = Provider.of<UserData>(context,
                                   listen: false)
                               .getClienteFromCod(snapshot.data[index].cLIENTE);
-                          String nomeCliente = '';
-                          if (cliente != null) {
-                            nomeCliente = cliente.nOMFANTASIA;
-                          }
-                          return DetailsCard(
+                          String nomeCliente = cliente?.nOMFANTASIA ?? '';
+                                                  return DetailsCard(
                             items: [
                               Row(
                                 children: [
@@ -164,8 +155,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                               SizedBox(height: 3),
                               DetailItem(
                                   title: 'Data:',
-                                  description: DateFormat('dd/MM/yyyy')
-                                      .format(snapshot.data[index].dTPED)),
+                                  description: snapshot.data[index].dTPED != null
+                                      ? DateFormat('dd/MM/yyyy').format(snapshot.data[index].dTPED!)
+                                      : 'N/A'),
                               DetailItem(
                                   title: 'Cliente:', description: nomeCliente),
                               DetailItem(

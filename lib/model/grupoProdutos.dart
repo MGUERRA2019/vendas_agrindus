@@ -1,8 +1,8 @@
 class GrupoProdutos {
-  String cPRODPALM;
-  String gRUPO;
-  String iNTR;
-  String vERSION;
+  String? cPRODPALM;
+  String? gRUPO;
+  String? iNTR;
+  String? vERSION;
 
   GrupoProdutos({this.cPRODPALM, this.gRUPO, this.iNTR, this.vERSION});
 

@@ -1,7 +1,7 @@
 class ProdutoImagem {
-  String cODIGO;
-  String dESCRICAO;
-  String uRL;
+  String? cODIGO;
+  String? dESCRICAO;
+  String? uRL;
 
   ProdutoImagem({this.cODIGO, this.dESCRICAO, this.uRL});
 

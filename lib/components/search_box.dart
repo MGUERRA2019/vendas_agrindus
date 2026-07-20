@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 
 class SearchBox extends StatelessWidget {
   const SearchBox({
     this.onChanged,
   });
 
-  final ValueChanged onChanged;
+  final ValueChanged? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class SearchBox extends StatelessWidget {
         horizontal: kDefaultPadding, // 5 top and bottom
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.4),
+        color: Colors.white.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(

@@ -8,7 +8,7 @@ import 'package:vendasagrindus/model/cartItem.dart';
 import 'package:vendasagrindus/model/cliente.dart';
 import 'package:vendasagrindus/model/produto.dart';
 import 'package:vendasagrindus/screens/pedidos/order_widgets.dart';
-import 'package:vendasagrindus/utilities/constants.dart';
+import 'package:vendasagrindus/utilities/styles.dart';
 import '../../user_data.dart';
 
 //Tela que controla edição de pedido que já foi salvo (saved_order)
@@ -24,26 +24,19 @@ class EditOrderScreen extends StatefulWidget {
 
 class _EditOrderScreenState extends State<EditOrderScreen> {
   Iterable<Produto> _productQuery(UserData userdata, String search, int key) {
-    //Função para mostrar os elementos desejados na pesquisa
-    //Como padrão mostra todos elementos
     Iterable<Produto> query = [];
-
     query = userdata.produtos;
-
-    if (search != null || search != '') {
+    if (search.isNotEmpty) {
       query = query.where((element) =>
-          element.dESCRICAO.contains(search) ||
-          element.cPRODPALM.contains(search));
+          (element.dESCRICAO ?? '').contains(search) ||
+          (element.cPRODPALM ?? '').contains(search));
     }
-
     userdata.atribuirPreco(key);
-
     query = query.where((element) => element.pRECO != null);
-
     return query;
   }
 
-  Future<bool> _orderCancel() {
+  Future<bool?> _orderCancel() {
     //Função do WillPopScope
     //Confirmação do usuário de cancelamento da edição
     //Ao cancelar, o pedido será revertido para como estava anteriormente
@@ -57,8 +50,8 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       buttons: [
         AlertButton(
             label: 'Não',
-            line: Border.all(color: Colors.grey[600]),
-            labelColor: Colors.grey[600],
+            line: Border.all(color: Colors.grey.shade600),
+            labelColor: Colors.grey.shade600,
             hasGradient: false,
             cor: Colors.white,
             onTap: () {
@@ -89,8 +82,14 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
-        return WillPopScope(
-          onWillPop: _orderCancel,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (!didPop) {
+              final shouldPop = (await _orderCancel()) ?? false;
+              if (shouldPop && context.mounted) Navigator.of(context).pop();
+            }
+          },
           child: Scaffold(
             backgroundColor: kPrimaryColor,
             appBar: AppBar(
@@ -116,11 +115,11 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                     child: ListView.builder(
                       padding: EdgeInsets.fromLTRB(15, 25, 15, 10),
                       itemCount: _productQuery(
-                              userdata, search, widget.cliente.pRIORIDADE)
+                              userdata, search, widget.cliente.pRIORIDADE ?? 0)
                           .length,
                       itemBuilder: (context, index) {
                         var item = _productQuery(
-                                userdata, search, widget.cliente.pRIORIDADE)
+                                userdata, search, widget.cliente.pRIORIDADE ?? 0)
                             .elementAt(index);
                         var cartView = CartView(item: item);
                         return cartView;

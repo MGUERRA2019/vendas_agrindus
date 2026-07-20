@@ -1,32 +1,32 @@
 import 'package:vendasagrindus/data_helper.dart';
 
 class Produto {
-  String cPRODPALM;
-  String dESCRICAO;
-  String uNIDADE;
-  int pORCICM;
-  int pORCIPI;
-  String pESOBRUTO;
-  String qDTEPEMBAL;
-  String pRAZOENTREGA;
-  String pORCCOMISSAO;
-  String cODBARRA;
-  int rESERVADO8;
-  String pOSICAOESTQ;
-  String pRECOVENDA;
-  int rESERVADO3;
-  int rESERVADO4;
-  int rESERVADO9;
-  String rESERVADO10;
-  String fATORUNI;
-  int rESERVADO7;
-  String iNTR;
-  String vERSION;
-  String gRUPO;
-  String gRUPODESC;
-  double pRECO;
-  String iMAGEMURL;
-  String dESCEXTENSO;
+  String? cPRODPALM;
+  String? dESCRICAO;
+  String? uNIDADE;
+  int? pORCICM;
+  int? pORCIPI;
+  String? pESOBRUTO;
+  String? qDTEPEMBAL;
+  String? pRAZOENTREGA;
+  String? pORCCOMISSAO;
+  String? cODBARRA;
+  int? rESERVADO8;
+  String? pOSICAOESTQ;
+  String? pRECOVENDA;
+  int? rESERVADO3;
+  int? rESERVADO4;
+  int? rESERVADO9;
+  String? rESERVADO10;
+  String? fATORUNI;
+  int? rESERVADO7;
+  String? iNTR;
+  String? vERSION;
+  String? gRUPO;
+  String? gRUPODESC;
+  double? pRECO;
+  String? iMAGEMURL;
+  String? dESCEXTENSO;
 
   Produto({
     this.cPRODPALM,
@@ -54,7 +54,7 @@ class Produto {
   });
 
   double get pesoTotal {
-    return DataHelper.brNumber.parse(pESOBRUTO) * rESERVADO9;
+    return DataHelper.brNumber.parse(pESOBRUTO ?? '0').toDouble() * (rESERVADO9 ?? 0);
   }
 
   Produto.fromJson(Map<String, dynamic> json) {

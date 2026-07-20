@@ -1,19 +1,19 @@
 class CondPagto {
-  String cONDPAGTO;
-  String dESCRICAO;
-  int cPINTELIGENTE;
-  String nROLISTA;
-  int fORMAPAGTO;
-  int dIASADICENTR;
-  int uSADIASADIC;
-  String tIPOPAGTO;
-  int uSATIPOPAGTO;
-  String cODTES;
-  int uSATES;
-  int vLRMINPED;
-  String uSADESC;
-  String iNTR;
-  String vERSION;
+  String? cONDPAGTO;
+  String? dESCRICAO;
+  int? cPINTELIGENTE;
+  String? nROLISTA;
+  int? fORMAPAGTO;
+  int? dIASADICENTR;
+  int? uSADIASADIC;
+  String? tIPOPAGTO;
+  int? uSATIPOPAGTO;
+  String? cODTES;
+  int? uSATES;
+  int? vLRMINPED;
+  String? uSADESC;
+  String? iNTR;
+  String? vERSION;
 
   CondPagto(
       {this.cONDPAGTO,

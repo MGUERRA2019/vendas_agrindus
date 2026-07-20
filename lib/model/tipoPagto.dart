@@ -1,8 +1,8 @@
 class TipoPagto {
-  String eMISSOES;
-  String dESCRICAO;
-  String iNTR;
-  String vERSION;
+  String? eMISSOES;
+  String? dESCRICAO;
+  String? iNTR;
+  String? vERSION;
 
   TipoPagto({this.eMISSOES, this.dESCRICAO, this.iNTR, this.vERSION});
 
