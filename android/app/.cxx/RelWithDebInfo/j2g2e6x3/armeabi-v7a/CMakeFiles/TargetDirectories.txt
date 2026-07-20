@@ -1,0 +1,2 @@
+C:/vendas_agrindus/android/app/.cxx/RelWithDebInfo/j2g2e6x3/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/vendas_agrindus/android/app/.cxx/RelWithDebInfo/j2g2e6x3/armeabi-v7a/CMakeFiles/rebuild_cache.dir

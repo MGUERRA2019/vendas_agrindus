@@ -183,7 +183,8 @@ class UserData extends ChangeNotifier {
         barCode: produto.cODBARRA, image: produto.iMAGEMURL,
         weight: produto.pESOBRUTO, packageWeight: produto.rESERVADO9,
         group: produto.gRUPO, unity: produto.uNIDADE,
-        price: produto.pRECO));
+        amount: 0, price: produto.pRECO));
+    cart[key]!.amount++;
     notifyListeners();
   }
 
@@ -194,7 +195,8 @@ class UserData extends ChangeNotifier {
         barCode: produto.cODBARRA, image: produto.iMAGEMURL,
         weight: produto.pESOBRUTO, packageWeight: produto.rESERVADO9,
         group: produto.gRUPO, unity: produto.uNIDADE,
-        amount: amount, price: produto.pRECO));
+        amount: 0, price: produto.pRECO));
+    cart[key]!.amount = amount;
     notifyListeners();
   }
 

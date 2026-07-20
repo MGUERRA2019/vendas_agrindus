@@ -47,7 +47,7 @@ class OrderSummaryScreen extends StatefulWidget {
 
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   _OrderSummaryScreenState(this.currentItems, {DateTime? date})
-      : date = date ?? DateTime.now();
+      : date = date ?? DateTime.now().add(Duration(days: 1));
 
   List<CartItem> currentItems = <CartItem>[];
   late DateTime date;
@@ -145,28 +145,26 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           firstDate: now.subtract(Duration(days: 35)),
           lastDate: now);
     } else {
+      final tomorrow = today.add(Duration(days: 1));
       return showDatePicker(
           context: context,
-          initialDate: date,
-          firstDate: DateTime.now().subtract(Duration(days: 500)),
-          lastDate: DateTime(date.year + 3));
+          initialDate: date.isBefore(tomorrow) ? tomorrow : date,
+          firstDate: tomorrow,
+          lastDate: DateTime(now.year + 3));
     }
   }
 
   @override
   void initState() {
     super.initState();
-    obsController = TextEditingController();
-    clientNumberController = TextEditingController();
+    obsController = TextEditingController(text: widget.obsText ?? '');
+    clientNumberController = TextEditingController(text: widget.clientOrderNumber ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<UserData>(
       builder: (context, userdata, child) {
-        //Recuperação das observações e número de pedido do cliente, se existir
-        obsController.text = widget.obsText ?? '';
-        clientNumberController.text = widget.clientOrderNumber ?? '';
         return ModalProgressHUD(
           inAsyncCall: showSpinner,
           child: Scaffold(
@@ -371,8 +369,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     ),
                   ),
                 ),
-                TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
-                SummaryButton(
+                SafeArea(
+                  top: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
+                      SummaryButton(
                   saveFunction: () {
                     //Função utilizada para salvar o pedido
                     FocusScope.of(context).unfocus();
@@ -520,6 +523,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       print('Post failed...');
                     }
                   },
+                  ),
+                    ],
+                  ),
                 ),
               ],
             ),
