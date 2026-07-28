@@ -326,7 +326,7 @@ class AmountSelector extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: removeFunction,
-            onLongPress: item != null ? () => buildOrderBottomSheet(context) : null,
+            onLongPress: (item != null || changeCartAmount != null) ? () => buildOrderBottomSheet(context) : null,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
@@ -336,7 +336,8 @@ class AmountSelector extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onLongPress: item != null ? () => buildOrderBottomSheet(context) : null,
+            onTap: (item != null || changeCartAmount != null) ? () => buildOrderBottomSheet(context) : null,
+            onLongPress: (item != null || changeCartAmount != null) ? () => buildOrderBottomSheet(context) : null,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Text(amountDisplay, style: TextStyle(fontSize: 15)),
@@ -344,7 +345,7 @@ class AmountSelector extends StatelessWidget {
           ),
           GestureDetector(
             onTap: addFunction,
-            onLongPress: item != null ? () => buildOrderBottomSheet(context) : null,
+            onLongPress: (item != null || changeCartAmount != null) ? () => buildOrderBottomSheet(context) : null,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
@@ -362,19 +363,19 @@ class AmountSelector extends StatelessWidget {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
-        builder: (context) => OrderBottomSheet(item: item!, changeCartAmount: changeCartAmount!));
+        builder: (context) => OrderBottomSheet(item: item, changeCartAmount: changeCartAmount ?? (_) {}));
   }
 }
 
 class OrderBottomSheet extends StatelessWidget {
   const OrderBottomSheet({
     Key? key,
-    required this.item,
-    required this.changeCartAmount,
+    this.item,
+    this.changeCartAmount,
   }) : super(key: key);
 
-  final Produto item;
-  final void Function(int) changeCartAmount;
+  final Produto? item;
+  final void Function(int)? changeCartAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -382,7 +383,7 @@ class OrderBottomSheet extends StatelessWidget {
       child: Container(
         child: AmountEditorSheet(
           produto: item,
-          changeCartAmount: (amount) => changeCartAmount(amount),
+          changeCartAmount: (amount) => changeCartAmount?.call(amount),
         ),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       ),
@@ -436,9 +437,12 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
               ),
               onPressed: () {
                 final amount = int.tryParse(controller.text);
-                if (amount != null && widget.produto != null) {
-                  Provider.of<UserData>(context, listen: false)
-                      .addNumberedCartItem(widget.produto!, amount);
+                if (amount != null) {
+                  if (widget.produto != null) {
+                    Provider.of<UserData>(context, listen: false)
+                        .addNumberedCartItem(widget.produto!, amount);
+                  }
+                  widget.changeCartAmount?.call(amount);
                 }
                 Navigator.pop(context);
               },
