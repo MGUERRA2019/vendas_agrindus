@@ -121,22 +121,30 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                     ),
                   ),
                 ),
-                TotalSummary(
-                    value: DataHelper.brNumber.format(userdata.getTotal())),
-                OrderConfirmButton(
-                  label: 'CONTINUAR',
-                  onPressed: () async {
-                    userdata.removeEmptyItens();
-                    if (userdata.cart.isNotEmpty) {
-                      await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrderSummaryScreen(
-                                  userdata.cart.values.toList(),
-                                  widget.cliente)));
-                    }
-                    setState(() {});
-                  },
+                SafeArea(
+                  top: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TotalSummary(
+                          value: DataHelper.brNumber.format(userdata.getTotal())),
+                      OrderConfirmButton(
+                        label: 'CONTINUAR',
+                        onPressed: () async {
+                          userdata.removeEmptyItens();
+                          if (userdata.cart.isNotEmpty) {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderSummaryScreen(
+                                        userdata.cart.values.toList(),
+                                        widget.cliente)));
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
