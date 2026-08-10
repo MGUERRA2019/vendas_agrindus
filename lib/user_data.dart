@@ -149,6 +149,12 @@ class UserData extends ChangeNotifier {
     }
   }
 
+  clearCart() {
+    //Função para descartar o carrinho por completo (ex.: ao excluir um pedido ainda não salvo)
+    cart.clear();
+    notifyListeners();
+  }
+
   removeEmptyItens() {
     List<String> removeValues = [];
     for (var item in cart.values) {

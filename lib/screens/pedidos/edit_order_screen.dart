@@ -127,19 +127,27 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                     ),
                   ),
                 ),
-                TotalSummary(
-                    value: DataHelper.brNumber.format(userdata.getTotal())),
-                OrderConfirmButton(
-                  label: 'CONTINUAR',
-                  onPressed: () {
-                    if (userdata.cart.isNotEmpty) {
-                      List<CartItem> cartItens = userdata.cart.values.toList();
-                      Provider.of<UserData>(context, listen: false)
-                          .cart
-                          .clear();
-                      Navigator.pop(context, cartItens);
-                    }
-                  },
+                SafeArea(
+                  top: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TotalSummary(
+                          value: DataHelper.brNumber.format(userdata.getTotal())),
+                      OrderConfirmButton(
+                        label: 'CONTINUAR',
+                        onPressed: () {
+                          if (userdata.cart.isNotEmpty) {
+                            List<CartItem> cartItens = userdata.cart.values.toList();
+                            Provider.of<UserData>(context, listen: false)
+                                .cart
+                                .clear();
+                            Navigator.pop(context, cartItens);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

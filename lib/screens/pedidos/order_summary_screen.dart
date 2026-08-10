@@ -173,7 +173,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               actions: widget.isSaved
                   ? [
                       IconButton(
-                        icon: Icon(Icons.edit, color: Colors.white),
+                        icon: Icon(Icons.edit, color: kPrimaryColor),
                         onPressed: () async {
                           List<CartItem>? newItens = await Navigator.push<List<CartItem>>(
                             context,
@@ -187,7 +187,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         },
                       ),
                       IconButton(
-                          icon: Icon(Icons.delete, color: Colors.white),
+                          icon: Icon(Icons.delete, color: kPrimaryColor),
                           onPressed: () {
                             Alert(
                               context: context,
@@ -376,6 +376,37 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     children: [
                       TotalSummary(value: DataHelper.brNumber.format(currentTotal())),
                       SummaryButton(
+                  deleteFunction: () {
+                    //Função utilizada para excluir o pedido
+                    FocusScope.of(context).unfocus();
+                    Alert(
+                      context: context,
+                      title: 'EXCLUIR PEDIDO',
+                      desc: widget.isSaved
+                          ? 'Deseja excluir este pedido salvo? A ação não poderá ser desfeita.'
+                          : 'Deseja excluir este pedido? Os itens serão removidos do carrinho.',
+                      style: kAlertCardStyle,
+                      buttons: [
+                        AlertButton(
+                            label: 'Não',
+                            line: Border.all(color: Colors.grey.shade600),
+                            labelColor: Colors.grey.shade600,
+                            hasGradient: false,
+                            cor: Colors.white,
+                            onTap: () { Navigator.pop(context); }),
+                        AlertButton(
+                            label: 'Sim',
+                            onTap: () {
+                              if (widget.isSaved) {
+                                userdata.removeOrder(widget.currentOrder ?? 0);
+                              } else {
+                                userdata.clearCart();
+                              }
+                              Navigator.of(context).popUntil((route) => route.isFirst);
+                            }),
+                      ],
+                    ).show();
+                  },
                   saveFunction: () {
                     //Função utilizada para salvar o pedido
                     FocusScope.of(context).unfocus();

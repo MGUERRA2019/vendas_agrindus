@@ -58,7 +58,8 @@ class OrderConfirmButton extends StatelessWidget {
 class SummaryButton extends StatelessWidget {
   final VoidCallback? saveFunction;
   final VoidCallback? sendFunction;
-  SummaryButton({this.saveFunction, this.sendFunction});
+  final VoidCallback? deleteFunction;
+  SummaryButton({this.saveFunction, this.sendFunction, this.deleteFunction});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,15 +67,35 @@ class SummaryButton extends StatelessWidget {
       width: double.infinity,
       child: Row(
         children: [
+          if (deleteFunction != null)
+            Expanded(
+              child: InkWell(
+                onTap: deleteFunction,
+                child: Container(
+                  color: Colors.red.shade700,
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('EXCLUIR',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Expanded(
             child: InkWell(
               onTap: saveFunction,
               child: Container(
                 color: Colors.grey,
                 child: Center(
-                  child: Text('SALVAR PEDIDO',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('SALVAR',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
+                  ),
                 ),
               ),
             ),
@@ -85,9 +106,12 @@ class SummaryButton extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(gradient: kGradientStyle),
                 child: Center(
-                  child: Text('ENVIAR PEDIDO',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('ENVIAR',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7)),
+                  ),
                 ),
               ),
             ),

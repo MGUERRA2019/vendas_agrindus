@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:vendasagrindus/components/alert_button.dart';
 import 'package:vendasagrindus/screens/clientes/lista_clientes.dart';
@@ -82,7 +83,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       onPopInvokedWithResult: (didPop, result) async {
         if (!didPop) {
           final shouldPop = (await _exitPressed()) ?? false;
-          if (shouldPop && context.mounted) Navigator.of(context).pop();
+          if (shouldPop) SystemNavigator.pop();
         }
       },
       child: Scaffold(
